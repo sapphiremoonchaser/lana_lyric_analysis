@@ -1,0 +1,1 @@
+from src.lana_nlp.scripts.lyrics_analyzer import Ly
