@@ -10,7 +10,7 @@ class LyricsAnalyzer:
         self.df = lyrics_df.copy()
 
 
-    def number_of_songs(self):
+    def number_of_songs(self) -> int:
         """
         Total number of songs
         :return:
@@ -18,11 +18,20 @@ class LyricsAnalyzer:
         return len(self.df)
 
 
-    def albums(self):
+    def albums(self) -> list[str]:
+        """
+        Alphabetical list of albums.
+        :return: list of albums
+        """
         return sorted(self.df["album"].dropna().unique())
 
 
-    def songs_by_album(self):
+    def number_of_songs_by_album(self) -> pd.Series:
+        """
+        Series where the index is the album name and the value is the
+        number of songs on the album.
+        :return: Series with song counts by album
+        """
         return (
             self.df
             .groupby("album")
@@ -31,8 +40,11 @@ class LyricsAnalyzer:
         )
 
 
-    def song_length_stats(self):
-
+    def song_length_stats(self) -> dict[str, float]:
+        """
+        Dictionary with the mean, median, min, and max word counts.
+        :return: dict with song length stats
+        """
         lengths = self.df["lyrics"].str.split().str.len()
 
         return {
@@ -43,8 +55,12 @@ class LyricsAnalyzer:
         }
 
 
-    def longest_songs(self, n=10):
-
+    def longest_songs(self, n=10) -> pd.DataFrame:
+        """
+        Dataframe listing longest songs by word count.
+        :param n: number of songs to return
+        :return: dataframe of songs
+        """
         temp = self.df.copy()
 
         temp["word_count"] = (
@@ -60,8 +76,12 @@ class LyricsAnalyzer:
         )
 
 
-    def shortest_songs(self, n=10):
-
+    def shortest_songs(self, n=10) -> pd.DataFrame:
+        """
+        Dataframe listing shortest songs by word count.
+        :param n: number of songs to return
+        :return: dataframe of songs
+        """
         temp = self.df.copy()
 
         temp["word_count"] = (
