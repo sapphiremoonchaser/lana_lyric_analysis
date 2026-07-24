@@ -39,3 +39,35 @@ class LyricsAnalyzer:
         }
 
 
+    def longest_songs(self, n=10):
+
+        temp = self.df.copy()
+
+        temp["word_count"] = (
+            temp["lyrics"]
+            .str.split()
+            .str.len()
+        )
+
+        return (
+            temp
+            .sort_values(by=["word_count"], ascending=False)
+            .head(n)
+        )
+
+
+    def shortest_songs(self, n=10):
+
+        temp = self.df.copy()
+
+        temp["word_count"] = (
+            temp["lyrics"]
+            .str.split()
+            .str.len()
+        )
+
+        return (
+            temp
+            .sort_values("word_count")
+            .head(n)
+        )
