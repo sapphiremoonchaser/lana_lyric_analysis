@@ -27,3 +27,15 @@ class LyricsAnalyzer:
         )
 
 
+    def song_length_stats(self):
+
+        lengths = self.df["lyrics"].str.split().str.len()
+
+        return {
+            "mean": lengths.mean(),
+            "median": lengths.median(),
+            "min": lengths.min(),
+            "max": lengths.max()
+        }
+
+
