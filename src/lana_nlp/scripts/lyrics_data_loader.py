@@ -40,3 +40,4 @@ class LyricsDataLoader:
         self.df = df
         return self.df.copy()
 
+
