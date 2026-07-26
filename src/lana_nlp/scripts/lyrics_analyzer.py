@@ -160,3 +160,16 @@ class LyricsAnalyzer:
 
         return Counter(words).most_common(n)
 
+
+    def add_word_counts(self):
+
+        self.df["word_count"] = (
+            self.df["lyrics"]
+            .str.split()
+            .str.len()
+        )
+
+        return self.df
+
+
+
