@@ -95,3 +95,56 @@ class LyricsAnalyzer:
             .sort_values("word_count")
             .head(n)
         )
+
+
+    def album_statistics(self) -> pd.DataFrame:
+        """
+        Get album statistics:
+            - song count
+            - average words across songs
+            - total words on the album
+        :return:
+        """
+        temp = self.df.copy()
+
+        # create temporary column for word count
+        temp["word_count"] = (
+            temp["lyrics"]
+            .str.split()
+            .str.len()
+        )
+
+        return (
+            temp
+            .groupby("album")
+            .agg(
+                songs=("title", "count"),
+                avg_words=("word_count", "mean"),
+                total_words=("word_count", "count")
+            )
+            .sort_values(by="songs", ascending=False)
+        )
+
+
+    def search(
+        self,
+        phrase: str
+    ) -> pd.DataFrame:
+        """
+        Search lyrics by phrase.
+
+        :param phrase: phrase to search for
+        :return:
+        """
+        return self.df[
+            self.df["lyrics"]
+            .str.contains(
+                phrase,
+                case=False,
+                na=False
+            )
+        ]
+
+
+
+
