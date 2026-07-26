@@ -172,4 +172,21 @@ class LyricsAnalyzer:
         return self.df
 
 
+    def reading_time(self):
+        """
+        Estimate the reading time.
+
+        :return: dataframe including reading time
+        """
+        if "word_count" not in self.df:
+            self.add_word_counts()
+
+        self.df["reading_time"] = (
+            self.df["word_count"] / 200
+        )
+
+        return self.df
+
+
+
 
