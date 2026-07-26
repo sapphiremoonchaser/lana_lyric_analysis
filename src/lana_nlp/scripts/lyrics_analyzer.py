@@ -190,23 +190,23 @@ class LyricsAnalyzer:
         return self.df
 
 
-def vocabulary_size(self) -> int:
+    def vocabulary_size(self) -> int:
 
-    text = " ".join(
-        self.df["lyrics"].fillna("")
-    )
+        text = " ".join(
+            self.df["lyrics"].fillna("")
+        )
 
-    words = text.lower().split()
+        words = text.lower().split()
 
-    return len(set(words))
+        return len(set(words))
 
 
-def lexical_diversity(self) -> float:
+    def lexical_diversity(self) -> float:
 
-    text = " ".join(
-        self.df["lyrics"].fillna("")
-    )
+        text = " ".join(
+            self.df["lyrics"].fillna("")
+        )
 
-    words = text.lower().split()
+        words = text.lower().split()
 
-    return len(set(words)) / len(words)
+        return len(set(words)) / len(words)
