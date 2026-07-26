@@ -1,4 +1,5 @@
 import pandas as pd
+from collections import Counter
 
 
 class LyricsAnalyzer:
@@ -146,5 +147,16 @@ class LyricsAnalyzer:
         ]
 
 
+    def most_common_words(
+        self,
+        n=25
+    ):
 
+        text = " ".join(
+            self.df["lyrics"].fillna("")
+        )
+
+        words = text.lower().split()
+
+        return Counter(words).most_common(n)
 
