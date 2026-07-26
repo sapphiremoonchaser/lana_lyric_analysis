@@ -201,3 +201,12 @@ def vocabulary_size(self) -> int:
     return len(set(words))
 
 
+def lexical_diversity(self) -> float:
+
+    text = " ".join(
+        self.df["lyrics"].fillna("")
+    )
+
+    words = text.lower().split()
+
+    return len(set(words)) / len(words)
