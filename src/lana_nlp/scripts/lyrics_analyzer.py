@@ -1,6 +1,8 @@
 import pandas as pd
 from collections import Counter
 
+from nltk.corpus import words
+
 
 class LyricsAnalyzer:
 
@@ -161,7 +163,7 @@ class LyricsAnalyzer:
         return Counter(words).most_common(n)
 
 
-    def add_word_counts(self):
+    def add_word_counts(self) -> pd.DataFrame:
 
         self.df["word_count"] = (
             self.df["lyrics"]
@@ -188,5 +190,14 @@ class LyricsAnalyzer:
         return self.df
 
 
+def vocabulary_size(self) -> int:
+
+    text = " ".join(
+        self.df["lyrics"].fillna("")
+    )
+
+    words = text.lower().split()
+
+    return len(set(words))
 
 
