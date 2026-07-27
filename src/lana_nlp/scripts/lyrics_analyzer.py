@@ -199,18 +199,24 @@ class LyricsAnalyzer:
         phrase: str
     ) -> pd.DataFrame:
         """
-        Search lyrics by phrase.
+        Search song lyrics for a word or phrase.
 
-        :param phrase: phrase to search for
-        :return:
+        The search is case-insensitive and treats the search text
+        as a literal string rather than a regular expression.
+
+        Args:
+            phrase: Word of phrase to search for.
+
+        Returns:
+            A DataFrame containing matching songs.
         """
         return self.df[
             self.df["lyrics"]
             .str.contains(
                 phrase,
-                case=False,
-                regex=False,
-                na=False
+                case=False,     # Ignore capitalization
+                regex=False,    # Treat phrase literally
+                na=False        # Ignore missing lyrics
             )
         ]
 
