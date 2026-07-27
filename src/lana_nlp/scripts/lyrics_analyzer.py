@@ -3,20 +3,40 @@ from collections import Counter
 
 
 class LyricsAnalyzer:
+    """
+    Analyze a dataset of song lyrics.
 
+    This class provides methods for calculating descriptive statistics,
+    searching lyrics, and measuring vocabulary usage across a collection
+    of songs. Derived columns such as word_count and estimated reading
+    time are calculated once during initialization.
+    """
     def __init__(
         self,
         lyrics_df: pd.DataFrame
     ):
+        """
+        Initialize the LyricsAnalyzer object.
+
+        Creates a copy7 of the input DataFrame so the original data is not
+        modified. It also calculates derived columns that are resued
+        throughout the class.
+
+        Args:
+            lyrics_df: DataFrame containing song metadata and lyrics.
+        """
         self.df = lyrics_df.copy()
 
+        # count the number of words in each song
         self.df["word_count"] = (
             self.df["lyrics"] # lyrics column
-            .fillna("") # fill NaN types with empty string
-            .str.split()
-            .str.len()
+            .fillna("") # replace missing lyrics with an empty string
+            .str.split() # split each lyric into a list of words
+            .str.len() # Coun the number of words
         )
 
+        # Estimate the reading time assuming an average reading speed
+        # of 200 words per minute
         self.df["reading_minutes"] = self.df["word_count"] / 200
 
 
