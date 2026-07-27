@@ -1,3 +1,15 @@
+"""
+Analyze song lyrics and compute descriptive statistics.
+
+This module contains the LyricsAnalyzer class, which provides methods
+for exploring a collection of song lyrics. It calculates song and album
+statistics, search lyrics, measures vocabulary usage, and computes
+basic NLP metrics such as lexical diversity and word frequency.
+
+The analyzer operates on a pandas DataFrame containing song metadata
+and lyrics, and creates derived metrics such as word count and
+estimated reading time for each song.
+"""
 import pandas as pd
 from collections import Counter
 
@@ -225,25 +237,55 @@ class LyricsAnalyzer:
         self,
         n: int = 25
     ) -> list[tuple[str, float]]:
+        """
+        Returns the most frequently occurring words.
 
+        Args:
+            n: Number of words to return.
+
+        Returns:
+            A list of (word, frequency) tuples sorted from
+            most common to least common.
+        """
+
+        # Get every word from every song
         words = self._words()
 
+        # Count occurrences of each word.
         return Counter(words).most_common(n)
 
 
     def vocabulary_size(self) -> int:
+        """
+        Calculate the size of the vocabulary.
 
+        Vocabulary size is the number of unique words that appear
+        across all lyrics.
+
+        Returns:
+            The number of distinct words.
+        """
         words = self._words()
 
+        # Convert to a set to remove duplicates
         return len(set(words))
 
 
     def lexical_diversity(self) -> float:
+        """
+        Calculate lexical diversity.
 
+        Lexical diversity is the ratio of unique words to the total
+        number of words. Higher values indicate a more varied vocabulary.
+
+        Returns:
+            A value between 0 and 1 representing vocabulary diversity.
+        """
         words = self._words()
 
-        # handle division by 0
+        # Avoid division by zero if there are no lyrics.
         if not words:
             return 0.0
 
+        # unique words / total number of words
         return len(set(words)) / len(words)
