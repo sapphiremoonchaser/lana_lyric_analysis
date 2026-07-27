@@ -103,8 +103,13 @@ class LyricsAnalyzer:
 
     def song_length_stats(self) -> dict[str, float]:
         """
-        Dictionary with the mean, median, min, and max word counts.
-        :return: dict with song length stats
+        Calculate descriptive statistics for songs length.
+
+        Uses the precomputed word counts created during initialization.
+
+        Returns:
+            A dictionary containing the mean, median, minimum,
+            and maximum song lengths in words.
         """
         lengths = self.df["word_count"]
 
@@ -121,14 +126,22 @@ class LyricsAnalyzer:
         n: int = 10
     ) -> pd.DataFrame:
         """
-        Dataframe listing longest songs by word count.
-        :param n: number of songs to return
-        :return: dataframe of songs
+        Returns the longest songs by word count.
+
+        Args:
+            n: number of songs to return
+
+        Returns:
+            A DataFrame containing the longest songs sorted by
+            descending word count.
         """
 
         return (
             self.df
-            .sort_values(by=["word_count"], ascending=False)
+            .sort_values(
+                by=["word_count"],
+                ascending=False
+            )
             .head(n)
         )
 
@@ -138,9 +151,14 @@ class LyricsAnalyzer:
         n: int = 10
     ) -> pd.DataFrame:
         """
-        Dataframe listing shortest songs by word count.
-        :param n: number of songs to return
-        :return: dataframe of songs
+        Returns the shorted songs by word count.
+
+        Args:
+            n: number of songs to return
+
+        Returns:
+            A DataFrame containing the shorted songs sorted by
+            ascending word count.
         """
         return (
             self.df
