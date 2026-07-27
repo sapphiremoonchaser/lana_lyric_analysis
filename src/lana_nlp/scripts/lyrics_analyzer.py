@@ -10,6 +10,7 @@ The analyzer operates on a pandas DataFrame containing song metadata
 and lyrics, and creates derived metrics such as word count and
 estimated reading time for each song.
 """
+
 import pandas as pd
 from collections import Counter
 
