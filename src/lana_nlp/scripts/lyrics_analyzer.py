@@ -62,8 +62,10 @@ class LyricsAnalyzer:
 
     def number_of_songs(self) -> int:
         """
-        Total number of songs
-        :return:
+        Return the total number of songs in the dataset.
+
+        Returns:
+            The total number of rows (songs).
         """
         return len(self.df)
 
@@ -71,22 +73,31 @@ class LyricsAnalyzer:
     def albums(self) -> list[str]:
         """
         Alphabetical list of albums.
-        :return: list of albums
+
+        Missing albums are removed before sorting.
+
+        Returns:
+            A list of unique album names.
         """
         return sorted(self.df["album"].dropna().unique())
 
 
     def number_of_songs_by_album(self) -> pd.Series:
         """
-        Series where the index is the album name and the value is the
-        number of songs on the album.
-        :return: Series with song counts by album
+        Count the number of songs on each album.
+
+        Groups the dataset by album and counts how many songs belong
+        to each one.
+
+        Returns:
+            A pandas Series whose index contains album names and whose
+            values contain the number of songs.
         """
         return (
             self.df
-            .groupby("album")
-            .size()
-            .sort_values(ascending=False)
+            .groupby("album")       # Group by album
+            .size()                 # Count songs in each group
+            .sort_values(ascending=False) # Show largest albums first
         )
 
 
