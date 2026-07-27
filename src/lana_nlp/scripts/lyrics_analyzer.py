@@ -20,6 +20,14 @@ class LyricsAnalyzer:
         self.df["reading_minutes"] = self.df["word_count"] / 200
 
 
+    def _words(self) -> list[str]:
+        text = " ".join(
+            self.df["lyrics"].fillna("")
+        )
+
+        return text.lower().split()
+
+
     def number_of_songs(self) -> int:
         """
         Total number of songs
@@ -55,7 +63,7 @@ class LyricsAnalyzer:
         Dictionary with the mean, median, min, and max word counts.
         :return: dict with song length stats
         """
-        lengths = self.df["lyrics"].str.split().str.len()
+        lengths = self.df["word_count"]
 
         return {
             "mean": lengths.mean(),
@@ -65,35 +73,34 @@ class LyricsAnalyzer:
         }
 
 
-    def longest_songs(self, n=10) -> pd.DataFrame:
+    def longest_songs(
+        self,
+        n: int = 10
+    ) -> pd.DataFrame:
         """
         Dataframe listing longest songs by word count.
         :param n: number of songs to return
         :return: dataframe of songs
         """
-        temp = self.df.copy()
-
-        temp["word_count"] = (
-            temp["lyrics"]
-            .str.split()
-            .str.len()
-        )
 
         return (
-            temp
+            self.df
             .sort_values(by=["word_count"], ascending=False)
             .head(n)
         )
 
 
-    def shortest_songs(self, n=10) -> pd.DataFrame:
+    def shortest_songs(
+        self,
+        n: int = 10
+    ) -> pd.DataFrame:
         """
         Dataframe listing shortest songs by word count.
         :param n: number of songs to return
         :return: dataframe of songs
         """
         return (
-            df
+            self.df
             .sort_values("word_count")
             .head(n)
         )
@@ -108,12 +115,12 @@ class LyricsAnalyzer:
         :return:
         """
         return (
-            df
+            self.df
             .groupby("album")
             .agg(
                 songs=("title", "count"),
                 avg_words=("word_count", "mean"),
-                total_words=("word_count", "count")
+                total_words=("word_count", "sum")
             )
             .sort_values(by="songs", ascending=False)
         )
@@ -134,6 +141,7 @@ class LyricsAnalyzer:
             .str.contains(
                 phrase,
                 case=False,
+                regex=False,
                 na=False
             )
         ]
@@ -141,48 +149,27 @@ class LyricsAnalyzer:
 
     def most_common_words(
         self,
-        n=25
-    ):
+        n: int = 25
+    ) -> list[tuple[str, float]]:
 
-        text = " ".join(
-            self.df["lyrics"].fillna("")
-        )
-
-        words = text.lower().split()
+        words = self._words()
 
         return Counter(words).most_common(n)
 
 
-    def reading_time(self):
-        """
-        Estimate the reading time.
-
-        :return: dataframe including reading time
-        """
-        self.df["reading_time"] = (
-            self.df["word_count"] / 200
-        )
-
-        return self.df
-
-
     def vocabulary_size(self) -> int:
 
-        text = " ".join(
-            self.df["lyrics"].fillna("")
-        )
-
-        words = text.lower().split()
+        words = self._words()
 
         return len(set(words))
 
 
     def lexical_diversity(self) -> float:
 
-        text = " ".join(
-            self.df["lyrics"].fillna("")
-        )
+        words = self._words()
 
-        words = text.lower().split()
+        # handle division by 0
+        if not words:
+            return 0.0
 
         return len(set(words)) / len(words)
