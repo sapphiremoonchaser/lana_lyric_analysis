@@ -10,6 +10,15 @@ class LyricsAnalyzer:
     ):
         self.df = lyrics_df.copy()
 
+        self.df["word_count"] = (
+            self.df["lyrics"] # lyrics column
+            .fillna("") # fill NaN types with empty string
+            .str.split()
+            .str.len()
+        )
+
+        self.df["reading_minutes"] = self.df["word_count"] / 200
+
 
     def number_of_songs(self) -> int:
         """
@@ -83,16 +92,8 @@ class LyricsAnalyzer:
         :param n: number of songs to return
         :return: dataframe of songs
         """
-        temp = self.df.copy()
-
-        temp["word_count"] = (
-            temp["lyrics"]
-            .str.split()
-            .str.len()
-        )
-
         return (
-            temp
+            df
             .sort_values("word_count")
             .head(n)
         )
@@ -106,17 +107,8 @@ class LyricsAnalyzer:
             - total words on the album
         :return:
         """
-        temp = self.df.copy()
-
-        # create temporary column for word count
-        temp["word_count"] = (
-            temp["lyrics"]
-            .str.split()
-            .str.len()
-        )
-
         return (
-            temp
+            df
             .groupby("album")
             .agg(
                 songs=("title", "count"),
@@ -161,26 +153,12 @@ class LyricsAnalyzer:
         return Counter(words).most_common(n)
 
 
-    def add_word_counts(self) -> pd.DataFrame:
-
-        self.df["word_count"] = (
-            self.df["lyrics"]
-            .str.split()
-            .str.len()
-        )
-
-        return self.df
-
-
     def reading_time(self):
         """
         Estimate the reading time.
 
         :return: dataframe including reading time
         """
-        if "word_count" not in self.df:
-            self.add_word_counts()
-
         self.df["reading_time"] = (
             self.df["word_count"] / 200
         )
