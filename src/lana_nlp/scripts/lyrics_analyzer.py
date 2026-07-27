@@ -169,21 +169,28 @@ class LyricsAnalyzer:
 
     def album_statistics(self) -> pd.DataFrame:
         """
-        Get album statistics:
-            - song count
-            - average words across songs
+        Calculated summary statistics for each album.
+
+        Statistics include:
+            - number of songs
+            - average words per song
             - total words on the album
-        :return:
+
+        Returns:
+            A DataFrame containing one row per album.
         """
         return (
             self.df
             .groupby("album")
             .agg(
-                songs=("title", "count"),
-                avg_words=("word_count", "mean"),
-                total_words=("word_count", "sum")
+                songs=("title", "count"),           # Number of songs
+                avg_words=("word_count", "mean"),   # Average song length
+                total_words=("word_count", "sum")   # Total words
             )
-            .sort_values(by="songs", ascending=False)
+            .sort_values(
+                by="songs",
+                ascending=False
+            )
         )
 
 
