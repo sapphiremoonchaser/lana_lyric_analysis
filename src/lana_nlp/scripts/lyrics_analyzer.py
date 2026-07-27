@@ -41,10 +41,22 @@ class LyricsAnalyzer:
 
 
     def _words(self) -> list[str]:
+        """
+        Return all lyrics as a single list of lowercase words.
+
+        This private helper method centralizes text extraction so that
+        multiple analysis methods can reuse the same processing logic.
+
+        Returns:
+            A list containing every word from the song.
+        """
+
+        # Combine every song's lyrics into one long string
         text = " ".join(
             self.df["lyrics"].fillna("")
         )
 
+        # Convert everything to lowercase and split into words.
         return text.lower().split()
 
 
