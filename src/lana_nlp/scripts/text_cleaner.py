@@ -12,7 +12,12 @@ nltk.download('punkt_tab')
 class TextCleaner:
 
     def __init__(self):
-        pass
+        self.stop_words = set(
+            stopwords.words('english')
+        )
+
+        self.lemmatizer = WordNetLemmatizer()
+
 
     def lowercase(
         self,
