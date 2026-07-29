@@ -22,3 +22,22 @@ class TextCleaner:
         return text.lower()
 
 
+    def remove_punctuation(
+        self,
+        text: str
+    ) -> str:
+        """
+        Remove punctuation characters.
+
+        Args:
+            text: Text to remove characters from.
+
+        Returns:
+            The text string with punctuation removed.
+        """
+        return re.sub(
+            r"[^\w\s]",
+            "",
+            text
+        )
+
