@@ -40,3 +40,20 @@ class TextCleaner:
         return "".join(text.split())
 
 
+    def clean_text(
+        self,
+        text: str
+    ) -> str:
+        """
+        Apply all cleaning steps.
+        """
+
+        text = self.lowercase(text)
+
+        text = self.remove_punctuation(text)
+
+        text = self.remove_whitespace(text)
+
+        return text
+
+
