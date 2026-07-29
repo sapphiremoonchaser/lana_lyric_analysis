@@ -1,13 +1,16 @@
 import re
-from lib2to3.btm_utils import tokens
 
 import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
+import pandas as pd
 
-# Errors out without this
-nltk.download('punkt_tab')
+# # Errors out without this
+# nltk.download('punkt_tab')  # Needed for word tokenization for nltk 3.10+
+# nltk.download('stopwords')
+# nltk.download('wordnet')    # Needed for lemmatization
+# nltk.download("omw-1.4")    # WordNet language data
 
 
 class TextCleaner:
@@ -143,6 +146,11 @@ class TextCleaner:
         """
         Perform light cleaning while preserving lyrical structure.
         """
+
+        # Deal with missing lyrics
+        if pd.isna(text):
+            return ""
+
         text = self.remove_annotations(text)
         text = self.remove_whitespace(text)
 

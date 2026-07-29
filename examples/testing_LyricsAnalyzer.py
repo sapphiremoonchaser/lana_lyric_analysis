@@ -11,23 +11,17 @@ loader = LyricsDataLoader(
 
 df = loader.load()
 
-print(
-    df[
-        df["lyrics"].apply(
-            lambda x: not isinstance(x, str)
-        )
-    ]
-)
+print(df["lyrics"].isna().sum())
 
 # Clean text
 cleaner = TextCleaner()
 
-df["cleaned_lyrics"] = df["lyrics"].apply(
-    cleaner.clean_text
+df["basic_lyrics"] = df["lyrics"].apply(
+    cleaner.basic_clean
 )
 
-df["tokens"] = df["cleaned_lyrics"].apply(
-    cleaner.tokenize
+df["nlp_tokens"] = df["lyrics"].apply(
+    cleaner.nlp_clean
 )
 
 # Create the analyzer to get stats
