@@ -1,4 +1,5 @@
 import re
+from lib2to3.btm_utils import tokens
 
 import nltk
 from nltk.tokenize import word_tokenize
@@ -146,3 +147,25 @@ class TextCleaner:
         text = self.remove_whitespace(text)
 
         return text.strip()
+
+
+    def nlp_clean(
+        self,
+        text: str
+    ) -> list[str]:
+        """
+        Perform aggresive NLP cleaning.
+
+        Returns:
+            List of cleaned tokens.
+        """
+
+        text = self.basic_clean(text)
+        text = self.lowercase(text)
+        text = self.remove_punctuation(text)
+
+        tokens = self.tokenize(text)
+        tokens = self.remove_stopwords(tokens)
+        tokens = self.lemmatize(tokens)
+
+        return tokens
