@@ -1,11 +1,11 @@
 import re
 
 import nltk
-import pandas as pd
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
+# Errors out without this
 nltk.download('punkt_tab')
 
 
@@ -17,6 +17,26 @@ class TextCleaner:
         )
 
         self.lemmatizer = WordNetLemmatizer()
+
+
+    def remove_annotations(
+        self,
+        text: str
+    ) -> str:
+        """
+        Remove bracketed lyric annotations.
+
+        Examples:
+            [Verse 1]
+            [Chorus]
+            [Instrumental]
+        """
+
+        return re.sub(
+            r"\[.*?\]",
+            "",
+            text
+        )
 
 
     def lowercase(
