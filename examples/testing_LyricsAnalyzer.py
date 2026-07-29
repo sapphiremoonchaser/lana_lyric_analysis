@@ -26,6 +26,10 @@ df["cleaned_lyrics"] = df["lyrics"].apply(
     cleaner.clean_text
 )
 
+df["tokens"] = df["cleaned_lyrics"].apply(
+    cleaner.tokenize
+)
+
 # Create the analyzer to get stats
 analyzer = LyricsAnalyzer(df)
 
