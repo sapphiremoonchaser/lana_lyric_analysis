@@ -11,8 +11,6 @@ loader = LyricsDataLoader(
 
 df = loader.load()
 
-print(df["lyrics"].isna().sum())
-
 # Clean text
 cleaner = TextCleaner()
 
@@ -25,7 +23,10 @@ df["nlp_tokens"] = df["lyrics"].apply(
 )
 
 # Create the analyzer to get stats
-analyzer = LyricsAnalyzer(df)
+analyzer = LyricsAnalyzer(
+    df,
+    text_column="basic_lyrics"
+)
 
 # Total number of songs
 number_of_songs = analyzer.number_of_songs()
