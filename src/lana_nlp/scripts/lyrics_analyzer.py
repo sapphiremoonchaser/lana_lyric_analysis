@@ -42,7 +42,7 @@ class LyricsAnalyzer:
 
         # count the number of words in each song
         self.df["word_count"] = (
-            self.df["lyrics"] # lyrics column
+            self.df["cleaned_lyrics"] # lyrics column
             .fillna("") # replace missing lyrics with an empty string
             .str.split() # split each lyric into a list of words
             .str.len() # Coun the number of words
@@ -66,7 +66,7 @@ class LyricsAnalyzer:
 
         # Combine every song's lyrics into one long string
         text = " ".join(
-            self.df["lyrics"].fillna("")
+            self.df["cleaned_lyrics"].fillna("")
         )
 
         # Convert everything to lowercase and split into words.
@@ -224,7 +224,7 @@ class LyricsAnalyzer:
             A DataFrame containing matching songs.
         """
         return self.df[
-            self.df["lyrics"]
+            self.df["cleaned_lyrics"]
             .str.contains(
                 phrase,
                 case=False,     # Ignore capitalization
