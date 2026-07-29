@@ -11,3 +11,13 @@ def test_lowercase():
 
     assert result == "blue jeans"
 
+
+def test_removes_punctuation():
+
+    cleaner = TextCleaner()
+
+    result = cleaner.clean_text(
+        "Hello!!!"
+    )
+
+    assert result == "hello"
