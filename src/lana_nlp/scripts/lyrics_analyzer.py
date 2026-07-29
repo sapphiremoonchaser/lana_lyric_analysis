@@ -14,6 +14,8 @@ estimated reading time for each song.
 import pandas as pd
 from collections import Counter
 
+from zmq.backend import first
+
 
 class LyricsAnalyzer:
     """
@@ -26,7 +28,8 @@ class LyricsAnalyzer:
     """
     def __init__(
         self,
-        lyrics_df: pd.DataFrame
+        lyrics_df: pd.DataFrame,
+        text_column: str = "basic_cleaned_lyrics"
     ):
         """
         Initialize the LyricsAnalyzer object.
@@ -39,14 +42,30 @@ class LyricsAnalyzer:
             lyrics_df: DataFrame containing song metadata and lyrics.
         """
         self.df = lyrics_df.copy()
+        self.text_column = text_column
 
-        # count the number of words in each song
-        self.df["word_count"] = (
-            self.df["cleaned_lyrics"] # lyrics column
-            .fillna("") # replace missing lyrics with an empty string
-            .str.split() # split each lyric into a list of words
-            .str.len() # Coun the number of words
-        )
+        column = self.df[self.text_column]
+
+        # Handle edge case where are lyrics are NA
+        non_null = column.dropna()
+
+        if non_null.empty:
+            self.df["word_count"] = 0
+
+        # If the column is a list use this method to calculate word count
+        elif isinstance(non_null.iloc[0], list):
+            self.df["word_count"] = column.apply(
+                lambda x: len(x) if isinstance(x, list) else 0
+            )
+
+        # If the column is a string use this method to calculate word_count
+        else:
+            self.df["word_count"] = (
+                column
+                .fillna("")
+                .str.split()
+                .str.len()
+            )
 
         # Estimate the reading time assuming an average reading speed
         # of 200 words per minute
@@ -66,7 +85,7 @@ class LyricsAnalyzer:
 
         # Combine every song's lyrics into one long string
         text = " ".join(
-            self.df["cleaned_lyrics"].fillna("")
+            self.df[self.text_column].fillna("")
         )
 
         # Convert everything to lowercase and split into words.
@@ -218,13 +237,13 @@ class LyricsAnalyzer:
         as a literal string rather than a regular expression.
 
         Args:
-            phrase: Word of phrase to search for.
+            phrase: Word or phrase to search for.
 
         Returns:
             A DataFrame containing matching songs.
         """
         return self.df[
-            self.df["cleaned_lyrics"]
+            self.df[self.text_column]
             .str.contains(
                 phrase,
                 case=False,     # Ignore capitalization
