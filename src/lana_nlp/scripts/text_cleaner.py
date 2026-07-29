@@ -46,7 +46,14 @@ class TextCleaner:
     ) -> str:
         """
         Apply all cleaning steps.
+
+        Empty text appear as NaN is dealt with by converting it to "".
         """
+        if not isinstance(
+            text,
+            str
+        ):
+            return ""
 
         text = self.lowercase(text)
 

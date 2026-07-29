@@ -11,6 +11,14 @@ loader = LyricsDataLoader(
 
 df = loader.load()
 
+print(
+    df[
+        df["lyrics"].apply(
+            lambda x: not isinstance(x, str)
+        )
+    ]
+)
+
 # Clean text
 cleaner = TextCleaner()
 
