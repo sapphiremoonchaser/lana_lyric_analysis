@@ -3,6 +3,7 @@ import re
 import nltk
 import pandas as pd
 from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
 
 nltk.download('punkt_tab')
 
@@ -77,3 +78,23 @@ class TextCleaner:
         Split text into a list of individual words.
         """
         return word_tokenize(text)
+
+
+    def remove_stopwords(
+        self,
+        tokens: list[str]
+    ):
+        """
+        Remove words like a and the.
+        """
+
+        stop_words = set(
+            stopwords.words('english')
+        )
+
+        return [
+            word
+            for word in tokens
+            if word not in stop_words
+        ]
+
