@@ -1,5 +1,6 @@
 import re
 import pandas as pd
+from nltk.tokenize import word_tokenize
 
 
 class TextCleaner:
@@ -64,3 +65,11 @@ class TextCleaner:
         return text
 
 
+    def tokenize(
+        self,
+        text: str
+    ) -> list[str]:
+        """
+        Split text into a list of individual words.
+        """
+        return word_tokenize(text)
