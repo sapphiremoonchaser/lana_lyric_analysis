@@ -25,7 +25,7 @@ df["nlp_tokens"] = df["lyrics"].apply(
 # Create the analyzer to get stats
 analyzer = LyricsAnalyzer(
     df,
-    text_column="basic_lyrics"
+    text_column="nlp_tokens"
 )
 
 # Total number of songs
