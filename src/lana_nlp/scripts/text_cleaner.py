@@ -13,11 +13,6 @@ class TextCleaner:
     ) -> str:
         """
         Convert to lowercase.
-        Args:
-            text: text to convert
-
-        Returns:
-            The lowercase text
         """
         return text.lower()
 
@@ -28,16 +23,20 @@ class TextCleaner:
     ) -> str:
         """
         Remove punctuation characters.
-
-        Args:
-            text: Text to remove characters from.
-
-        Returns:
-            The text string with punctuation removed.
         """
         return re.sub(
             r"[^\w\s]",
             "",
             text
         )
+
+    def remove_whitespace(
+        self,
+        text: str
+    ) -> str:
+        """
+        Normalize whitespace.
+        """
+        return "".join(text.split())
+
 
