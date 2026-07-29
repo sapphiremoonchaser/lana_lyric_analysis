@@ -114,14 +114,10 @@ class TextCleaner:
         Remove words like a and the.
         """
 
-        stop_words = set(
-            stopwords.words('english')
-        )
-
         return [
             word
             for word in tokens
-            if word not in stop_words
+            if word not in self.stop_words
         ]
 
 
@@ -133,10 +129,20 @@ class TextCleaner:
         Group similar words like love, loved, loving
         """
 
-        lemmatizer = WordNetLemmatizer()
-
         return [
-            lemmatizer.lemmatize(word)
+            self.lemmatizer.lemmatize(word)
             for word in tokens
         ]
 
+
+    def basic_clean(
+        self,
+        text: str
+    ) -> str:
+        """
+        Perform light cleaning while preserving lyrical structure.
+        """
+        text = self.remove_annotations(text)
+        text = self.remove_whitespace(text)
+
+        return text.strip()
