@@ -37,7 +37,7 @@ class TextCleaner:
         """
         Normalize whitespace.
         """
-        return "".join(text.split())
+        return " ".join(text.split())
 
 
     def clean_text(
