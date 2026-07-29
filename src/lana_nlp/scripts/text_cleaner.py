@@ -4,6 +4,7 @@ import nltk
 import pandas as pd
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
 
 nltk.download('punkt_tab')
 
@@ -96,5 +97,21 @@ class TextCleaner:
             word
             for word in tokens
             if word not in stop_words
+        ]
+
+
+    def lemmatize(
+        self,
+        tokens
+    ):
+        """
+        Group similar words like love, loved, loving
+        """
+
+        lemmatizer = WordNetLemmatizer()
+
+        return [
+            lemmatizer.lemmatize(word)
+            for word in tokens
         ]
 
