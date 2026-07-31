@@ -442,6 +442,18 @@ def test_songs_by_year_returns_matching_songs(sample_df):
     ]
 
 
+def test_songs_by_year_missing_year(sample_df):
+    analyzer = LyricsAnalyzer(
+        sample_df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.songs_by_year(1949)
+
+    assert isinstance(result, pd.DataFrame)
+    assert result.empty
+
+
 def test_longest_album():
     # test value
     pass
