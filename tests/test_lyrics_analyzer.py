@@ -188,10 +188,15 @@ def test_number_of_songs_empty_dataframe():
     assert analyzer.number_of_songs() == 0
 
 
-def test_albums():
-    # test length of list
-    # test values
-    pass
+def test_albums_returns_list(sample_df):
+    analyzer = LyricsAnalyzer(
+        sample_df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.albums()
+
+    assert isinstance(result, list)
 
 
 def test_albums_sorted():
