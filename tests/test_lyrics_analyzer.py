@@ -719,6 +719,22 @@ def test_longest_songs_preserves_key_columns(sample_df):
     assert "word_count" in result.columns
 
 
+def test_longest_songs_empty_dataframe():
+    df = pd.DataFrame(
+        columns=["album", "song", "lyrics"]
+    )
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.longest_songs()
+
+    assert isinstance(result, pd.DataFrame)
+    assert result.empty
+
+
 def test_longest_songs_ties():
     pass
 
