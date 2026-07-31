@@ -503,9 +503,15 @@ def test_songs_by_year_preserves_key_columns(sample_df):
     assert "year" in result.columns
 
 
-def test_longest_album():
-    # test value
-    pass
+def test_longest_album_returns_album_with_most_words(sample_df):
+    analyzer = LyricsAnalyzer(
+        sample_df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.longest_album()
+
+    assert result == 'NFR'
 
 
 # ======================================================

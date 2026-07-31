@@ -224,9 +224,9 @@ class LyricsAnalyzer:
         sorted_songs = stats.sort_values(
             by="total_words",
             ascending=False
-        ).iloc[0]
+        )
 
-        return sorted_songs["songs"]
+        return sorted_songs.index[0]
 
 
     # ======================================================
@@ -331,7 +331,7 @@ class LyricsAnalyzer:
             self.df
             .groupby("album")
             .agg(
-                songs=("title", "count"),           # Number of songs
+                songs=("song", "count"),           # Number of songs
                 avg_words=("word_count", "mean"),   # Average song length
                 median_words=("word_count", "median"), # Median number of words
                 min_words=("word_count", "min"),
