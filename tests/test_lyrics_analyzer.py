@@ -199,7 +199,12 @@ def test_albums_returns_list(sample_df):
     assert isinstance(result, list)
 
 
-def test_albums_removes_duplicates(sample_df):
+def test_albums_returns_unique_values(sample_df):
+    """
+    If an album appears in the initial dataframe more than once it should only be in
+    the albums list once. This test also checks that the length of the list of albums is
+    correct and that the correct album names appear and are sorted.
+    """
     analyzer = LyricsAnalyzer(
         sample_df,
         text_column="lyrics"
@@ -212,6 +217,10 @@ def test_albums_removes_duplicates(sample_df):
 
 
 def test_albums_removes_missing_values():
+    """
+    This tests that albums() removes None and NaN datatypes and the length of the list
+    of albums
+    """
     df = pd.DataFrame({
         "album": [
             "Blue Banisters",
