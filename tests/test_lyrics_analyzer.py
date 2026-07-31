@@ -773,6 +773,40 @@ def test_shortest_songs_returns_dataframe(sample_df):
     ]
 
 
+def test_shortest_songs_sorts_correctly():
+    df = pd.DataFrame({
+        "album": ["AKA", "Ocean Blvd"],
+        "song": ["Mermaid Motel", "Taco Truck"],
+        "lyrics": [
+            "You call me lavender, you call me sunshine",
+            "caribbean blue"
+        ]
+    })
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.shortest_songs()
+
+    assert result["word_count"].is_monotonic_increasing
+
+
+def test_shortest_songs_preserves_key_columns(sample_df):
+    analyzer = LyricsAnalyzer(
+        sample_df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.shortest_songs()
+
+    assert "album" in result.columns
+    assert "song" in result.columns
+    assert "lyrics" in result.columns
+    assert "word_count" in result.columns
+
+
 def test_shortest_songs_ties():
     pass
 
