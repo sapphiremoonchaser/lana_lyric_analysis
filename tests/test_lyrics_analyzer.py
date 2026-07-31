@@ -39,7 +39,10 @@ def test_calculate_derived_columns_empty_lyrics():
         "lyrics": ["", ""]
     })
 
-    analyzer = LyricsAnalyzer(df)
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
 
     # Check that all derived column names are present
     assert "word_count" in analyzer.df.columns
