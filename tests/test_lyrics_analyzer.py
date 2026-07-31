@@ -746,6 +746,17 @@ def test_longest_songs_n_equals_zero(sample_df):
     assert result.empty
 
 
+def test_longest_songs_n_greater_than_dataset(sample_df):
+    analyzer = LyricsAnalyzer(
+        sample_df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.longest_songs(5)
+
+    assert len(result) == len(sample_df)
+
+
 def test_longest_songs_ties():
     pass
 
