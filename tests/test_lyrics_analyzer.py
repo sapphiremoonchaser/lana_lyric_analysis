@@ -327,6 +327,20 @@ def test_number_of_songs_by_album_removes_missing_values():
     assert result.size == 1
 
 
+def test_number_of_songs_by_album_empty_dataframe():
+    df = pd.DataFrame({
+        "album": [],
+        "lyrics": []
+    })
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    assert analyzer.number_of_songs_by_album().size == 0
+
+
 def test_songs_by_album():
     # Test datatype
     # test shape
