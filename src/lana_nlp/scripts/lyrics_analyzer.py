@@ -248,15 +248,15 @@ class LyricsAnalyzer:
             A dictionary containing the mean, median, minimum,
             and maximum song lengths in words.
         """
-        lengths = self.df["word_count"]
-
-        stats = {
-            "mean": lengths.mean(),
-            "median": lengths.median(),
-            "std": lengths.std(),
-            "min": lengths.min(),
-            "max": lengths.max()
-        }
+        stats = self.df["word_count"].agg(
+            [
+                "mean",
+                "median",
+                "std",
+                "min",
+                "max"
+            ]
+        )
 
         stats = {
             key: 0 if pd.isna(value) else value
