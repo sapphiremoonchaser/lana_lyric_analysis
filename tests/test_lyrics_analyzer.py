@@ -675,9 +675,10 @@ def test_longest_songs_returns_dataframe(sample_df):
         text_column="lyrics"
     )
 
-    result = analyzer.longest_songs()
+    result = analyzer.longest_songs(2)
 
     assert isinstance(result, pd.DataFrame)
+    assert len(result) == 2
 
 
 
