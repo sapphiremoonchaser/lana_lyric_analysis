@@ -568,6 +568,26 @@ def test_longest_album_missing_album_values():
     assert result == 'Ultraviolence'
 
 
+def test_longest_album_tie_returns_first_album_sorted():
+    df = pd.DataFrame({
+        "album": ["Ultraviolence", "Honeymoon"],
+        "song": ["Florida Kilos", "Honeymoon"],
+        "lyrics": [
+            "Yayo",
+            "blue"
+        ]
+    })
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.longest_album()
+
+    assert result == 'Honeymoon'
+
+
 # ======================================================
 # Song statistics
 # ======================================================
