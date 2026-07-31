@@ -592,10 +592,22 @@ def test_longest_album_tie_returns_first_album_sorted():
 # Song statistics
 # ======================================================
 
-def test_song_length_stats():
-    # Test datatype
-    # Test values
-    pass
+def test_song_length_stats_returns_expected_structure(sample_df):
+    analyzer = LyricsAnalyzer(
+        sample_df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.song_length_stats()
+
+    assert isinstance(result, dict)
+    assert set(result.keys()) == {
+        "mean",
+        "median",
+        "std",
+        "min",
+        "max"
+    }
 
 
 def test_song_length_stats_empty():
