@@ -42,4 +42,6 @@ song_length_stats = analyzer.song_length_stats()
 
 songs_by_album = analyzer.songs_by_album("Norman Fucking Rockwell!")
 
+longest_songs = analyzer.longest_songs()
+
 x = 1

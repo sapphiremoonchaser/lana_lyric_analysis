@@ -669,11 +669,18 @@ def test_song_length_stats_single_song():
     }
 
 
-def test_longest_songs():
-    # Test datatype
-    # Test shape
-    # test value
-    pass
+def test_longest_songs_returns_dataframe(sample_df):
+    analyzer = LyricsAnalyzer(
+        sample_df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.longest_songs()
+
+    assert isinstance(result, pd.DataFrame)
+
+
+
 
 
 def test_longest_songs_ties():
