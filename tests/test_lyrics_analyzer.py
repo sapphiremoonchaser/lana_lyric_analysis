@@ -199,6 +199,44 @@ def test_albums_returns_list(sample_df):
     assert isinstance(result, list)
 
 
+def test_albums_removes_duplicates(sample_df):
+    analyzer = LyricsAnalyzer(
+        sample_df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.albums()
+
+    assert len(result) == 2
+    assert result == ["Blue Banisters", "NFR"]
+
+
+def test_album_removes_missing_values():
+    df = pd.DataFrame({
+        "album": [
+            "Blue Banisters",
+            np.nan,
+            None
+        ],
+        "lyrics": [
+            "blue banisters",
+            "coney island",
+            "magical trance potion"
+        ]
+    })
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.albums()
+
+    assert None not in result
+    assert np.nan not in result
+    assert len(result) == 1
+
+
 def test_albums_sorted():
     pass
 
