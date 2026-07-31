@@ -427,11 +427,19 @@ def test_songs_by_album_preserves_album_and_song_columns(sample_df):
     assert "song" in result.columns
 
 
-def test_songs_by_year():
-    # test datatype
-    # test shape
-    # test value
-    pass
+def test_songs_by_year_returns_matching_songs(sample_df):
+    analyzer = LyricsAnalyzer(
+        sample_df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.songs_by_year(2019)
+
+    assert len(result) == 2
+    assert result["song"].tolist() == [
+        "Venice Bitch",
+        "Fuck it I love you"
+    ]
 
 
 def test_longest_album():
