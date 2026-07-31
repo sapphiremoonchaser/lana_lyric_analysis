@@ -531,6 +531,21 @@ def test_longest_album_single_album():
     assert result == 'Ultraviolence'
 
 
+def test_longest_album_empty_dataframe():
+    df = pd.DataFrame(
+        columns=["album", "song", "lyrics"]
+    )
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.longest_album()
+
+    assert result == ''
+
+
 # ======================================================
 # Song statistics
 # ======================================================

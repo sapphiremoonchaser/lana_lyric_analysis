@@ -221,6 +221,10 @@ class LyricsAnalyzer:
         """
         stats = self.album_summary()
 
+        # Handle missing dataframe
+        if stats.empty:
+            return ""
+
         sorted_songs = stats.sort_values(
             by="total_words",
             ascending=False
