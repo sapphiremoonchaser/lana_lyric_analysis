@@ -679,6 +679,10 @@ def test_longest_songs_returns_dataframe(sample_df):
 
     assert isinstance(result, pd.DataFrame)
     assert len(result) == 2
+    assert result["song"].tolist() == [
+        "Venice Bitch",
+        "Fuck it I love you"
+    ]
 
 
 
