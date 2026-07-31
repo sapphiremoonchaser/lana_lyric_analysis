@@ -757,15 +757,20 @@ def test_longest_songs_n_greater_than_dataset(sample_df):
     assert len(result) == len(sample_df)
 
 
-def test_longest_songs_ties():
-    pass
+def test_shortest_songs_returns_dataframe(sample_df):
+    analyzer = LyricsAnalyzer(
+        sample_df,
+        text_column="lyrics"
+    )
 
+    result = analyzer.shortest_songs(2)
 
-def test_shortest_songs():
-    # Test datatype
-    # Test shape
-    # test value
-    pass
+    assert isinstance(result, pd.DataFrame)
+    assert len(result) == 2
+    assert result["song"].tolist() == [
+        "Wildflower Wildfire",
+        "Fuck it I love you"
+    ]
 
 
 def test_shortest_songs_ties():
