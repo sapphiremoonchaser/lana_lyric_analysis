@@ -2,6 +2,7 @@ from pathlib import Path
 
 from src.lana_nlp.scripts.data_loader import LyricsDataLoader
 from src.lana_nlp.scripts.lyrics_analyzer import LyricsAnalyzer
+from src.lana_nlp.scripts.text_cleaner import TextCleaner
 
 # Load the lyrics csv
 loader = LyricsDataLoader(
@@ -10,8 +11,22 @@ loader = LyricsDataLoader(
 
 df = loader.load()
 
+# Clean text
+cleaner = TextCleaner()
+
+df["basic_lyrics"] = df["lyrics"].apply(
+    cleaner.basic_clean
+)
+
+df["nlp_tokens"] = df["lyrics"].apply(
+    cleaner.nlp_clean
+)
+
 # Create the analyzer to get stats
-analyzer = LyricsAnalyzer(df)
+analyzer = LyricsAnalyzer(
+    df,
+    text_column="nlp_tokens"
+)
 
 # Total number of songs
 number_of_songs = analyzer.number_of_songs()

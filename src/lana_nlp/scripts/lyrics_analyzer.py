@@ -24,9 +24,16 @@ class LyricsAnalyzer:
     of songs. Derived columns such as word_count and estimated reading
     time are calculated once during initialization.
     """
+
+    # ======================================================
+    # Initialization
+    # ======================================================
+
+
     def __init__(
         self,
-        lyrics_df: pd.DataFrame
+        lyrics_df: pd.DataFrame,
+        text_column: str = "basic_cleaned_lyrics"
     ):
         """
         Initialize the LyricsAnalyzer object.
@@ -39,14 +46,49 @@ class LyricsAnalyzer:
             lyrics_df: DataFrame containing song metadata and lyrics.
         """
         self.df = lyrics_df.copy()
+        self.text_column = text_column
 
-        # count the number of words in each song
-        self.df["word_count"] = (
-            self.df["lyrics"] # lyrics column
-            .fillna("") # replace missing lyrics with an empty string
-            .str.split() # split each lyric into a list of words
-            .str.len() # Coun the number of words
-        )
+        self._calculate_derived_columns()
+
+
+    def _calculate_derived_columns(self) -> None:
+        """
+        Calculate word_count, unique_word_count, and amount of time it
+        takes to read based on a reading ability of 200 words per minute.
+        Returns:
+            None. Adds 3 columns to self.df.
+        """
+
+        column = self.df[self.text_column]
+
+        # Handle edge case where are lyrics are NA
+        non_null = column.dropna()
+
+        if non_null.empty:
+            self.df["word_count"] = 0
+
+        # If the column is a list use this method to calculate word count
+        elif isinstance(non_null.iloc[0], list):
+            self.df["word_count"] = column.apply(
+                lambda x: len(x) if isinstance(x, list) else 0
+            )
+
+        # If the column is a string use this method to calculate word_count
+        else:
+            self.df["word_count"] = (
+                column
+                .fillna("")
+                .str.split()
+                .str.len()
+            )
+
+        # Get unique words
+        self.df["unique_words"] = column.apply(
+            lambda x: (
+                len(set(x.split()))
+                if isinstance(x, str)
+                else 0
+            ))
 
         # Estimate the reading time assuming an average reading speed
         # of 200 words per minute
@@ -66,11 +108,23 @@ class LyricsAnalyzer:
 
         # Combine every song's lyrics into one long string
         text = " ".join(
-            self.df["lyrics"].fillna("")
+            self.df[self.text_column].fillna("")
         )
 
         # Convert everything to lowercase and split into words.
         return text.lower().split()
+
+
+    def _word_counter(self) -> Counter:
+        """
+        Return word frequencies across all lyrics.
+        """
+        return Counter(self._words())
+
+
+    # ======================================================
+    # Dataset information
+    # ======================================================
 
 
     def number_of_songs(self) -> int:
@@ -114,6 +168,61 @@ class LyricsAnalyzer:
         )
 
 
+    def songs_by_album(
+        self,
+        album: str
+    ) -> pd.DataFrame:
+        """
+        Creates dataframe of songs appearing on a specified album.
+
+        Args:
+            album: album you want to see songs for
+
+        Returns:
+            DataFrame with songs from specified album.
+        """
+        return self.df[
+            self.df["album"] == album.lower()
+        ]
+
+
+    def songs_by_year(
+        self,
+        year: int
+    ) -> pd.DataFrame:
+        """
+        Creates dataframe of songs released in specified year.
+
+        Args:
+            year: year you want to see songs for
+
+        Returns:
+            DataFrame with songs from specified year.
+        """
+        return self.df[
+            self.df["year"] == year
+        ]
+
+
+    def longest_album(self) -> str:
+        """
+        Returns the longest album by word count.
+        """
+        stats = self.album_summary()
+
+        sorted_songs = stats.sort_values(
+            by="total_words",
+            ascending=False
+        ).iloc[0]
+
+        return sorted_songs["songs"]
+
+
+    # ======================================================
+    # Song statistics
+    # ======================================================
+
+
     def song_length_stats(self) -> dict[str, float]:
         """
         Calculate descriptive statistics for songs length.
@@ -129,6 +238,7 @@ class LyricsAnalyzer:
         return {
             "mean": lengths.mean(),
             "median": lengths.median(),
+            "std": lengths.std_dev(),
             "min": lengths.min(),
             "max": lengths.max()
         }
@@ -180,7 +290,21 @@ class LyricsAnalyzer:
         )
 
 
-    def album_statistics(self) -> pd.DataFrame:
+    def average_songs_length_by_album(self) -> pd.DataFrame:
+        """
+        Returns the average length of songs by album by word count.
+        """
+        stats = self.album_summary()
+
+        return stats[["avg_words"]]
+
+
+    # ======================================================
+    # Album Summary
+    # ======================================================
+
+
+    def album_summary(self) -> pd.DataFrame:
         """
         Calculated summary statistics for each album.
 
@@ -198,13 +322,46 @@ class LyricsAnalyzer:
             .agg(
                 songs=("title", "count"),           # Number of songs
                 avg_words=("word_count", "mean"),   # Average song length
-                total_words=("word_count", "sum")   # Total words
+                median_words=("word_count", "median"), # Median number of words
+                min_words=("word_count", "min"),
+                max_words=("word_count", "max"),
+                total_words=("word_count", "sum"),   # Total words
+                avg_reading_minutes=("reading_minutes", "mean") # Average reading time
             )
             .sort_values(
                 by="songs",
                 ascending=False
             )
         )
+
+
+    # ======================================================
+    # Yearly Summary
+    # ======================================================
+
+
+    def yearly_summary(self) -> pd.DataFrame:
+        """
+        Calculated summary statistics for each year.
+        """
+        return (
+            self.df
+            .groupby("year")
+            .agg(
+                songs=("title", "count"),
+                avg_words=("word_count", "mean"),
+                median_words=("word_count", "median"),
+                min_words=("word_count", "min"),
+                max_words=("word_count", "max"),
+                total_words=("word_count", "sum"),
+                avg_reading_minutes=("reading_minutes", "mean") # Average reading time
+            )
+        )
+
+
+    # ======================================================
+    # Search
+    # ======================================================
 
 
     def search(
@@ -218,13 +375,13 @@ class LyricsAnalyzer:
         as a literal string rather than a regular expression.
 
         Args:
-            phrase: Word of phrase to search for.
+            phrase: Word or phrase to search for.
 
         Returns:
             A DataFrame containing matching songs.
         """
         return self.df[
-            self.df["lyrics"]
+            self.df[self.text_column]
             .str.contains(
                 phrase,
                 case=False,     # Ignore capitalization
@@ -234,10 +391,15 @@ class LyricsAnalyzer:
         ]
 
 
-    def most_common_words(
+    # ======================================================
+    # Vocabulary
+    # ======================================================
+
+
+    def top_n_words(
         self,
         n: int = 25
-    ) -> list[tuple[str, float]]:
+    ) -> list[tuple[str, int]]:
         """
         Returns the most frequently occurring words.
 
@@ -248,12 +410,36 @@ class LyricsAnalyzer:
             A list of (word, frequency) tuples sorted from
             most common to least common.
         """
+        return self.word_frequency().most_common(n)
 
-        # Get every word from every song
+
+    def average_word_length(self) -> float:
+        """
+        Calculate the average word length across all lyrics.
+
+        Returns:
+            The mean number of characters per word.
+        """
         words = self._words()
 
-        # Count occurrences of each word.
-        return Counter(words).most_common(n)
+        if not words:
+            return 0.0
+
+        return (
+            sum(len(word) for word in words)
+            / len(words)
+        )
+
+
+    def word_frequency(self) -> Counter:
+        """
+        Calculate how many times each word appears across all lyrics.
+
+        Returns:
+            Counter mapping each word to the number of times it appears across the
+            dataset.
+        """
+        return self._word_counter()
 
 
     def vocabulary_size(self) -> int:

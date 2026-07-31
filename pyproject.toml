@@ -15,7 +15,7 @@ dependencies =[
 
 [pyproject.optional-dependencies]
 dev = [
-    #pytest
+    "pytest"
 ]
 
 [build-system]
