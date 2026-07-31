@@ -145,6 +145,21 @@ def test_calculate_derived_columns_overwrites_existing_columns():
     assert analyzer.df["reading_minutes"].iloc[0] == 2 / 200
 
 
+def test_calculate_derived_columns_empty_dataframe():
+    df = pd.DataFrame({"lyrics": []})
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    # Check that all derived column names are present
+    assert "word_count" in analyzer.df.columns
+    assert "unique_words" in analyzer.df.columns
+    assert "reading_minutes" in analyzer.df.columns
+
+    # Check that the dataframe remained empty
+    assert analyzer.df.shape[0] == 0
 
 
 # ======================================================
