@@ -1,0 +1,278 @@
+import pytest
+import pandas as pd
+
+from src.lana_nlp.scripts.lyrics_analyzer import LyricsAnalyzer
+
+@pytest.fixture
+def sample_df():
+    return pd.DataFrame({
+        "song": [
+            "Venice Bitch",
+            "Fuck it I love you",
+            "Wildflower Wildfire",
+        ],
+        "album": [
+            "NFR",
+            "NFR",
+            "Blue Banisters",
+        ],
+        "year": [
+            2019,
+            2019,
+            2021,
+        ],
+        "lyrics": [
+            ["fresh", "out", "of", "fucks", "forever"],
+            ["veins", "in", "neon", "forever"],
+            ["star", "drip", "iv's"],
+        ]
+    })
+
+
+# ======================================================
+# Initialization
+# ======================================================
+
+def test_calculate_derived_columns_empty_lyrics():
+    # Create a dataframe with empty lyrics
+    df = pd.DataFrame({
+        "lyrics": ["", ""]
+    })
+
+    analyzer = LyricsAnalyzer(df)
+
+    # Check that all derived column names are present
+    assert "word_count" in analyzer.df.columns
+    assert "unique_words" in analyzer.df.columns
+    assert "reading_minutes" in analyzer.df.columns
+
+    # Check values for each derived column
+    assert analyzer.df["word_count"].tolist() == [0, 0]
+    assert analyzer.df["unique_words"].tolist() == [0, 0]
+    assert analyzer.df["reading_minutes"].tolist() == [0, 0]
+
+
+def test_calculate_derived_columns_nan_lyrics():
+    pass
+
+
+def test_calculate_derived_columns_string_lyrics():
+    pass
+
+
+def test_calculate_derived_columns_token_lyrics():
+    pass
+
+
+def test_calculate_derived_columns_missing_values():
+    pass
+
+
+def test_calculate_derived_columns_missing_reading_minutes():
+    pass
+
+
+# ======================================================
+# Basic Statistics
+# ======================================================
+def test_number_of_songs():
+    pass
+
+
+def test_number_of_songs_empty_dataframe():
+    pass
+
+
+def test_albums():
+    # test length of list
+    # test values
+    pass
+
+
+def test_albums_sorted():
+    pass
+
+
+def test_number_of_songs_by_album():
+    # Test datatype
+    # test length
+    # test values
+    pass
+
+
+def test_songs_by_album():
+    # Test datatype
+    # test shape
+    #t est values
+    pass
+
+
+def test_songs_by_year():
+    # test datatype
+    # test shape
+    # test value
+    pass
+
+
+def test_longest_album():
+    # test value
+    pass
+
+
+# ======================================================
+# Song statistics
+# ======================================================
+
+def test_song_length_stats():
+    # Test datatype
+    # Test values
+    pass
+
+
+def test_song_length_stats_empty():
+    pass
+
+
+def test_longest_songs():
+    # Test datatype
+    # Test shape
+    # test value
+    pass
+
+
+def test_longest_songs_ties():
+    pass
+
+
+def test_shortest_songs():
+    # Test datatype
+    # Test shape
+    # test value
+    pass
+
+
+def test_shortest_songs_ties():
+    pass
+
+
+def test_average_song_length_by_album():
+    # Test datatype
+    # test shape
+    # test value
+    pass
+
+
+# ======================================================
+# Summaries
+# ======================================================
+
+def test_album_summary():
+    # Test datatype
+    # Test shape
+    # Test column names
+    # Test values
+    pass
+
+
+def test_yearly_summary():
+    # Test datatype
+    # Test shape
+    # Test column names
+    # Test values
+    pass
+
+
+# ======================================================
+# Search
+# ======================================================
+
+def test_search_found():
+    # Test datatype
+    # Test sape
+    # Test columns
+    # Test values
+    pass
+
+
+def test_search_not_found():
+    pass
+
+
+def search_case_insensitive():
+    # Test values
+    pass
+
+
+def test_search_multiple_matches():
+    pass
+
+
+def test_search_empty_query():
+    pass
+
+
+# ======================================================
+# Vocabulary
+# ======================================================
+
+def test_top_n_words():
+    # test datatype
+    # test length
+    # test values
+    pass
+
+
+def test_top_n_words_more_than_available():
+    pass
+
+
+def test_top_n_words_empty():
+    pass
+
+
+def test_average_word_length_zero_words():
+    pass
+
+
+def test_average_word_length_single_word():
+    pass
+
+
+def test_average_word_length():
+    # test value
+    pass
+
+
+def test_word_frequency():
+    # test value
+    pass
+
+
+def test_word_frequency_missing_word():
+    pass
+
+
+def test_vocabulary_size():
+    # test value
+    pass
+
+
+def test_vocabulary_size_empty():
+    pass
+
+
+def test_lexical_diversity_empty_words():
+    pass
+
+
+def test_lexical_diversity():
+    # test value
+    pass
+
+
+def test_lexical_diversity_all_same_word():
+    pass
+
+
+def test_lexical_diversity_all_unique_words():
+    pass
