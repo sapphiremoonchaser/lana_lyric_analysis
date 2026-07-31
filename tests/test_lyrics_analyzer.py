@@ -260,11 +260,15 @@ def test_albums_empty_dataframe():
     assert analyzer.albums() == []
 
 
-def test_number_of_songs_by_album():
-    # Test datatype
-    # test length
-    # test values
-    pass
+def test_number_of_songs_by_album_returns_series(sample_df):
+    analyzer = LyricsAnalyzer(
+        sample_df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.number_of_songs_by_album()
+
+    assert isinstance(result, pd.Series)
 
 
 def test_songs_by_album():
