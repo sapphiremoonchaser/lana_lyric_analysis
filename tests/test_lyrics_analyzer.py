@@ -1,3 +1,4 @@
+import numpy as np
 import pytest
 import pandas as pd
 
@@ -56,7 +57,19 @@ def test_calculate_derived_columns_empty_lyrics():
 
 
 def test_calculate_derived_columns_nan_lyrics():
-    pass
+    df = pd.DataFrame({
+        "lyrics": [None, np.nan]
+    })
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    # Check values for each derived column
+    assert analyzer.df["word_count"].tolist() == [0, 0]
+    assert analyzer.df["unique_words"].tolist() == [0, 0]
+    assert analyzer.df["reading_minutes"].tolist() == [0, 0]
 
 
 def test_calculate_derived_columns_string_lyrics():
