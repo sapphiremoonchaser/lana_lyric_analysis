@@ -469,6 +469,28 @@ def test_songs_by_year_empty_dataframe():
     assert result.empty
 
 
+def test_songs_by_year_missing_album_values():
+    df = pd.DataFrame({
+        "album": ["Ultraviolence", None, np.nan],
+        "song": ["Brooklyn Baby", "Disco", "Heavy Hitter"],
+        "lyrics": [
+            "beat poetry on amphetamines",
+            "prostitute stare",
+            "magical trance potion"
+        ],
+        "year": [2014, 2009, 2010]
+    })
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.songs_by_year(2014)
+
+    assert result["year"].notna().all()
+
+
 def test_longest_album():
     # test value
     pass
