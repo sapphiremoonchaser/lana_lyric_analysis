@@ -92,7 +92,22 @@ def test_calculate_derived_columns_string_lyrics():
 
 
 def test_calculate_derived_columns_token_lyrics():
-    pass
+    df = pd.DataFrame({
+        "lyrics": [
+            ["ice", "queen"],
+            ["venice", "bitch"]
+        ]
+    })
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    # Check for correct derived lyrics values
+    assert analyzer.df["word_count"].tolist() == [2, 2]
+    assert analyzer.df["unique_words"].tolist() == [2, 2]
+    # assert analyzer.df["reading_minutes"].tolist() == [2 / 200, 2 / 200]
 
 
 def test_calculate_derived_columns_missing_values():

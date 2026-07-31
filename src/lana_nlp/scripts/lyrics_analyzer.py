@@ -83,12 +83,23 @@ class LyricsAnalyzer:
             )
 
         # Get unique words
-        self.df["unique_words"] = column.apply(
-            lambda x: (
-                len(set(x.split()))
-                if isinstance(x, str)
+        if non_null.empty:
+            self.df["unique_words"] = 0
+
+        elif isinstance(non_null.iloc[0], list):
+            self.df["unique_words"] = column.apply(
+                lambda x: len(set(x))
+                if isinstance(x, list)
                 else 0
-            ))
+            )
+
+        else:
+            self.df["unique_words"] = column.apply(
+                lambda x: (
+                    len(set(x.split()))
+                    if isinstance(x, str)
+                    else 0
+                ))
 
         # Estimate the reading time assuming an average reading speed
         # of 200 words per minute
