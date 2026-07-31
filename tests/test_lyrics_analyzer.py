@@ -367,6 +367,18 @@ def test_songs_by_album_case_insensitive(sample_df):
     assert len(result) == 2
 
 
+def test_songs_by_album_missing_album(sample_df):
+    analyzer = LyricsAnalyzer(
+        sample_df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.songs_by_album("Lasso")
+
+    assert isinstance(result, pd.DataFrame)
+    assert result.empty
+
+
 def test_songs_by_year():
     # test datatype
     # test shape
