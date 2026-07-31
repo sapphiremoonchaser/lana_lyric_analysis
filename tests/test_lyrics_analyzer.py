@@ -356,6 +356,17 @@ def test_songs_by_album_returns_matching_songs(sample_df):
     ]
 
 
+def test_songs_by_album_case_insensitive(sample_df):
+    analyzer = LyricsAnalyzer(
+        sample_df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.songs_by_album("nfr")
+
+    assert len(result) == 2
+
+
 def test_songs_by_year():
     # test datatype
     # test shape
