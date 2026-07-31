@@ -610,8 +610,63 @@ def test_song_length_stats_returns_expected_structure(sample_df):
     }
 
 
-def test_song_length_stats_empty():
-    pass
+def test_song_length_stats_returns_correct_values(sample_df):
+    analyzer = LyricsAnalyzer(
+        sample_df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.song_length_stats()
+
+    assert result["mean"] == 4
+    assert result["median"] == 4
+    assert result["std"] == 1
+    assert result["min"] == 3
+    assert result["max"] == 5
+
+
+def test_song_length_stats_empty_dataframe():
+    df = pd.DataFrame(
+        columns=["album", "song", "lyrics"]
+    )
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.song_length_stats()
+
+    assert result == {
+        "mean": 0,
+        "median": 0,
+        "std": 0,
+        "min": 0,
+        "max": 0
+    }
+
+
+def test_song_length_stats_single_song():
+    df = pd.DataFrame({
+        "album": ["Lust for Life"],
+        "song": ["Cherry"],
+        "lyrics": ["and all my peaches are gone"]
+    })
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.song_length_stats()
+
+    assert result == {
+        "mean": 6,
+        "median": 6,
+        "std": 0,
+        "min": 6,
+        "max": 6
+    }
 
 
 def test_longest_songs():

@@ -250,13 +250,20 @@ class LyricsAnalyzer:
         """
         lengths = self.df["word_count"]
 
-        return {
+        stats = {
             "mean": lengths.mean(),
             "median": lengths.median(),
             "std": lengths.std(),
             "min": lengths.min(),
             "max": lengths.max()
         }
+
+        stats = {
+            key: 0 if pd.isna(value) else value
+            for key, value in stats.items()
+        }
+
+        return stats
 
 
     def longest_songs(
