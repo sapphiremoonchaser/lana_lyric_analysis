@@ -271,6 +271,32 @@ def test_number_of_songs_by_album_returns_series(sample_df):
     assert isinstance(result, pd.Series)
 
 
+def test_number_of_songs_by_album_returns_unique_albums(sample_df):
+    """
+    If an album appears in the initial dataframe more than once it should only be in
+    the albums index once. This also checks that the Series has the correct lengths
+    and is sorted by albums with the most to least songs..
+    """
+    expected = pd.Series(
+        {
+            "NFR": 2,
+            "Blue Banisters": 1
+        },
+        name=None
+    )
+
+    expected.index.name = "album"
+
+    analyzer = LyricsAnalyzer(
+        sample_df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.number_of_songs_by_album()
+
+    pd.testing.assert_series_equal(result, expected)
+
+
 def test_songs_by_album():
     # Test datatype
     # test shape
