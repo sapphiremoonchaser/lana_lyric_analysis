@@ -128,8 +128,23 @@ def test_calculate_derived_columns_missing_values():
     assert analyzer.df["reading_minutes"].tolist() == [2 / 200, 2 / 200]
 
 
-def test_calculate_derived_columns_missing_reading_minutes():
-    pass
+def test_calculate_derived_columns_overwrites_existing_columns():
+    df = pd.DataFrame({
+        "lyrics": ["hello world"],
+        "word_count": [999],
+        "reading_minutes": [999]
+    })
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    assert analyzer.df["word_count"].iloc[0] == 2
+    assert analyzer.df["unique_words"].iloc[0] == 2
+    assert analyzer.df["reading_minutes"].iloc[0] == 2 / 200
+
+
 
 
 # ======================================================
