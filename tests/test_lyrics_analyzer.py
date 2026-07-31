@@ -297,6 +297,36 @@ def test_number_of_songs_by_album_returns_unique_albums(sample_df):
     pd.testing.assert_series_equal(result, expected)
 
 
+def test_number_of_songs_by_album_removes_missing_values():
+    """
+    This tests that number_of_songs_by_album() removes None and NaN datatypes. It
+    also checks that the size of the series is as expected.
+    """
+    df = pd.DataFrame({
+        "album": [
+            "Blue Banisters",
+            np.nan,
+            None
+        ],
+        "lyrics": [
+            "blue banisters",
+            "coney island",
+            "magical trance potion"
+        ]
+    })
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.number_of_songs_by_album()
+
+    assert None not in result.index
+    assert np.nan not in result.index
+    assert result.size == 1
+
+
 def test_songs_by_album():
     # Test datatype
     # test shape
