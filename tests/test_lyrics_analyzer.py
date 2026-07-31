@@ -735,6 +735,17 @@ def test_longest_songs_empty_dataframe():
     assert result.empty
 
 
+def test_longest_songs_n_equals_zero(sample_df):
+    analyzer = LyricsAnalyzer(
+        sample_df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.longest_songs(0)
+
+    assert result.empty
+
+
 def test_longest_songs_ties():
     pass
 
