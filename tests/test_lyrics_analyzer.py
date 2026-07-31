@@ -211,7 +211,7 @@ def test_albums_removes_duplicates(sample_df):
     assert result == ["Blue Banisters", "NFR"]
 
 
-def test_album_removes_missing_values():
+def test_albums_removes_missing_values():
     df = pd.DataFrame({
         "album": [
             "Blue Banisters",
@@ -237,8 +237,18 @@ def test_album_removes_missing_values():
     assert len(result) == 1
 
 
-def test_albums_sorted():
-    pass
+def test_albums_empty_dataframe():
+    df = pd.DataFrame({
+        "album": [],
+        "lyrics": []
+    })
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    assert analyzer.albums() == []
 
 
 def test_number_of_songs_by_album():
