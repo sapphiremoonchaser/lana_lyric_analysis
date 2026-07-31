@@ -178,7 +178,14 @@ def test_number_of_songs(sample_df):
 
 
 def test_number_of_songs_empty_dataframe():
-    pass
+    df = pd.DataFrame({"lyrics": []})
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    assert analyzer.number_of_songs() == 0
 
 
 def test_albums():
