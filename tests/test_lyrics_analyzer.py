@@ -415,7 +415,7 @@ def test_songs_by_album_missing_album_values():
     assert result["album"].notna().all()
 
 
-def test_songs_by_album_preserves_album_and_song_columns(sample_df):
+def test_songs_by_album_preserves_key_columns(sample_df):
     analyzer = LyricsAnalyzer(
         sample_df,
         text_column="lyrics"
@@ -489,6 +489,18 @@ def test_songs_by_year_missing_album_values():
     result = analyzer.songs_by_year(2014)
 
     assert result["year"].notna().all()
+
+
+def test_songs_by_year_preserves_key_columns(sample_df):
+    analyzer = LyricsAnalyzer(
+        sample_df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.songs_by_year(2019)
+
+    assert "song" in result.columns
+    assert "year" in result.columns
 
 
 def test_longest_album():
