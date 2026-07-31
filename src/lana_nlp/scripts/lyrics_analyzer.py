@@ -193,7 +193,7 @@ class LyricsAnalyzer:
             DataFrame with songs from specified album.
         """
         return self.df[
-            self.df["album"] == album.lower()
+            self.df["album"].str.lower() == album.lower()
         ]
 
 
@@ -249,7 +249,7 @@ class LyricsAnalyzer:
         return {
             "mean": lengths.mean(),
             "median": lengths.median(),
-            "std": lengths.std_dev(),
+            "std": lengths.std(),
             "min": lengths.min(),
             "max": lengths.max()
         }

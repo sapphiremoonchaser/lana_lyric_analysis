@@ -40,4 +40,6 @@ songs_by_album = analyzer.number_of_songs_by_album()
 # Song length stats
 song_length_stats = analyzer.song_length_stats()
 
+songs_by_album = analyzer.songs_by_album("Norman Fucking Rockwell!")
+
 x = 1

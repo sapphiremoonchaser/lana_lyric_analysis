@@ -341,11 +341,19 @@ def test_number_of_songs_by_album_empty_dataframe():
     assert analyzer.number_of_songs_by_album().size == 0
 
 
-def test_songs_by_album():
-    # Test datatype
-    # test shape
-    #t est values
-    pass
+def test_songs_by_album_returns_matching_songs(sample_df):
+    analyzer = LyricsAnalyzer(
+        sample_df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.songs_by_album("NFR")
+
+    assert len(result) == 2
+    assert result["song"].tolist() == [
+        "Venice Bitch",
+        "Fuck it I love you"
+    ]
 
 
 def test_songs_by_year():
