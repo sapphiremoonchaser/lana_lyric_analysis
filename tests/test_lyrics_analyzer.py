@@ -111,7 +111,21 @@ def test_calculate_derived_columns_token_lyrics():
 
 
 def test_calculate_derived_columns_missing_values():
-    pass
+    df = pd.DataFrame({
+        "song": [None, "Blue Jeans"],
+        "album": ["Born To Die", None],
+        "lyrics": ["hello world", "blue jeans"]
+    })
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    # Test derived column values
+    assert analyzer.df["word_count"].tolist() == [2, 2]
+    assert analyzer.df["unique_words"].tolist() == [2, 2]
+    assert analyzer.df["reading_minutes"].tolist() == [2 / 200, 2 / 200]
 
 
 def test_calculate_derived_columns_missing_reading_minutes():
