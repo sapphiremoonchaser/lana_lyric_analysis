@@ -394,6 +394,39 @@ def test_songs_by_album_empty_dataframe():
     assert result.empty
 
 
+def test_songs_by_album_missing_album_values():
+    df = pd.DataFrame({
+        "album": ["Ultraviolence", None, np.nan],
+        "song": ["Brooklyn Baby", "Disco", "Heavy Hitter"],
+        "lyrics": [
+            "beat poetry on amphetamines",
+            "prostitute stare",
+            "magical trance potion"
+        ]
+    })
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.songs_by_album("Ultraviolence")
+
+    assert result["album"].notna().all()
+
+
+def test_songs_by_album_preserves_album_and_song_columns(sample_df):
+    analyzer = LyricsAnalyzer(
+        sample_df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.songs_by_album("NFR")
+
+    assert "album" in result.columns
+    assert "song" in result.columns
+
+
 def test_songs_by_year():
     # test datatype
     # test shape

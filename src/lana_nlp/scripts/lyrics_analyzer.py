@@ -193,7 +193,7 @@ class LyricsAnalyzer:
             DataFrame with songs from specified album.
         """
         return self.df[
-            self.df["album"].str.lower() == album.lower()
+            self.df["album"].fillna("").str.lower() == album.lower()
         ]
 
 
