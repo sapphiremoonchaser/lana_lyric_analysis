@@ -685,7 +685,7 @@ def test_longest_songs_returns_dataframe(sample_df):
     ]
 
 
-def test_longest_song_sorts_correctly():
+def test_longest_songs_sorts_correctly():
     df = pd.DataFrame({
         "album": ["AKA", "Ocean Blvd"],
         "song": ["Mermaid Motel", "Taco Truck"],
@@ -703,6 +703,20 @@ def test_longest_song_sorts_correctly():
     result = analyzer.longest_songs()
 
     assert result["word_count"].is_monotonic_decreasing
+
+
+def test_longest_songs_preserves_key_columns(sample_df):
+    analyzer = LyricsAnalyzer(
+        sample_df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.longest_songs()
+
+    assert "album" in result.columns
+    assert "song" in result.columns
+    assert "lyrics" in result.columns
+    assert "word_count" in result.columns
 
 
 def test_longest_songs_ties():
