@@ -379,6 +379,21 @@ def test_songs_by_album_missing_album(sample_df):
     assert result.empty
 
 
+def test_songs_by_album_empty_dataframe():
+    df = pd.DataFrame(
+        columns=["album", "song", "lyrics"]
+    )
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.songs_by_album("Born To Die")
+
+    assert result.empty
+
+
 def test_songs_by_year():
     # test datatype
     # test shape
