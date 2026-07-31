@@ -514,6 +514,23 @@ def test_longest_album_returns_album_with_most_words(sample_df):
     assert result == 'NFR'
 
 
+def test_longest_album_single_album():
+    df = pd.DataFrame({
+        "album": ["Ultraviolence"],
+        "song": ["Ultraviolence"],
+        "lyrics": ["He used to call me Poison"]
+    })
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.longest_album()
+
+    assert result == 'Ultraviolence'
+
+
 # ======================================================
 # Song statistics
 # ======================================================
