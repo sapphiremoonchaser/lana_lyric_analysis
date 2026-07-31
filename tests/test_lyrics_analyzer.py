@@ -165,8 +165,16 @@ def test_calculate_derived_columns_empty_dataframe():
 # ======================================================
 # Basic Statistics
 # ======================================================
-def test_number_of_songs():
-    pass
+
+def test_number_of_songs(sample_df):
+    analyzer = LyricsAnalyzer(
+        sample_df,
+        text_column="lyrics"
+    )
+
+    # Check number of songs value returned
+    assert analyzer.number_of_songs() == 3
+
 
 
 def test_number_of_songs_empty_dataframe():
