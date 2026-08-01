@@ -312,13 +312,15 @@ class LyricsAnalyzer:
         )
 
 
-    def average_songs_length_by_album(self) -> pd.DataFrame:
+    def average_song_length_by_album(self) -> pd.DataFrame:
         """
         Returns the average length of songs by album by word count.
         """
         stats = self.album_summary()
 
-        return stats[["avg_words"]]
+        stats.reset_index(inplace=True)
+
+        return stats[["album", "avg_words"]]
 
 
     # ======================================================

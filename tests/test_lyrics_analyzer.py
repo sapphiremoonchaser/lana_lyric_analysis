@@ -807,15 +807,72 @@ def test_shortest_songs_preserves_key_columns(sample_df):
     assert "word_count" in result.columns
 
 
-def test_shortest_songs_ties():
-    pass
+def test_shortest_songs_empty_dataframe():
+    df = pd.DataFrame(
+        columns=["album", "song", "lyrics"]
+    )
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.shortest_songs()
+
+    assert isinstance(result, pd.DataFrame)
+    assert result.empty
 
 
-def test_average_song_length_by_album():
-    # Test datatype
-    # test shape
-    # test value
-    pass
+def test_shortest_songs_n_equals_zero(sample_df):
+    analyzer = LyricsAnalyzer(
+        sample_df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.shortest_songs(0)
+
+    assert result.empty
+
+
+def test_shortest_songs_n_greater_than_dataset(sample_df):
+    analyzer = LyricsAnalyzer(
+        sample_df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.shortest_songs(5)
+
+    assert len(result) == len(sample_df)
+
+
+def test_average_song_length_by_album(sample_df):
+    analyzer = LyricsAnalyzer(
+        sample_df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.average_song_length_by_album()
+
+    assert isinstance(result, pd.DataFrame)
+    assert "album" in result.columns
+    assert "avg_words" in result.columns
+    assert len(result) == 2
+    assert result["avg_words"].tolist() == [4.5, 3]
+
+
+def test_average_song_length_by_album_empty():
+    df = pd.DataFrame(
+        columns=["album", "song", "lyrics"]
+    )
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.average_song_length_by_album()
+
+    assert result.empty
 
 
 # ======================================================
