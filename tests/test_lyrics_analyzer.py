@@ -176,7 +176,6 @@ def test_number_of_songs(sample_df):
     assert analyzer.number_of_songs() == 3
 
 
-
 def test_number_of_songs_empty_dataframe():
     df = pd.DataFrame({"lyrics": []})
 
