@@ -879,12 +879,51 @@ def test_average_song_length_by_album_empty():
 # Summaries
 # ======================================================
 
-def test_album_summary():
-    # Test datatype
-    # Test shape
-    # Test column names
-    # Test values
-    pass
+def test_album_summary_returns_correct_structure(sample_df):
+    analyzer = LyricsAnalyzer(
+        sample_df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.album_summary()
+
+    assert isinstance(result, pd.DataFrame)
+    assert result.columns.tolist() == [
+        "songs",
+        "avg_words",
+        "median_words",
+        "min_words",
+        "max_words",
+        "total_words",
+        "avg_reading_minutes"
+    ]
+    assert result.index.name == "album"
+    assert len(result) == 2
+
+    # Test for correct stats
+    assert result.loc["NFR", "songs"] == 2
+    assert result.loc["NFR", "avg_words"] == 4.5
+    assert result.loc["NFR", "total_words"] == 9
+
+    # Test sorting behavior
+    assert result["songs"].is_monotonic_decreasing
+
+
+def test_album_summary_empty():
+    df = pd.DataFrame(
+        columns=["album", "song", "lyrics"]
+    )
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.album_summary()
+
+    assert isinstance(result, pd.DataFrame)
+    assert result.empty
+
 
 
 def test_yearly_summary():
