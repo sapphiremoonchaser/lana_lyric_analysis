@@ -372,7 +372,7 @@ class LyricsAnalyzer:
             self.df
             .groupby("year")
             .agg(
-                songs=("title", "count"),
+                songs=("song", "count"),
                 avg_words=("word_count", "mean"),
                 median_words=("word_count", "median"),
                 min_words=("word_count", "min"),
