@@ -14,6 +14,9 @@ estimated reading time for each song.
 import pandas as pd
 from collections import Counter
 
+from numpy.ma.core import masked
+from numpy.ma.extras import column_stack
+
 
 class LyricsAnalyzer:
     """
@@ -404,15 +407,30 @@ class LyricsAnalyzer:
         Returns:
             A DataFrame containing matching songs.
         """
-        return self.df[
-            self.df[self.text_column]
-            .str.contains(
-                phrase,
-                case=False,     # Ignore capitalization
-                regex=False,    # Treat phrase literally
-                na=False        # Ignore missing lyrics
+        column = self.df[self.text_column]
+
+        non_null = column.dropna()
+
+        if non_null.empty:
+            return self.df.iloc[0:0]
+
+        if isinstance(non_null.iloc[0], list):
+            mask = column.apply(
+                lambda x: (
+                    phrase.lower() in " ".join(x).lower()
+                    if isinstance(x, list)
+                    else False
+                )
             )
-        ]
+
+        else:
+            mask = column.str.contains(
+                phrase,
+                case=False,
+                regex=False,
+                na=False
+            )
+        return self.df[mask]
 
 
     # ======================================================

@@ -974,12 +974,18 @@ def test_yearly_summary_empty():
 # Search
 # ======================================================
 
-def test_search_found():
-    # Test datatype
-    # Test sape
-    # Test columns
-    # Test values
-    pass
+def test_search_found_result_structure(sample_df):
+    analyzer = LyricsAnalyzer(
+        sample_df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.search("fucks")
+
+    assert isinstance(result, pd.DataFrame)         # DataFrame returned
+    assert len(result) == 1                         # one result based on mock data
+    assert result.iloc[0]["song"] == "Venice Bitch" # correct song returned
+
 
 
 def test_search_not_found():
@@ -992,7 +998,27 @@ def search_case_insensitive():
 
 
 def test_search_multiple_matches():
-    pass
+    df = pd.DataFrame({
+        "album": ["Lust for Life", "Born To Die"],
+        "song": ["Love", "Born To Die"],
+        "lyrics": [
+            "because we're young and in love",
+            "sometimes love is not enough"
+        ]
+    })
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.search("love")
+
+    assert len(result) == 2
+    assert set(result["song"]) == {
+        "Love",
+        "Born To Die"
+    }
 
 
 def test_search_empty_query():
