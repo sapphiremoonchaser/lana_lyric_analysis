@@ -1108,10 +1108,6 @@ def test_top_n_words_more_than_available():
     pass
 
 
-def test_top_n_words_empty():
-    pass
-
-
 def test_average_word_length_zero_words():
     pass
 
