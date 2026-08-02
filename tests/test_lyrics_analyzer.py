@@ -1035,8 +1035,19 @@ def test_search_multiple_matches():
     }
 
 
-def test_search_empty_query():
-    pass
+def test_search_empty_dataframe():
+    df = pd.DataFrame(
+        columns=["album", "song", "lyrics"]
+    )
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.search("love")
+
+    assert result.empty
 
 
 # ======================================================
