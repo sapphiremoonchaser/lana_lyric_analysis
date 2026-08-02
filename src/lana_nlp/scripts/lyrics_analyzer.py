@@ -14,6 +14,7 @@ estimated reading time for each song.
 import pandas as pd
 from collections import Counter
 
+from nltk.corpus import words
 from numpy.ma.core import masked
 from numpy.ma.extras import column_stack
 
@@ -119,14 +120,27 @@ class LyricsAnalyzer:
         Returns:
             A list containing every word from the song.
         """
+        column = self.df[self.text_column]
 
-        # Combine every song's lyrics into one long string
-        text = " ".join(
-            self.df[self.text_column].fillna("")
+        non_null = column.dropna()
+
+        if non_null.empty:
+            return []
+
+        if isinstance(non_null.iloc[0], list):
+            words = []
+
+            for tokens in column:
+                if isinstance(tokens, list):
+                    words.extend(tokens)
+
+            return [word.lower() for word in words]
+
+        return (
+            " ".join(column.fillna(""))
+            .lower()
+            .split()
         )
-
-        # Convert everything to lowercase and split into words.
-        return text.lower().split()
 
 
     def _word_counter(self) -> Counter:

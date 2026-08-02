@@ -1054,11 +1054,54 @@ def test_search_empty_dataframe():
 # Vocabulary
 # ======================================================
 
-def test_top_n_words():
-    # test datatype
-    # test length
-    # test values
-    pass
+def test_top_n_words_result_structure(sample_df):
+    analyzer = LyricsAnalyzer(
+        sample_df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.top_n_words(n=2)
+
+    assert isinstance(result, list)
+    assert isinstance(result[0], tuple)
+    assert len(result) == 2
+
+
+def test_top_n_words_more_than_available(sample_df):
+    analyzer = LyricsAnalyzer(
+        sample_df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.top_n_words(n=10)
+
+    assert len(result) == 3
+
+
+def test_top_n_words_n_equals_zero(sample_df):
+    analyzer = LyricsAnalyzer(
+        sample_df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.top_n_words(n=0)
+
+    assert len(result) == 0
+
+
+def test_top_n_words_empty_dataframe():
+    df = pd.DataFrame(
+        columns=["album", "song", "lyrics"]
+    )
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.top_n_words(n=2)
+
+    assert len(result) == 0
 
 
 def test_top_n_words_more_than_available():
