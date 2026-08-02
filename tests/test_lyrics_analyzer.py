@@ -988,8 +988,15 @@ def test_search_found_result_structure(sample_df):
 
 
 
-def test_search_not_found():
-    pass
+def test_search_not_found(sample_df):
+    analyzer = LyricsAnalyzer(
+        sample_df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.search("pineapple")
+
+    assert result.empty
 
 
 def search_case_insensitive():
