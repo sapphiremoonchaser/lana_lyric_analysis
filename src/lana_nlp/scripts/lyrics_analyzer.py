@@ -14,9 +14,7 @@ estimated reading time for each song.
 import pandas as pd
 from collections import Counter
 
-from nltk.corpus import words
-from numpy.ma.core import masked
-from numpy.ma.extras import column_stack
+from pandas.core.interchange import column
 
 
 class LyricsAnalyzer:
@@ -340,6 +338,17 @@ class LyricsAnalyzer:
         return stats[["album", "avg_words"]]
 
 
+    def line_count(self) -> None:
+        """
+        Calculate the number of lines per song.
+        """
+        self.df["line_count"] = self.df[self.text_column].apply(
+            lambda x: len(x.splitlines())
+            if isinstance(x, str)
+            else 0
+        )
+
+
     # ======================================================
     # Album Summary
     # ======================================================
@@ -532,3 +541,27 @@ class LyricsAnalyzer:
 
         # unique words / total number of words
         return len(set(words)) / len(words)
+
+
+    def unique_words(self) -> None:
+        """
+        Calculate the number of unique words.
+        """
+
+        column = self.df[self.text_column]
+
+        non_null = column.dropna()
+
+        if non_null.empty:
+            self.df["unique_words"] = 0
+
+        elif isinstance(non_null.iloc[0], list):
+            self.df["unique_words"] = column.apply(
+                lambda x: len(set(x)) if isinstance(x, list) else 0
+            )
+
+        else:
+            self.df["unique_words"] = column.apply(
+                lambda x: len(set(x.split())) if isinstance(x, str) else 0
+            )
+

@@ -1,3 +1,5 @@
+from collections import Counter
+
 import numpy as np
 import pytest
 import pandas as pd
@@ -1104,53 +1106,156 @@ def test_top_n_words_empty_dataframe():
     assert len(result) == 0
 
 
-def test_top_n_words_more_than_available():
-    pass
-
-
 def test_average_word_length_zero_words():
-    pass
+    df = pd.DataFrame({
+        "lyrics": []
+    })
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    assert analyzer.average_word_length() == 0
 
 
-def test_average_word_length_single_word():
-    pass
+def test_average_word_length_one_word():
+    df = pd.DataFrame({
+        "lyrics": ["forever"]
+    })
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    assert analyzer.average_word_length() == 7
 
 
-def test_average_word_length():
-    # test value
-    pass
+def test_average_word_length_multiple_words():
+    df = pd.DataFrame({
+        "lyrics": [
+            ["cat", "house", "sun"]
+        ]
+    })
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    assert analyzer.average_word_length() == pytest.approx(11 / 3)
 
 
-def test_word_frequency():
-    # test value
-    pass
+def test_word_frequency_structure():
+    df = pd.DataFrame({
+        "lyrics": [
+            ["cat", "dog"],
+            ["cat", "bird"]
+        ]
+    })
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.word_frequency()
+
+    assert isinstance(result, Counter)
+    assert result == Counter({
+        "cat": 2,
+        "dog": 1,
+        "bird": 1
+    })
 
 
-def test_word_frequency_missing_word():
-    pass
+def test_word_frequency_empty_dataframe():
+    df = pd.DataFrame(
+        columns=["album", "song", "lyrics"]
+    )
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.word_frequency()
+
+    assert result == Counter()
 
 
-def test_vocabulary_size():
-    # test value
-    pass
+def test_vocabulary_size_structure():
+    df = pd.DataFrame({
+        "lyrics": [
+            ["cat", "dog"],
+            ["cat", "bird"],
+        ]
+    })
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.vocabulary_size()
+
+    assert isinstance(result, int)
+    assert analyzer.vocabulary_size() == 3
 
 
-def test_vocabulary_size_empty():
-    pass
+def test_vocabulary_size_empty_dataframe():
+    df = pd.DataFrame(
+        columns=["album", "song", "lyrics"]
+    )
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    result = analyzer.vocabulary_size()
+
+    assert result == 0
 
 
-def test_lexical_diversity_empty_words():
-    pass
+def test_lexical_diversity_empty_dataframe():
+    df = pd.DataFrame(
+        columns=["album", "song", "lyrics"]
+    )
 
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
 
-def test_lexical_diversity():
-    # test value
-    pass
+    result = analyzer.lexical_diversity()
 
-
-def test_lexical_diversity_all_same_word():
-    pass
+    assert result == 0
 
 
 def test_lexical_diversity_all_unique_words():
-    pass
+    df = pd.DataFrame({
+        "lyrics": ["cat", "dog", "bird"]
+    })
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    assert analyzer.lexical_diversity() == 1.0
+
+
+def test_lexical_diversity_all_same_word():
+    df = pd.DataFrame({
+        "lyrics": ["love", "love", "love"]
+    })
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    assert analyzer.lexical_diversity() == pytest.approx(1 / 3)
+
