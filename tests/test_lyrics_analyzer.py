@@ -999,9 +999,16 @@ def test_search_not_found(sample_df):
     assert result.empty
 
 
-def search_case_insensitive():
-    # Test values
-    pass
+def test_search_case_insensitive(sample_df):
+    analyzer = LyricsAnalyzer(
+        sample_df,
+        text_column="lyrics"
+    )
+
+    result_1 = analyzer.search("fucks")
+    result_2 = analyzer.search("FUCKS")
+
+    assert result_1.equals(result_2)
 
 
 def test_search_multiple_matches():
