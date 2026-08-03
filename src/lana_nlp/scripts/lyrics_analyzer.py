@@ -14,6 +14,8 @@ estimated reading time for each song.
 import pandas as pd
 from collections import Counter
 
+from pandas.core.interchange import column
+
 
 class LyricsAnalyzer:
     """
@@ -83,12 +85,23 @@ class LyricsAnalyzer:
             )
 
         # Get unique words
-        self.df["unique_words"] = column.apply(
-            lambda x: (
-                len(set(x.split()))
-                if isinstance(x, str)
+        if non_null.empty:
+            self.df["unique_words"] = 0
+
+        elif isinstance(non_null.iloc[0], list):
+            self.df["unique_words"] = column.apply(
+                lambda x: len(set(x))
+                if isinstance(x, list)
                 else 0
-            ))
+            )
+
+        else:
+            self.df["unique_words"] = column.apply(
+                lambda x: (
+                    len(set(x.split()))
+                    if isinstance(x, str)
+                    else 0
+                ))
 
         # Estimate the reading time assuming an average reading speed
         # of 200 words per minute
@@ -105,14 +118,27 @@ class LyricsAnalyzer:
         Returns:
             A list containing every word from the song.
         """
+        column = self.df[self.text_column]
 
-        # Combine every song's lyrics into one long string
-        text = " ".join(
-            self.df[self.text_column].fillna("")
+        non_null = column.dropna()
+
+        if non_null.empty:
+            return []
+
+        if isinstance(non_null.iloc[0], list):
+            words = []
+
+            for tokens in column:
+                if isinstance(tokens, list):
+                    words.extend(tokens)
+
+            return [word.lower() for word in words]
+
+        return (
+            " ".join(column.fillna(""))
+            .lower()
+            .split()
         )
-
-        # Convert everything to lowercase and split into words.
-        return text.lower().split()
 
 
     def _word_counter(self) -> Counter:
@@ -182,7 +208,7 @@ class LyricsAnalyzer:
             DataFrame with songs from specified album.
         """
         return self.df[
-            self.df["album"] == album.lower()
+            self.df["album"].fillna("").str.lower() == album.lower()
         ]
 
 
@@ -210,12 +236,16 @@ class LyricsAnalyzer:
         """
         stats = self.album_summary()
 
+        # Handle missing dataframe
+        if stats.empty:
+            return ""
+
         sorted_songs = stats.sort_values(
             by="total_words",
             ascending=False
-        ).iloc[0]
+        )
 
-        return sorted_songs["songs"]
+        return sorted_songs.index[0]
 
 
     # ======================================================
@@ -233,15 +263,22 @@ class LyricsAnalyzer:
             A dictionary containing the mean, median, minimum,
             and maximum song lengths in words.
         """
-        lengths = self.df["word_count"]
+        stats = self.df["word_count"].agg(
+            [
+                "mean",
+                "median",
+                "std",
+                "min",
+                "max"
+            ]
+        )
 
-        return {
-            "mean": lengths.mean(),
-            "median": lengths.median(),
-            "std": lengths.std_dev(),
-            "min": lengths.min(),
-            "max": lengths.max()
+        stats = {
+            key: 0 if pd.isna(value) else value
+            for key, value in stats.items()
         }
+
+        return stats
 
 
     def longest_songs(
@@ -290,13 +327,26 @@ class LyricsAnalyzer:
         )
 
 
-    def average_songs_length_by_album(self) -> pd.DataFrame:
+    def average_song_length_by_album(self) -> pd.DataFrame:
         """
         Returns the average length of songs by album by word count.
         """
         stats = self.album_summary()
 
-        return stats[["avg_words"]]
+        stats.reset_index(inplace=True)
+
+        return stats[["album", "avg_words"]]
+
+
+    def line_count(self) -> None:
+        """
+        Calculate the number of lines per song.
+        """
+        self.df["line_count"] = self.df[self.text_column].apply(
+            lambda x: len(x.splitlines())
+            if isinstance(x, str)
+            else 0
+        )
 
 
     # ======================================================
@@ -320,7 +370,7 @@ class LyricsAnalyzer:
             self.df
             .groupby("album")
             .agg(
-                songs=("title", "count"),           # Number of songs
+                songs=("song", "count"),           # Number of songs
                 avg_words=("word_count", "mean"),   # Average song length
                 median_words=("word_count", "median"), # Median number of words
                 min_words=("word_count", "min"),
@@ -348,7 +398,7 @@ class LyricsAnalyzer:
             self.df
             .groupby("year")
             .agg(
-                songs=("title", "count"),
+                songs=("song", "count"),
                 avg_words=("word_count", "mean"),
                 median_words=("word_count", "median"),
                 min_words=("word_count", "min"),
@@ -380,15 +430,30 @@ class LyricsAnalyzer:
         Returns:
             A DataFrame containing matching songs.
         """
-        return self.df[
-            self.df[self.text_column]
-            .str.contains(
-                phrase,
-                case=False,     # Ignore capitalization
-                regex=False,    # Treat phrase literally
-                na=False        # Ignore missing lyrics
+        column = self.df[self.text_column]
+
+        non_null = column.dropna()
+
+        if non_null.empty:
+            return self.df.iloc[0:0]
+
+        if isinstance(non_null.iloc[0], list):
+            mask = column.apply(
+                lambda x: (
+                    phrase.lower() in " ".join(x).lower()
+                    if isinstance(x, list)
+                    else False
+                )
             )
-        ]
+
+        else:
+            mask = column.str.contains(
+                phrase,
+                case=False,
+                regex=False,
+                na=False
+            )
+        return self.df[mask]
 
 
     # ======================================================
@@ -476,3 +541,27 @@ class LyricsAnalyzer:
 
         # unique words / total number of words
         return len(set(words)) / len(words)
+
+
+    def unique_words(self) -> None:
+        """
+        Calculate the number of unique words.
+        """
+
+        column = self.df[self.text_column]
+
+        non_null = column.dropna()
+
+        if non_null.empty:
+            self.df["unique_words"] = 0
+
+        elif isinstance(non_null.iloc[0], list):
+            self.df["unique_words"] = column.apply(
+                lambda x: len(set(x)) if isinstance(x, list) else 0
+            )
+
+        else:
+            self.df["unique_words"] = column.apply(
+                lambda x: len(set(x.split())) if isinstance(x, str) else 0
+            )
+
