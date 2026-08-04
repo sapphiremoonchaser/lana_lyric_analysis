@@ -15,6 +15,10 @@ import pandas as pd
 from collections import Counter
 from textstat import textstat
 
+import nltk
+nltk.download('vader_lexicon')
+from nltk.sentiment import SentimentIntensityAnalyzer
+
 
 class LyricsAnalyzer:
     """
@@ -661,3 +665,9 @@ class LyricsAnalyzer:
             textstat.coleman_liau,
             "coleman_liau"
         )
+
+
+    # ======================================================
+    # Sentiment
+    # ======================================================
+
