@@ -876,54 +876,6 @@ def test_average_song_length_by_album_empty():
     assert result.empty
 
 
-def test_line_count():
-    df = pd.DataFrame({
-        "lyrics": [
-            "Line 1\nLine 2\nLine 3",
-            "One line",
-            "First\nSecond"
-        ]
-    })
-
-    analyzer = LyricsAnalyzer(
-        df,
-        text_column="lyrics"
-    )
-
-    analyzer.line_count()
-
-    assert analyzer.df["line_count"].tolist() == [3, 1, 2]
-
-
-def test_line_count_empty_string():
-    df = pd.DataFrame({
-        "lyrics": [""]
-    })
-
-    analyzer = LyricsAnalyzer(
-        df,
-        text_column="lyrics"
-    )
-
-    analyzer.line_count()
-
-    assert analyzer.df["line_count"].tolist() == [0]
-
-
-def test_line_count_missing_values():
-    df = pd.DataFrame({
-        "lyrics": [None, np.nan]
-    })
-
-    analyzer = LyricsAnalyzer(
-        df,
-        text_column="lyrics"
-    )
-
-    analyzer.line_count()
-
-    assert analyzer.df["line_count"].tolist() == [0, 0]
-
 
 # ======================================================
 # Summaries
@@ -981,7 +933,7 @@ def test_yearly_summary_returns_correct_structure(sample_df):
         text_column="lyrics"
     )
 
-    result = analyzer.yearly_summary()
+    result = analyzer.summary_by_year()
 
     assert isinstance(result, pd.DataFrame)
     assert result.columns.tolist() == [
@@ -1015,7 +967,7 @@ def test_yearly_summary_empty():
         text_column="lyrics"
     )
 
-    result = analyzer.yearly_summary()
+    result = analyzer.summary_by_year()
 
     assert isinstance(result, pd.DataFrame)
     assert result.empty

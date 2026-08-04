@@ -54,17 +54,15 @@ class LyricsAnalyzer:
         self._calculate_derived_columns()
 
 
-    def _calculate_derived_columns(self) -> None:
+    def _calculate_word_count(self):
         """
-        Calculate word_count, unique_word_count, and amount of time it
-        takes to read based on a reading ability of 200 words per minute.
-        Returns:
-            None. Adds 3 columns to self.df.
-        """
+        Calculate word count by song.
 
+        Returns:
+            None. Adds "word_count" column to self.df.
+        """
         column = self.df[self.text_column]
 
-        # Handle edge case where are lyrics are NA
         non_null = column.dropna()
 
         if non_null.empty:
@@ -85,6 +83,18 @@ class LyricsAnalyzer:
                 .str.len()
             )
 
+
+    def _calculate_unique_words(self):
+        """
+        Calculate unique words by song.
+
+        Returns:
+            None. Add "unique_words" column to self.df.
+        """
+        column = self.df[self.text_column]
+
+        non_null = column.dropna()
+
         # Get unique words
         if non_null.empty:
             self.df["unique_words"] = 0
@@ -104,9 +114,42 @@ class LyricsAnalyzer:
                     else 0
                 ))
 
+
+    def _calculate_reading_time(self):
+        """
+        Calculate the reading time based on 200 words per minute.
+
+        Returns:
+            None. Add "reading_minutes" to self.df.
+        """
         # Estimate the reading time assuming an average reading speed
         # of 200 words per minute
         self.df["reading_minutes"] = self.df["word_count"] / 200
+
+
+    def _calculate_line_count(self) -> None:
+        """
+        Calculate the number of lines per song.
+        """
+        self.df["line_count"] = self.df[self.text_column].apply(
+            lambda x: len(x.splitlines())
+            if isinstance(x, str)
+            else 0
+        )
+
+
+    def _calculate_derived_columns(self) -> None:
+        """
+        Calculate word_count, unique_word_count, and amount of time it
+        takes to read based on a reading ability of 200 words per minute.
+        Returns:
+            None. Adds 3 columns to self.df.
+        """
+
+        self._calculate_word_count()
+        self._calculate_unique_words()
+        self._calculate_reading_time()
+        self._calculate_line_count()
 
 
     def _words(self) -> list[str]:
@@ -244,7 +287,7 @@ class LyricsAnalyzer:
         """
         Returns the longest album by word count.
         """
-        stats = self.album_summary()
+        stats = self.summary_by_album()
 
         # Handle missing dataframe
         if stats.empty:
@@ -341,22 +384,12 @@ class LyricsAnalyzer:
         """
         Returns the average length of songs by album by word count.
         """
-        stats = self.album_summary()
+        stats = self.summary_by_album()
 
         stats.reset_index(inplace=True)
 
         return stats[["album", "avg_words"]]
 
-
-    def line_count(self) -> None:
-        """
-        Calculate the number of lines per song.
-        """
-        self.df["line_count"] = self.df[self.text_column].apply(
-            lambda x: len(x.splitlines())
-            if isinstance(x, str)
-            else 0
-        )
 
 
     # ======================================================
@@ -364,7 +397,7 @@ class LyricsAnalyzer:
     # ======================================================
 
 
-    def album_summary(self) -> pd.DataFrame:
+    def summary_by_album(self) -> pd.DataFrame:
         """
         Calculated summary statistics for each album.
 
@@ -400,7 +433,8 @@ class LyricsAnalyzer:
     # ======================================================
 
 
-    def yearly_summary(self) -> pd.DataFrame:
+
+    def summary_by_year(self) -> pd.DataFrame:
         """
         Calculated summary statistics for each year.
         """
