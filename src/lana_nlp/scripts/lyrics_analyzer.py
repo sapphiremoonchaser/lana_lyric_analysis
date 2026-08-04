@@ -22,7 +22,7 @@ nltk.download(
     'opinion_lexicon'
 )
 from nltk.sentiment import SentimentIntensityAnalyzer
-from nltk.corpus import opinion_lexicon
+from nltk.corpus import opinion_lexicon, words
 
 
 class LyricsAnalyzer:
@@ -761,7 +761,57 @@ class LyricsAnalyzer:
         )
 
 
+    def positive_word_ratio(self) -> None:
+        """
+        Calculate the ratio of positive words to total words.
+
+        Returns a value between 0 and 1.
+        Higher values indicate more positive language.
+        """
+
+        def calculate_ratio(text: str) -> float:
+            words = self._tokens_for_analysis(text)
+
+            if not words:
+                return 0.0
+
+            positive_count = sum(
+                word in self.positive_words
+                for word in words
+            )
+
+            return positive_count / len(words)
+
+        self.df["positive_word_ratio"] = (
+            self.df[self.text_column]
+            .apply(calculate_ratio)
+        )
 
 
+    def negative_word_ratio(self) -> None:
+        """
+        Calculate the ratio of negative words.
+
+        Returns a value between 0 and 1.
+        Higher values indicate more negative language.
+        """
+
+        def calculate_ratio(text):
+            words = self._words_for_analysis(text)
+
+            if not words:
+                return 0.0
+
+            negative_count = sum(
+                word in self.negative_words
+                for word in words
+            )
+
+            return negative_count / len(words)
+
+        self.df["negative_word_ratio"] = (
+            self.df[self.text_column]
+            .apply(calculate_ratio)
+        )
 
 
