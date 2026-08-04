@@ -87,6 +87,23 @@ class LyricsAnalyzer:
 
         return ""
 
+
+    def _tokens_for_analysis(
+        self,
+        text: str | list
+    ):
+        """
+        If lyrics are a string turn them to tokens.
+        """
+        if isinstance(text, list):
+            return text
+
+        if isinstance(text, str):
+            return text.lower().split()
+
+        return []
+
+
     def _use_tokenized_text(self) -> bool:
         non_null = self.df[self.text_column].dropna()
 
@@ -742,6 +759,9 @@ class LyricsAnalyzer:
                 ).sentiment.subjectivity
             )
         )
+
+
+
 
 
 
