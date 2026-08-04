@@ -10,6 +10,8 @@ The analyzer operates on a pandas DataFrame containing song metadata
 and lyrics, and creates derived metrics such as word count and
 estimated reading time for each song.
 """
+from functools import total_ordering
+from itertools import count
 
 import pandas as pd
 from collections import Counter
@@ -890,3 +892,17 @@ class LyricsAnalyzer:
         )
 
 
+    # ======================================================
+    # Emotions
+    # ======================================================
+
+    def normalize_emotions(emotions):
+        total = sum(emotions.values())
+
+        if total == 0:
+            return {}
+
+        return {
+            emotion: count / total
+            for emotion, count in emotions.items()
+        }
