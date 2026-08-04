@@ -17,8 +17,12 @@ from textstat import textstat
 from textblob import TextBlob
 
 import nltk
-nltk.download('vader_lexicon')
+nltk.download(
+    'vader_lexicon',
+    'opinion_lexicon'
+)
 from nltk.sentiment import SentimentIntensityAnalyzer
+from nltk.corpus import opinion_lexicon
 
 
 class LyricsAnalyzer:
