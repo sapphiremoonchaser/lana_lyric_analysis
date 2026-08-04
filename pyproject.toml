@@ -10,6 +10,7 @@ dependencies =[
     "pandas",
     "seaborn",
     "scikit-learn",
+    "textblob",
     "textstat",
     "wordcloud"
 ]
