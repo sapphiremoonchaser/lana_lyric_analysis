@@ -14,6 +14,7 @@ estimated reading time for each song.
 import pandas as pd
 from collections import Counter
 
+from lark.utils import is_id_start
 from pandas.core.interchange import column
 
 
@@ -146,6 +147,15 @@ class LyricsAnalyzer:
         Return word frequencies across all lyrics.
         """
         return Counter(self._words())
+
+
+    def _uses_tokenized_text(self) -> bool:
+        column = self.df[self.text_column].dropna()
+
+        return (
+            not column.empty
+            and isinstance(column.iloc[0], list)
+        )
 
 
     # ======================================================
@@ -430,14 +440,7 @@ class LyricsAnalyzer:
         Returns:
             A DataFrame containing matching songs.
         """
-        column = self.df[self.text_column]
-
-        non_null = column.dropna()
-
-        if non_null.empty:
-            return self.df.iloc[0:0]
-
-        if isinstance(non_null.iloc[0], list):
+        if self._uses_tokenized_text():
             mask = column.apply(
                 lambda x: (
                     phrase.lower() in " ".join(x).lower()
@@ -542,26 +545,4 @@ class LyricsAnalyzer:
         # unique words / total number of words
         return len(set(words)) / len(words)
 
-
-    def unique_words(self) -> None:
-        """
-        Calculate the number of unique words.
-        """
-
-        column = self.df[self.text_column]
-
-        non_null = column.dropna()
-
-        if non_null.empty:
-            self.df["unique_words"] = 0
-
-        elif isinstance(non_null.iloc[0], list):
-            self.df["unique_words"] = column.apply(
-                lambda x: len(set(x)) if isinstance(x, list) else 0
-            )
-
-        else:
-            self.df["unique_words"] = column.apply(
-                lambda x: len(set(x.split())) if isinstance(x, str) else 0
-            )
 
