@@ -631,7 +631,7 @@ class LyricsAnalyzer:
         )
 
 
-    def flesch_kincaid(self):
+    def flesch_kincaid(self) -> None:
         """
         Calculate the flesch kincaid reading ease.
 
@@ -644,7 +644,7 @@ class LyricsAnalyzer:
         )
 
 
-    def gunning_fog(self):
+    def gunning_fog(self) -> None:
         """
         Uses word complexity by number of syllables to calculate reading ease.
         Returns:
@@ -656,7 +656,7 @@ class LyricsAnalyzer:
         )
 
 
-    def coleman_liau(self):
+    def coleman_liau(self) -> None:
         """
         Uses average letters per word to calculate reading ease.
 
@@ -672,4 +672,23 @@ class LyricsAnalyzer:
     # ======================================================
     # Sentiment
     # ======================================================
+
+    def sentiment_polarity(self) -> None:
+        """
+        Calculate VADER sentiment polarity scores.
+
+        The compound score ranges from -1 (negative) to 1 (positive).
+
+        Returns:
+            None. Adds "sentiment_polarity" to self.df.
+        """
+
+        self.df["sentiment_polarity"] = self.df[self.text_column].apply(
+            lambda x: (
+                self.sia.polarity_scores(x)["compound"]
+                if isinstance(x, str)
+                else 0.0
+            )
+        )
+
 
