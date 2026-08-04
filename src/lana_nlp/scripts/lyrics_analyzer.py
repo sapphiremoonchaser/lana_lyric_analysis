@@ -13,6 +13,7 @@ estimated reading time for each song.
 
 import pandas as pd
 from collections import Counter
+from textstat import textstat
 
 
 class LyricsAnalyzer:
@@ -60,7 +61,7 @@ class LyricsAnalyzer:
         return isinstance(non_null.iloc[0], list)
 
 
-    def _calculate_word_count(self):
+    def _calculate_word_count(self) -> None:
         """
         Calculate word count by song.
 
@@ -85,7 +86,7 @@ class LyricsAnalyzer:
             )
 
 
-    def _calculate_unique_words(self):
+    def _calculate_unique_words(self) -> None:
         """
         Calculate unique words by song.
 
@@ -108,6 +109,33 @@ class LyricsAnalyzer:
                     if isinstance(x, str)
                     else 0
                 ))
+
+
+    def _calculate_syllable_count(self) -> None:
+        """
+        Calculate the total number of syllables in each song.
+
+        Returns:
+            None. Adds "syllable_count" column to self.df.
+        """
+        column = self.df[self.text_column]
+
+        if self._use_tokenized_text():
+            self.df["syllable_count"] = column.apply(
+                lambda x: sum(
+                    textstat.syllable_count(word)
+                    for word in x
+                ) if isinstance(x, list) else 0
+            )
+
+        else:
+            self.df["syllable_count"] = column.apply(
+                lambda x: (
+                    textstat.syllable_count(x)
+                    if isinstance(x, str)
+                    else 0
+                )
+            )
 
 
     def _calculate_reading_time(self):
@@ -143,6 +171,7 @@ class LyricsAnalyzer:
 
         self._calculate_word_count()
         self._calculate_unique_words()
+        self._calculate_syllable_count()
         self._calculate_reading_time()
         self._calculate_line_count()
 
