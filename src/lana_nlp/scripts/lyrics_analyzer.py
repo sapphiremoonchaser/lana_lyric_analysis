@@ -702,9 +702,9 @@ class LyricsAnalyzer:
 
         self.df["sentiment_polarity"] = self.df[self.text_column].apply(
             lambda x: (
-                self.sia.polarity_scores(x)["compound"]
-                if isinstance(x, str)
-                else 0.0
+                self.sia.polarity_scores(
+                    self._text_for_analysis(x)
+                )["compound"]
             )
         )
 
