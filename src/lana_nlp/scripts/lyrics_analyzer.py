@@ -17,10 +17,10 @@ from textstat import textstat
 from textblob import TextBlob
 
 import nltk
-nltk.download(
-    'vader_lexicon',
-    'opinion_lexicon'
-)
+# nltk.download(
+#     'vader_lexicon',
+#     'opinion_lexicon'
+# )
 from nltk.sentiment import SentimentIntensityAnalyzer
 from nltk.corpus import opinion_lexicon, words
 
@@ -278,7 +278,7 @@ class LyricsAnalyzer:
             func: textstat function to apply
             column_name: output column
         """
-        self.df[column_name] = self.df[self.text_column].appy(
+        self.df[column_name] = self.df[self.text_column].apply(
             lambda x: func(x) if isinstance(x, str) else 0
         )
 
