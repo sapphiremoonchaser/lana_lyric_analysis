@@ -1298,4 +1298,41 @@ def test_lexical_diversity_all_same_word():
 
     assert analyzer.lexical_diversity() == pytest.approx(1 / 3)
 
+    # ======================================================
+    # Readability
+    # ======================================================
+
+
+
+
+    # ======================================================
+    # Sentiment
+    # ======================================================
+
+def test_positive_sentiment():
+    df = pd.DataFrame({
+        "lyrics": [
+            "I love this beautiful wonderful day."
+        ]
+    })
+
+    analyzer = LyricsAnalyzer(df, text_column="lyrics")
+
+    analyzer.sentiment_polarity()
+
+    assert analyzer.df.loc[0, "sentiment_polarity"] > 0
+
+
+def test_negative_sentiment():
+    df = pd.DataFrame({
+        "lyrics": [
+            "I hate this terrible lonely night."
+        ]
+    })
+
+    analyzer = LyricsAnalyzer(df, text_column="lyrics")
+
+    analyzer.sentiment_polarity()
+
+    assert analyzer.df.loc[0, "sentiment_polarity"] < 0
 
