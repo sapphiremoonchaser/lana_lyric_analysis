@@ -222,6 +222,23 @@ class LyricsAnalyzer:
         )
 
 
+    def _calculate_emotions(
+        self,
+        words: list
+    ) -> Counter:
+        """
+        Calculate scores for the emotion lexicon.
+        """
+        emotions = Counter()
+
+        for word in words:
+            if word in self.emotion_lexicon:
+                for emotion in self.emotion_lexicon[word]:
+                    emotions[emotion] += 1
+
+        return emotions
+
+
     def _calculate_derived_columns(self) -> None:
         """
         Calculate word_count, unique_word_count, and amount of time it
