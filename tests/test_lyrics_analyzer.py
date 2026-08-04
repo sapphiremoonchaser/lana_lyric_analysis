@@ -1336,3 +1336,19 @@ def test_negative_sentiment():
 
     assert analyzer.df.loc[0, "sentiment_polarity"] < 0
 
+
+def test_subjective_text_scores_high():
+    df = pd.DataFrame({
+        "lyrics": [
+            "I love you and I feel lost without you."
+        ]
+    })
+
+    analyzer = LyricsAnalyzer(df, text_column="lyrics")
+
+    analyzer.sentiment_subjectivity()
+
+    score = analyzer.df.loc[0, "subjectivity"]
+
+    assert score > 0.5
+
