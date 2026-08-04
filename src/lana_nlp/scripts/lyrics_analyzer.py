@@ -799,7 +799,7 @@ class LyricsAnalyzer:
         """
 
         def calculate_ratio(text):
-            words = self._words_for_analysis(text)
+            words = self._tokens_for_analysis(text)
 
             if not words:
                 return 0.0
