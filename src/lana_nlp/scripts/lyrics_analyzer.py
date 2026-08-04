@@ -58,6 +58,22 @@ class LyricsAnalyzer:
         self._calculate_derived_columns()
 
 
+    def _text_for_analysis(
+        self,
+        text
+    ) -> str:
+        """
+        If lyrics are tokens turn them into a string.
+        """
+
+        if isinstance(text, list):
+            return " ".join(text)
+
+        if isinstance(text, str):
+            return text
+
+        return ""
+
     def _use_tokenized_text(self) -> bool:
         non_null = self.df[self.text_column].dropna()
 
@@ -691,5 +707,8 @@ class LyricsAnalyzer:
                 else 0.0
             )
         )
+
+
+
 
 
