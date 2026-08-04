@@ -58,6 +58,14 @@ class LyricsAnalyzer:
         self.df = lyrics_df.copy()
         self.text_column = text_column
 
+        self.positive_words = set(
+            opinion_lexicon.positive()
+        )
+
+        self.negative_words = set(
+            opinion_lexicon.negative()
+        )
+
         self.sia = SentimentIntensityAnalyzer()
 
         self._calculate_derived_columns()
