@@ -14,9 +14,6 @@ estimated reading time for each song.
 import pandas as pd
 from collections import Counter
 
-from lark.utils import is_id_start
-from pandas.core.interchange import column
-
 
 class LyricsAnalyzer:
     """
