@@ -35,6 +35,44 @@ def sample_df():
 # ======================================================
 # Initialization
 # ======================================================
+def test_use_tokenized_text():
+    df = pd.DataFrame({
+        "lyrics": [["hello", "world"], ["lana", "del", "rey"]]
+    })
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    assert analyzer._use_tokenized_text() is True
+
+
+def test_use_tokenized_text_returns_false(sample_df):
+    df = pd.DataFrame({
+        "lyrics": ["hello world", "lana del rey"]
+    })
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    assert analyzer._use_tokenized_text() is False
+
+
+def test_use_tokenized_text_all_null():
+    df = pd.DataFrame({
+        "lyrics": [None, np.nan]
+    })
+
+    analyze = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    assert analyze._use_tokenized_text() is False
+
 
 def test_calculate_derived_columns_empty_lyrics():
     # Create a dataframe with empty lyrics
