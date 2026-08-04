@@ -13,8 +13,11 @@ estimated reading time for each song.
 
 import pandas as pd
 from collections import Counter
+from textstat import textstat
 
-from pandas.core.interchange import column
+import nltk
+nltk.download('vader_lexicon')
+from nltk.sentiment import SentimentIntensityAnalyzer
 
 
 class LyricsAnalyzer:
@@ -53,24 +56,26 @@ class LyricsAnalyzer:
         self._calculate_derived_columns()
 
 
-    def _calculate_derived_columns(self) -> None:
-        """
-        Calculate word_count, unique_word_count, and amount of time it
-        takes to read based on a reading ability of 200 words per minute.
-        Returns:
-            None. Adds 3 columns to self.df.
-        """
-
-        column = self.df[self.text_column]
-
-        # Handle edge case where are lyrics are NA
-        non_null = column.dropna()
+    def _use_tokenized_text(self) -> bool:
+        non_null = self.df[self.text_column].dropna()
 
         if non_null.empty:
-            self.df["word_count"] = 0
+            return False
 
-        # If the column is a list use this method to calculate word count
-        elif isinstance(non_null.iloc[0], list):
+        return isinstance(non_null.iloc[0], list)
+
+
+    def _calculate_word_count(self) -> None:
+        """
+        Calculate word count by song.
+
+        Returns:
+            None. Adds "word_count" column to self.df.
+        """
+        column = self.df[self.text_column]
+
+        # If the column is tokenized lyrics use this to calculate word_count
+        if self._use_tokenized_text():
             self.df["word_count"] = column.apply(
                 lambda x: len(x) if isinstance(x, list) else 0
             )
@@ -84,11 +89,17 @@ class LyricsAnalyzer:
                 .str.len()
             )
 
-        # Get unique words
-        if non_null.empty:
-            self.df["unique_words"] = 0
 
-        elif isinstance(non_null.iloc[0], list):
+    def _calculate_unique_words(self) -> None:
+        """
+        Calculate unique words by song.
+
+        Returns:
+            None. Add "unique_words" column to self.df.
+        """
+        column = self.df[self.text_column]
+
+        if self._use_tokenized_text():
             self.df["unique_words"] = column.apply(
                 lambda x: len(set(x))
                 if isinstance(x, list)
@@ -103,9 +114,70 @@ class LyricsAnalyzer:
                     else 0
                 ))
 
+
+    def _calculate_syllable_count(self) -> None:
+        """
+        Calculate the total number of syllables in each song.
+
+        Returns:
+            None. Adds "syllable_count" column to self.df.
+        """
+        column = self.df[self.text_column]
+
+        if self._use_tokenized_text():
+            self.df["syllable_count"] = column.apply(
+                lambda x: sum(
+                    textstat.syllable_count(word)
+                    for word in x
+                ) if isinstance(x, list) else 0
+            )
+
+        else:
+            self.df["syllable_count"] = column.apply(
+                lambda x: (
+                    textstat.syllable_count(x)
+                    if isinstance(x, str)
+                    else 0
+                )
+            )
+
+
+    def _calculate_reading_time(self):
+        """
+        Calculate the reading time based on 200 words per minute.
+
+        Returns:
+            None. Add "reading_minutes" to self.df.
+        """
         # Estimate the reading time assuming an average reading speed
         # of 200 words per minute
         self.df["reading_minutes"] = self.df["word_count"] / 200
+
+
+    def _calculate_line_count(self) -> None:
+        """
+        Calculate the number of lines per song.
+        """
+        self.df["line_count"] = self.df[self.text_column].apply(
+            lambda x: len(x.splitlines())
+            if isinstance(x, str)
+            else 0
+        )
+
+
+    def _calculate_derived_columns(self) -> None:
+        """
+        Calculate word_count, unique_word_count, and amount of time it
+        takes to read based on a reading ability of 200 words per minute.
+        Returns:
+            None. Adds 3 columns to self.df.
+        """
+
+        self._calculate_word_count()
+        self._calculate_unique_words()
+        self._calculate_syllable_count()
+        self._calculate_reading_time()
+        self._calculate_line_count()
 
 
     def _words(self) -> list[str]:
@@ -120,12 +192,7 @@ class LyricsAnalyzer:
         """
         column = self.df[self.text_column]
 
-        non_null = column.dropna()
-
-        if non_null.empty:
-            return []
-
-        if isinstance(non_null.iloc[0], list):
+        if self._use_tokenized_text():
             words = []
 
             for tokens in column:
@@ -146,6 +213,22 @@ class LyricsAnalyzer:
         Return word frequencies across all lyrics.
         """
         return Counter(self._words())
+
+
+    def _apply_textstat(
+        self,
+        func,
+        column_name
+    ):
+        """
+        Apply textstat library for readability metrics.
+        Args:
+            func: textstat function to apply
+            column_name: output column
+        """
+        self.df[column_name] = self.df[self.text_column].appy(
+            lambda x: func(x) if isinstance(x, str) else 0
+        )
 
 
     # ======================================================
@@ -234,7 +317,7 @@ class LyricsAnalyzer:
         """
         Returns the longest album by word count.
         """
-        stats = self.album_summary()
+        stats = self.summary_by_album()
 
         # Handle missing dataframe
         if stats.empty:
@@ -331,22 +414,12 @@ class LyricsAnalyzer:
         """
         Returns the average length of songs by album by word count.
         """
-        stats = self.album_summary()
+        stats = self.summary_by_album()
 
         stats.reset_index(inplace=True)
 
         return stats[["album", "avg_words"]]
 
-
-    def line_count(self) -> None:
-        """
-        Calculate the number of lines per song.
-        """
-        self.df["line_count"] = self.df[self.text_column].apply(
-            lambda x: len(x.splitlines())
-            if isinstance(x, str)
-            else 0
-        )
 
 
     # ======================================================
@@ -354,7 +427,7 @@ class LyricsAnalyzer:
     # ======================================================
 
 
-    def album_summary(self) -> pd.DataFrame:
+    def summary_by_album(self) -> pd.DataFrame:
         """
         Calculated summary statistics for each album.
 
@@ -390,7 +463,8 @@ class LyricsAnalyzer:
     # ======================================================
 
 
-    def yearly_summary(self) -> pd.DataFrame:
+
+    def summary_by_year(self) -> pd.DataFrame:
         """
         Calculated summary statistics for each year.
         """
@@ -432,12 +506,7 @@ class LyricsAnalyzer:
         """
         column = self.df[self.text_column]
 
-        non_null = column.dropna()
-
-        if non_null.empty:
-            return self.df.iloc[0:0]
-
-        if isinstance(non_null.iloc[0], list):
+        if self._uses_tokenized_text():
             mask = column.apply(
                 lambda x: (
                     phrase.lower() in " ".join(x).lower()
@@ -543,25 +612,62 @@ class LyricsAnalyzer:
         return len(set(words)) / len(words)
 
 
-    def unique_words(self) -> None:
+    # ======================================================
+    # Readability
+    # ======================================================
+
+    def flesch_reading_ease(self) -> None:
         """
-        Calculate the number of unique words.
+        Calculate the flesch reading easy. It uses sentense length and syllables.
+
+        Returns:
+            None. Adds "flesch_reading_ease" to self.df.
         """
+        self._apply_textstat(
+            textstat.flesch_reading_ease,
+            "flesch_reading_ease"
+        )
 
-        column = self.df[self.text_column]
 
-        non_null = column.dropna()
+    def flesch_kincaid(self):
+        """
+        Calculate the flesch kincaid reading ease.
 
-        if non_null.empty:
-            self.df["unique_words"] = 0
+        Returns:
+            None. Adds "flesch_kincaid" to self.df.
+        """
+        self._apply_textstat(
+            textstat.flesch_kincaid_grade(),
+            "flesch_kincaid"
+        )
 
-        elif isinstance(non_null.iloc[0], list):
-            self.df["unique_words"] = column.apply(
-                lambda x: len(set(x)) if isinstance(x, list) else 0
-            )
 
-        else:
-            self.df["unique_words"] = column.apply(
-                lambda x: len(set(x.split())) if isinstance(x, str) else 0
-            )
+    def gunning_fog(self):
+        """
+        Uses word complexity by number of syllables to calculate reading ease.
+        Returns:
+            None. Adds "gunning_fog" to self.df.
+        """
+        self._apply_textstat(
+            textstat.gunning_fog,
+            "gunning_fog"
+        )
+
+
+    def coleman_liau(self):
+        """
+        Uses average letters per word to calculate reading ease.
+
+        Returns:
+            None. Adds "coleman_liau" to self.df.
+        """
+        self._apply_textstat(
+            textstat.coleman_liau,
+            "coleman_liau"
+        )
+
+
+    # ======================================================
+    # Sentiment
+    # ======================================================
 

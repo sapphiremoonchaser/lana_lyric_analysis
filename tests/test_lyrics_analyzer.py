@@ -35,6 +35,44 @@ def sample_df():
 # ======================================================
 # Initialization
 # ======================================================
+def test_use_tokenized_text():
+    df = pd.DataFrame({
+        "lyrics": [["hello", "world"], ["lana", "del", "rey"]]
+    })
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    assert analyzer._use_tokenized_text() is True
+
+
+def test_use_tokenized_text_returns_false(sample_df):
+    df = pd.DataFrame({
+        "lyrics": ["hello world", "lana del rey"]
+    })
+
+    analyzer = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    assert analyzer._use_tokenized_text() is False
+
+
+def test_use_tokenized_text_all_null():
+    df = pd.DataFrame({
+        "lyrics": [None, np.nan]
+    })
+
+    analyze = LyricsAnalyzer(
+        df,
+        text_column="lyrics"
+    )
+
+    assert analyze._use_tokenized_text() is False
+
 
 def test_calculate_derived_columns_empty_lyrics():
     # Create a dataframe with empty lyrics
@@ -876,54 +914,6 @@ def test_average_song_length_by_album_empty():
     assert result.empty
 
 
-def test_line_count():
-    df = pd.DataFrame({
-        "lyrics": [
-            "Line 1\nLine 2\nLine 3",
-            "One line",
-            "First\nSecond"
-        ]
-    })
-
-    analyzer = LyricsAnalyzer(
-        df,
-        text_column="lyrics"
-    )
-
-    analyzer.line_count()
-
-    assert analyzer.df["line_count"].tolist() == [3, 1, 2]
-
-
-def test_line_count_empty_string():
-    df = pd.DataFrame({
-        "lyrics": [""]
-    })
-
-    analyzer = LyricsAnalyzer(
-        df,
-        text_column="lyrics"
-    )
-
-    analyzer.line_count()
-
-    assert analyzer.df["line_count"].tolist() == [0]
-
-
-def test_line_count_missing_values():
-    df = pd.DataFrame({
-        "lyrics": [None, np.nan]
-    })
-
-    analyzer = LyricsAnalyzer(
-        df,
-        text_column="lyrics"
-    )
-
-    analyzer.line_count()
-
-    assert analyzer.df["line_count"].tolist() == [0, 0]
-
 
 # ======================================================
 # Summaries
@@ -981,7 +971,7 @@ def test_yearly_summary_returns_correct_structure(sample_df):
         text_column="lyrics"
     )
 
-    result = analyzer.yearly_summary()
+    result = analyzer.summary_by_year()
 
     assert isinstance(result, pd.DataFrame)
     assert result.columns.tolist() == [
@@ -1015,7 +1005,7 @@ def test_yearly_summary_empty():
         text_column="lyrics"
     )
 
-    result = analyzer.yearly_summary()
+    result = analyzer.summary_by_year()
 
     assert isinstance(result, pd.DataFrame)
     assert result.empty
@@ -1309,60 +1299,3 @@ def test_lexical_diversity_all_same_word():
     assert analyzer.lexical_diversity() == pytest.approx(1 / 3)
 
 
-def test_unique_words_tokenized(sample_df):
-    analyzer = LyricsAnalyzer(
-        sample_df,
-        text_column="lyrics"
-    )
-
-    analyzer.unique_words()
-
-    assert analyzer.df["unique_words"].tolist() == [5, 4, 3]
-
-
-def test_unique_words_removes_duplicates():
-    df = pd.DataFrame({
-        "lyrics": [["forever", "forever", "love"]]
-    })
-
-    analyzer = LyricsAnalyzer(
-        df,
-        text_column="lyrics"
-    )
-
-    analyzer.unique_words()
-
-    assert analyzer.df["unique_words"].tolist() == [2]
-
-
-def test_unique_words_string_lyrics():
-    df = pd.DataFrame({
-        "lyrics": [
-            "hello word hello",
-            "blue jeans"
-        ]
-    })
-
-    analyzer = LyricsAnalyzer(
-        df,
-        text_column="lyrics"
-    )
-
-    analyzer.unique_words()
-
-    assert analyzer.df["unique_words"].tolist() == [2, 2]
-
-
-def test_unique_words_empty_column():
-    df = pd.DataFrame({
-        "lyrics": [None, np.nan]
-    })
-
-    analyzer = LyricsAnalyzer(
-        df,
-        text_column="lyrics"
-    )
-
-    analyzer.unique_words()
-
-    assert analyzer.df["unique_words"].tolist() == [0, 0]
