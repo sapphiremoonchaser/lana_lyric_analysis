@@ -14,10 +14,15 @@ estimated reading time for each song.
 import pandas as pd
 from collections import Counter
 from textstat import textstat
+from textblob import TextBlob
 
 import nltk
-nltk.download('vader_lexicon')
+# nltk.download(
+#     'vader_lexicon',
+#     'opinion_lexicon'
+# )
 from nltk.sentiment import SentimentIntensityAnalyzer
+from nltk.corpus import opinion_lexicon, words
 
 
 class LyricsAnalyzer:
@@ -53,7 +58,50 @@ class LyricsAnalyzer:
         self.df = lyrics_df.copy()
         self.text_column = text_column
 
+        self.positive_words = set(
+            opinion_lexicon.positive()
+        )
+
+        self.negative_words = set(
+            opinion_lexicon.negative()
+        )
+
+        self.sia = SentimentIntensityAnalyzer()
+
         self._calculate_derived_columns()
+
+
+    def _to_text(
+        self,
+        text
+    ) -> str:
+        """
+        If lyrics are tokens turn them into a string.
+        """
+
+        if isinstance(text, list):
+            return " ".join(text)
+
+        if isinstance(text, str):
+            return text
+
+        return ""
+
+
+    def _to_tokens(
+        self,
+        text: str | list
+    ) -> list[]:
+        """
+        If lyrics are a string turn them to tokens.
+        """
+        if isinstance(text, list):
+            return text
+
+        if isinstance(text, str):
+            return text.lower().split()
+
+        return []
 
 
     def _use_tokenized_text(self) -> bool:
@@ -142,7 +190,7 @@ class LyricsAnalyzer:
             )
 
 
-    def _calculate_reading_time(self):
+    def _calculate_reading_time(self) -> None:
         """
         Calculate the reading time based on 200 words per minute.
 
@@ -158,10 +206,16 @@ class LyricsAnalyzer:
         """
         Calculate the number of lines per song.
         """
-        self.df["line_count"] = self.df[self.text_column].apply(
-            lambda x: len(x.splitlines())
-            if isinstance(x, str)
-            else 0
+        self.df["line_count"] = (
+            self.df[self.text_column]
+            .apply(
+                lambda x:
+                    len(x.splitlines())
+                if isinstance(x, str)
+                    else len(x)
+                if isinstance(x, list)
+                    else 0
+            )
         )
 
 
@@ -178,6 +232,10 @@ class LyricsAnalyzer:
         self._calculate_syllable_count()
         self._calculate_reading_time()
         self._calculate_line_count()
+        self.sentiment_polarity()
+        self.sentiment_subjectivity()
+        self.positive_word_ratio()
+        self.negative_word_ratio()
 
 
     def _words(self) -> list[str]:
@@ -219,15 +277,22 @@ class LyricsAnalyzer:
         self,
         func,
         column_name
-    ):
+    ) -> None:
         """
         Apply textstat library for readability metrics.
         Args:
             func: textstat function to apply
             column_name: output column
         """
-        self.df[column_name] = self.df[self.text_column].appy(
-            lambda x: func(x) if isinstance(x, str) else 0
+        self.df[column_name] = (
+            self.df[self.text_column]
+            .apply(
+                lambda x: func(
+                    self._to_text(x)
+                )
+                if x
+                else 0
+            )
         )
 
 
@@ -329,6 +394,27 @@ class LyricsAnalyzer:
         )
 
         return sorted_songs.index[0]
+
+
+    def average_album_sentiment(self) -> pd.Series:
+        """
+        Calculate average sentiment polarity by album.
+
+        Returns:
+            Mean sentiment score per album.
+        """
+
+        if "sentiment_polarity" not in self.df.columns:
+            self.sentiment_polarity()
+
+        sentiment = (
+            self.df
+            .dropna(subset=["album"])
+            .groupby("album")["sentiment_polarity"]
+            .mean()
+        )
+
+        return sentiment.fillna(0.0)
 
 
     # ======================================================
@@ -449,7 +535,9 @@ class LyricsAnalyzer:
                 min_words=("word_count", "min"),
                 max_words=("word_count", "max"),
                 total_words=("word_count", "sum"),   # Total words
-                avg_reading_minutes=("reading_minutes", "mean") # Average reading time
+                avg_reading_minutes=("reading_minutes", "mean"), # Average reading time
+                avg_sentiment=("sentiment_polarity", "mean"), # Average sentiment
+                avg_subjectivity=("subjectivity", "mean") # Average subjectivity
             )
             .sort_values(
                 by="songs",
@@ -506,7 +594,7 @@ class LyricsAnalyzer:
         """
         column = self.df[self.text_column]
 
-        if self._uses_tokenized_text():
+        if self._use_tokenized_text():
             mask = column.apply(
                 lambda x: (
                     phrase.lower() in " ".join(x).lower()
@@ -629,7 +717,7 @@ class LyricsAnalyzer:
         )
 
 
-    def flesch_kincaid(self):
+    def flesch_kincaid(self) -> None:
         """
         Calculate the flesch kincaid reading ease.
 
@@ -642,7 +730,7 @@ class LyricsAnalyzer:
         )
 
 
-    def gunning_fog(self):
+    def gunning_fog(self) -> None:
         """
         Uses word complexity by number of syllables to calculate reading ease.
         Returns:
@@ -654,7 +742,7 @@ class LyricsAnalyzer:
         )
 
 
-    def coleman_liau(self):
+    def coleman_liau(self) -> None:
         """
         Uses average letters per word to calculate reading ease.
 
@@ -670,4 +758,98 @@ class LyricsAnalyzer:
     # ======================================================
     # Sentiment
     # ======================================================
+
+    def sentiment_polarity(self) -> None:
+        """
+        Calculate VADER sentiment polarity scores.
+
+        The compound score ranges from -1 (negative) to 1 (positive).
+
+        Returns:
+            None. Adds "sentiment_polarity" to self.df.
+        """
+
+        self.df["sentiment_polarity"] = self.df[self.text_column].apply(
+            lambda x: (
+                self.sia.polarity_scores(
+                    self._to_text(x)
+                )["compound"]
+            )
+        )
+
+
+    def sentiment_subjectivity(self) -> None:
+        """
+        Calculate text subjectivity scores.
+
+        Subjectivity ranges from:
+            0.0 = objective
+            1.0 = subjective
+
+        Returns:
+            None. Adds "subjectivity" to self.df.
+        """
+
+        self.df["subjectivity"] = self.df[self.text_column].apply(
+            lambda x: (
+                TextBlob(
+                    self._to_text(x)
+                ).sentiment.subjectivity
+            )
+        )
+
+
+    def positive_word_ratio(self) -> None:
+        """
+        Calculate the ratio of positive words to total words.
+
+        Returns a value between 0 and 1.
+        Higher values indicate more positive language.
+        """
+
+        def calculate_ratio(text: str) -> float:
+            words = self._to_tokens(text)
+
+            if not words:
+                return 0.0
+
+            positive_count = sum(
+                word in self.positive_words
+                for word in words
+            )
+
+            return positive_count / len(words)
+
+        self.df["positive_word_ratio"] = (
+            self.df[self.text_column]
+            .apply(calculate_ratio)
+        )
+
+
+    def negative_word_ratio(self) -> None:
+        """
+        Calculate the ratio of negative words.
+
+        Returns a value between 0 and 1.
+        Higher values indicate more negative language.
+        """
+
+        def calculate_ratio(text):
+            words = self._to_tokens(text)
+
+            if not words:
+                return 0.0
+
+            negative_count = sum(
+                word in self.negative_words
+                for word in words
+            )
+
+            return negative_count / len(words)
+
+        self.df["negative_word_ratio"] = (
+            self.df[self.text_column]
+            .apply(calculate_ratio)
+        )
+
 

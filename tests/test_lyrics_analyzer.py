@@ -4,6 +4,15 @@ import numpy as np
 import pytest
 import pandas as pd
 
+import nltk
+
+
+def pytest_configure():
+    nltk.download(
+        "opinion_lexicon",
+        quiet=True
+    )
+
 from src.lana_nlp.scripts.lyrics_analyzer import LyricsAnalyzer
 
 @pytest.fixture
@@ -1297,5 +1306,110 @@ def test_lexical_diversity_all_same_word():
     )
 
     assert analyzer.lexical_diversity() == pytest.approx(1 / 3)
+
+    # ======================================================
+    # Readability
+    # ======================================================
+
+
+
+
+    # ======================================================
+    # Sentiment
+    # ======================================================
+
+def test_positive_sentiment():
+    df = pd.DataFrame({
+        "lyrics": [
+            "I love this beautiful wonderful day."
+        ]
+    })
+
+    analyzer = LyricsAnalyzer(df, text_column="lyrics")
+
+    analyzer.sentiment_polarity()
+
+    assert analyzer.df.loc[0, "sentiment_polarity"] > 0
+
+
+def test_negative_sentiment():
+    df = pd.DataFrame({
+        "lyrics": [
+            "I hate this terrible lonely night."
+        ]
+    })
+
+    analyzer = LyricsAnalyzer(df, text_column="lyrics")
+
+    analyzer.sentiment_polarity()
+
+    assert analyzer.df.loc[0, "sentiment_polarity"] < 0
+
+
+def test_subjective_text_scores_high():
+    df = pd.DataFrame({
+        "lyrics": [
+            "I love you and I feel lost without you."
+        ]
+    })
+
+    analyzer = LyricsAnalyzer(df, text_column="lyrics")
+
+    analyzer.sentiment_subjectivity()
+
+    score = analyzer.df.loc[0, "subjectivity"]
+
+    assert score > 0.5
+
+
+def test_positive_word_ratio():
+
+    df = pd.DataFrame({
+        "lyrics": [
+            "love beautiful happy wonderful terrible"
+        ]
+    })
+
+    analyzer = LyricsAnalyzer(df, text_column="lyrics")
+
+    analyzer.positive_word_ratio()
+
+    score = analyzer.df.loc[0, "positive_word_ratio"]
+
+    assert score > 0
+    assert score <= 1
+
+
+def test_negative_word_ratio():
+
+    df = pd.DataFrame({
+        "lyrics": [
+            "hate sad lonely terrible"
+        ]
+    })
+
+    analyzer = LyricsAnalyzer(df, text_column="lyrics")
+
+    analyzer.negative_word_ratio()
+
+    score = analyzer.df.loc[0, "negative_word_ratio"]
+
+    assert score > 0
+    assert score <= 1
+
+
+def test_positive_word_ratio_empty_lyrics():
+
+    df = pd.DataFrame({
+        "lyrics": [None]
+    })
+
+    analyzer = LyricsAnalyzer(df, text_column="lyrics")
+
+    analyzer.positive_word_ratio()
+
+    assert analyzer.df.loc[0, "positive_word_ratio"] == 0.0
+
+
 
 
