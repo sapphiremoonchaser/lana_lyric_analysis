@@ -71,7 +71,7 @@ class LyricsAnalyzer:
         self._calculate_derived_columns()
 
 
-    def _text_for_analysis(
+    def _to_text(
         self,
         text
     ) -> str:
@@ -88,7 +88,7 @@ class LyricsAnalyzer:
         return ""
 
 
-    def _tokens_for_analysis(
+    def _to_tokens(
         self,
         text: str | list
     ):
@@ -206,10 +206,16 @@ class LyricsAnalyzer:
         """
         Calculate the number of lines per song.
         """
-        self.df["line_count"] = self.df[self.text_column].apply(
-            lambda x: len(x.splitlines())
-            if isinstance(x, str)
-            else 0
+        self.df["line_count"] = (
+            self.df[self.text_column]
+            .apply(
+                lambda x:
+                    len(x.splitlines())
+                if isinstance(x, str)
+                    else len(x)
+                if isinstance(x, list)
+                    else 0
+            )
         )
 
 
@@ -282,7 +288,7 @@ class LyricsAnalyzer:
             self.df[self.text_column]
             .apply(
                 lambda x: func(
-                    self._text_for_analysis(x)
+                    self._to_text(x)
                 )
                 if x
                 else 0
@@ -764,7 +770,7 @@ class LyricsAnalyzer:
         self.df["sentiment_polarity"] = self.df[self.text_column].apply(
             lambda x: (
                 self.sia.polarity_scores(
-                    self._text_for_analysis(x)
+                    self._to_text(x)
                 )["compound"]
             )
         )
@@ -785,7 +791,7 @@ class LyricsAnalyzer:
         self.df["subjectivity"] = self.df[self.text_column].apply(
             lambda x: (
                 TextBlob(
-                    self._text_for_analysis(x)
+                    self._to_text(x)
                 ).sentiment.subjectivity
             )
         )
@@ -800,7 +806,7 @@ class LyricsAnalyzer:
         """
 
         def calculate_ratio(text: str) -> float:
-            words = self._tokens_for_analysis(text)
+            words = self._to_tokens(text)
 
             if not words:
                 return 0.0
@@ -827,7 +833,7 @@ class LyricsAnalyzer:
         """
 
         def calculate_ratio(text):
-            words = self._tokens_for_analysis(text)
+            words = self._to_tokens(text)
 
             if not words:
                 return 0.0
