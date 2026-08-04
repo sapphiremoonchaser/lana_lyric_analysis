@@ -228,6 +228,8 @@ class LyricsAnalyzer:
         self._calculate_line_count()
         self.sentiment_polarity()
         self.sentiment_subjectivity()
+        self.positive_word_ratio()
+        self.negative_word_ratio()
 
 
     def _words(self) -> list[str]:
