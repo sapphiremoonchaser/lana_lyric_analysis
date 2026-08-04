@@ -14,6 +14,7 @@ estimated reading time for each song.
 import pandas as pd
 from collections import Counter
 from textstat import textstat
+from textblob import TextBlob
 
 import nltk
 nltk.download('vader_lexicon')
@@ -709,6 +710,25 @@ class LyricsAnalyzer:
         )
 
 
+    def sentiment_subjectivity(self) -> None:
+        """
+        Calculate text subjectivity scores.
+
+        Subjectivity ranges from:
+            0.0 = objective
+            1.0 = subjective
+
+        Returns:
+            None. Adds "subjectivity" to self.df.
+        """
+
+        self.df["subjectivity"] = self.df[self.text_column].apply(
+            lambda x: (
+                TextBlob(
+                    self._text_for_analysis(x)
+                ).sentiment.subjectivity
+            )
+        )
 
 
 
