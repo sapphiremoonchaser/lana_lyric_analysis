@@ -54,6 +54,15 @@ class LyricsAnalyzer:
         self._calculate_derived_columns()
 
 
+    def _use_tokenized_text(self) -> bool:
+        non_null = self.df[self.text_column].dropna()
+
+        if non_null.empty:
+            return False
+
+        return isinstance(non_null.iloc[0], list)
+
+
     def _calculate_word_count(self):
         """
         Calculate word count by song.
@@ -63,13 +72,8 @@ class LyricsAnalyzer:
         """
         column = self.df[self.text_column]
 
-        non_null = column.dropna()
-
-        if non_null.empty:
-            self.df["word_count"] = 0
-
-        # If the column is a list use this method to calculate word count
-        elif isinstance(non_null.iloc[0], list):
+        # If the column is tokenized lyrics use this to calculate word_count
+        if self._use_tokenized_text():
             self.df["word_count"] = column.apply(
                 lambda x: len(x) if isinstance(x, list) else 0
             )
@@ -93,13 +97,7 @@ class LyricsAnalyzer:
         """
         column = self.df[self.text_column]
 
-        non_null = column.dropna()
-
-        # Get unique words
-        if non_null.empty:
-            self.df["unique_words"] = 0
-
-        elif isinstance(non_null.iloc[0], list):
+        if self._use_tokenized_text():
             self.df["unique_words"] = column.apply(
                 lambda x: len(set(x))
                 if isinstance(x, list)
@@ -164,12 +162,7 @@ class LyricsAnalyzer:
         """
         column = self.df[self.text_column]
 
-        non_null = column.dropna()
-
-        if non_null.empty:
-            return []
-
-        if isinstance(non_null.iloc[0], list):
+        if self._use_tokenized_text():
             words = []
 
             for tokens in column:
@@ -190,15 +183,6 @@ class LyricsAnalyzer:
         Return word frequencies across all lyrics.
         """
         return Counter(self._words())
-
-
-    def _uses_tokenized_text(self) -> bool:
-        column = self.df[self.text_column].dropna()
-
-        return (
-            not column.empty
-            and isinstance(column.iloc[0], list)
-        )
 
 
     # ======================================================
@@ -474,6 +458,8 @@ class LyricsAnalyzer:
         Returns:
             A DataFrame containing matching songs.
         """
+        column = self.df[self.text_column]
+
         if self._uses_tokenized_text():
             mask = column.apply(
                 lambda x: (
