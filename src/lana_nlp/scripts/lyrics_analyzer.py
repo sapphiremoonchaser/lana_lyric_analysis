@@ -278,8 +278,15 @@ class LyricsAnalyzer:
             func: textstat function to apply
             column_name: output column
         """
-        self.df[column_name] = self.df[self.text_column].apply(
-            lambda x: func(x) if isinstance(x, str) else 0
+        self.df[column_name] = (
+            self.df[self.text_column]
+            .apply(
+                lambda x: func(
+                    self._text_for_analysis(x)
+                )
+                if x
+                else 0
+            )
         )
 
 
