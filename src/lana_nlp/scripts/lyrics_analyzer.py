@@ -13,6 +13,7 @@ estimated reading time for each song.
 
 import pandas as pd
 from collections import Counter
+from collections import defaultdict
 from textstat import textstat
 from textblob import TextBlob
 
@@ -22,7 +23,7 @@ import nltk
 #     'opinion_lexicon'
 # )
 from nltk.sentiment import SentimentIntensityAnalyzer
-from nltk.corpus import opinion_lexicon, words
+from nltk.corpus import opinion_lexicon
 
 
 class LyricsAnalyzer:
@@ -68,6 +69,8 @@ class LyricsAnalyzer:
 
         self.sia = SentimentIntensityAnalyzer()
 
+        self.emotion_lexicon = self._load_emotion_lexicon()
+
         self._calculate_derived_columns()
 
 
@@ -91,7 +94,7 @@ class LyricsAnalyzer:
     def _to_tokens(
         self,
         text: str | list
-    ) -> list[]:
+    ) -> list[str]:
         """
         If lyrics are a string turn them to tokens.
         """
@@ -294,6 +297,23 @@ class LyricsAnalyzer:
                 else 0
             )
         )
+
+
+    def _load_emotion_lexicon(self) -> dict:
+        """
+        Load NRC emotion lexicon.
+        """
+        lexicon_df = pd.read_csv(
+            "data/raw/NRC.csv"
+        )
+
+        lexicon = defaultdict(list)
+
+        for _, row in lexicon_df.iterrows():
+            if row["association"] == 1:
+                lexicon[row["word"]].append(row["emotion"])
+
+        return dict(lexicon)
 
 
     # ======================================================
