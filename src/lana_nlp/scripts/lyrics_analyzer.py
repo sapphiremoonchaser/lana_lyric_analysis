@@ -91,7 +91,7 @@ class LyricsAnalyzer:
     def _to_tokens(
         self,
         text: str | list
-    ):
+    ) -> list[]:
         """
         If lyrics are a string turn them to tokens.
         """
@@ -190,7 +190,7 @@ class LyricsAnalyzer:
             )
 
 
-    def _calculate_reading_time(self):
+    def _calculate_reading_time(self) -> None:
         """
         Calculate the reading time based on 200 words per minute.
 
@@ -277,7 +277,7 @@ class LyricsAnalyzer:
         self,
         func,
         column_name
-    ):
+    ) -> None:
         """
         Apply textstat library for readability metrics.
         Args:
@@ -535,7 +535,9 @@ class LyricsAnalyzer:
                 min_words=("word_count", "min"),
                 max_words=("word_count", "max"),
                 total_words=("word_count", "sum"),   # Total words
-                avg_reading_minutes=("reading_minutes", "mean") # Average reading time
+                avg_reading_minutes=("reading_minutes", "mean"), # Average reading time
+                avg_sentiment=("sentiment_polarity", "mean"), # Average sentiment
+                avg_subjectivity=("subjectivity", "mean") # Average subjectivity
             )
             .sort_values(
                 by="songs",
@@ -592,7 +594,7 @@ class LyricsAnalyzer:
         """
         column = self.df[self.text_column]
 
-        if self._uses_tokenized_text():
+        if self._use_tokenized_text():
             mask = column.apply(
                 lambda x: (
                     phrase.lower() in " ".join(x).lower()
