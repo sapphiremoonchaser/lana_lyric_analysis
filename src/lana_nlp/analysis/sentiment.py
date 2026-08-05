@@ -231,3 +231,16 @@ class SentimentAnalyzer:
         )
 
 
+    def calculate_all(self) -> pd.DataFrame:
+        """
+        Calculate all sentiment columns.
+        """
+
+        self.sentiment_polarity()
+        self.sentiment_subjectivity()
+        self.emotion_scores()
+        self.positive_word_ratio()
+        self.negative_word_ratio()
+
+        return self.df
+
