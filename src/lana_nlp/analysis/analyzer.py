@@ -15,6 +15,7 @@ import pandas as pd
 from nltk.sentiment import SentimentIntensityAnalyzer
 from nltk.corpus import opinion_lexicon
 
+from lana_nlp.features.feature_engineering import FeatureEngineering
 
 class Analyzer:
     """
@@ -67,15 +68,17 @@ class Analyzer:
             None. Adds 3 columns to self.df.
         """
 
-        self._calculate_word_count()
-        self._calculate_unique_words()
-        self._calculate_syllable_count()
-        self._calculate_reading_time()
-        self._calculate_line_count()
-        self.sentiment_polarity()
-        self.sentiment_subjectivity()
-        self.positive_word_ratio()
-        self.negative_word_ratio()
+        calculations = FeatureEngineering(self.df)
+
+        calculations._calculate_word_count()
+        calculations._calculate_unique_words()
+        calculations._calculate_syllable_count()
+        calculations._calculate_reading_time()
+        calculations._calculate_line_count()
+        calculations.sentiment_polarity()
+        calculations.sentiment_subjectivity()
+        calculations.positive_word_ratio()
+        calculations.negative_word_ratio()
 
 
     def _to_text(

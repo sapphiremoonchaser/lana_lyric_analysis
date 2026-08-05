@@ -14,7 +14,7 @@ class FeatureEngineering:
         self.text_column = text_column
 
 
-    def _calculate_word_count(self) -> None:
+    def calculate_word_count(self) -> None:
         """
         Calculate word count by song.
 
@@ -39,7 +39,7 @@ class FeatureEngineering:
             )
 
 
-    def _calculate_unique_words(self) -> None:
+    def calculate_unique_words(self) -> None:
         """
         Calculate unique words by song.
 
@@ -64,7 +64,7 @@ class FeatureEngineering:
                 ))
 
 
-    def _calculate_syllable_count(self) -> None:
+    def calculate_syllable_count(self) -> None:
         """
         Calculate the total number of syllables in each song.
 
@@ -91,7 +91,7 @@ class FeatureEngineering:
             )
 
 
-    def _calculate_reading_time(self) -> None:
+    def calculate_reading_time(self) -> None:
         """
         Calculate the reading time based on 200 words per minute.
 
@@ -103,7 +103,7 @@ class FeatureEngineering:
         self.df["reading_minutes"] = self.df["word_count"] / 200
 
 
-    def _calculate_line_count(self) -> None:
+    def calculate_line_count(self) -> None:
         """
         Calculate the number of lines per song.
         """
