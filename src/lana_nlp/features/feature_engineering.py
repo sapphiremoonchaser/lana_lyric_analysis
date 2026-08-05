@@ -2,6 +2,7 @@
 Calculate derived metrics around words, line count, and reading time.
 """
 from textstat import textstat
+import pandas as pd
 
 
 class FeatureEngineering:
@@ -129,10 +130,12 @@ class FeatureEngineering:
         )
 
 
-    def calculate_all(self) -> None:
+    def calculate_all(self) -> pd.DataFrame:
         """Calculate all derived features."""
         self.calculate_word_count()
         self.calculate_unique_words()
         self.calculate_syllable_count()
         self.calculate_line_count()
         self.calculate_reading_time()
+
+        return self.df
