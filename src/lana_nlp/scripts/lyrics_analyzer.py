@@ -336,7 +336,7 @@ class LyricsAnalyzer:
         Load NRC emotion lexicon.
         """
         lexicon_df = pd.read_csv(
-            "data/raw/NRC-Emotion-Lexicon.csv"
+            "data/raw/NRC-Emotion-Lexicon.csv",
         )
 
         lexicon = {}

@@ -1452,7 +1452,7 @@ def test_calculate_emotions_normalization(sample_df):
     analyzer = LyricsAnalyzer(sample_df, text_column="lyrics")
 
     scores = analyzer._calculate_emotions(
-        ["Positive", "Joy", "Negative", "Sadness"]
+        ["happy", "abandon"]
     )
 
-    assert scores["Positive"] == pytest.approx(0.25)
+    assert scores["Positive"] == pytest.approx(1 / 7)
