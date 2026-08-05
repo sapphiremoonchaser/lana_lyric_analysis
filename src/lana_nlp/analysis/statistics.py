@@ -26,6 +26,27 @@ class StatisticsAnalyzer:
         self.df = df.copy()
 
 
+    # Overall
+    def total_word_count(self) -> int:
+        """
+        Returns total number of words in all songs.
+        """
+        return int(
+            self.df["word_count"].sum()
+        )
+
+
+    def average_song_length(self) -> float:
+        """
+        Returns the average length of all songs.
+        """
+        return (
+            self.df["word_count"]
+            .mean()
+        )
+
+
+    # Songs
     def song_length_stats(self) -> dict[str, float]:
         """
         Calculate descriptive statistics for songs length.
@@ -52,82 +73,6 @@ class StatisticsAnalyzer:
         }
 
         return stats
-
-
-    def summary_by_album(self) -> pd.DataFrame:
-        """
-        Calculated summary statistics for each album.
-
-        Statistics include:
-            - number of songs
-            - average words per song
-            - total words on the album
-
-        Returns:
-            A DataFrame containing one row per album.
-        """
-        return (
-            self.df
-            .groupby("album")
-            .agg(
-                songs=("song", "count"),           # Number of songs
-                avg_words=("word_count", "mean"),   # Average song length
-                median_words=("word_count", "median"), # Median number of words
-                min_words=("word_count", "min"),
-                max_words=("word_count", "max"),
-                total_words=("word_count", "sum"),   # Total words
-                avg_reading_minutes=("reading_minutes", "mean") # Average reading time
-            )
-            .sort_values(
-                by="songs",
-                ascending=False
-            )
-        )
-
-
-    def summary_by_year(self) -> pd.DataFrame:
-        """
-        Calculated summary statistics for each year.
-        """
-        return (
-            self.df
-            .groupby("year")
-            .agg(
-                songs=("song", "count"),
-                avg_words=("word_count", "mean"),
-                median_words=("word_count", "median"),
-                min_words=("word_count", "min"),
-                max_words=("word_count", "max"),
-                total_words=("word_count", "sum"),
-                avg_reading_minutes=("reading_minutes", "mean") # Average reading time
-            )
-        )
-
-
-    def longest_album(self) -> str:
-        """
-        Returns the longest album by word count.
-        """
-        if self.df.empty:
-            return ""
-
-        return (
-            self.summary_by_album()
-            ["total_words"]
-            .idxmax()
-        )
-
-
-    def average_song_length_by_album(self) -> pd.DataFrame:
-        """
-        Returns the average length of songs by album by word count.
-        """
-        stats = self.summary_by_album()
-
-        stats.reset_index(inplace=True)
-
-        return stats[["album", "avg_words"]]
-
 
     def longest_songs(
         self,
@@ -180,6 +125,63 @@ class StatisticsAnalyzer:
         )
 
 
+    # Album
+    def summary_by_album(self) -> pd.DataFrame:
+        """
+        Calculated summary statistics for each album.
+
+        Statistics include:
+            - number of songs
+            - average words per song
+            - total words on the album
+
+        Returns:
+            A DataFrame containing one row per album.
+        """
+        return (
+            self.df
+            .groupby("album")
+            .agg(
+                songs=("song", "count"),           # Number of songs
+                avg_words=("word_count", "mean"),   # Average song length
+                median_words=("word_count", "median"), # Median number of words
+                min_words=("word_count", "min"),
+                max_words=("word_count", "max"),
+                total_words=("word_count", "sum"),   # Total words
+                avg_reading_minutes=("reading_minutes", "mean") # Average reading time
+            )
+            .sort_values(
+                by="songs",
+                ascending=False
+            )
+        )
+
+
+    def longest_album(self) -> str | None:
+        """
+        Returns the longest album by word count.
+        """
+        if self.df.empty:
+            return ""
+
+        return (
+            self.summary_by_album()
+            ["total_words"]
+            .idxmax()
+        )
+
+
+    def average_song_length_by_album(self) -> pd.DataFrame:
+        """
+        Returns the average length of songs by album by word count.
+        """
+        stats = self.summary_by_album()
+
+        stats.reset_index(inplace=True)
+
+        return stats[["album", "avg_words"]]
+
+
     def number_of_songs_by_album(self) -> pd.Series:
         """
         Count the number of songs on each album.
@@ -199,22 +201,26 @@ class StatisticsAnalyzer:
         )
 
 
-    def total_word_count(self) -> int:
+    # Time
+    def summary_by_year(self) -> pd.DataFrame:
         """
-        Returns total number of words in all songs.
-        """
-        return int(
-            self.df["word_count"].sum()
-        )
-
-
-    def average_song_length(self) -> float:
-        """
-        Returns the average length of all songs.
+        Calculated summary statistics for each year.
         """
         return (
-            self.df["word_count"]
-            .mean()
+            self.df
+            .groupby("year")
+            .agg(
+                songs=("song", "count"),
+                avg_words=("word_count", "mean"),
+                median_words=("word_count", "median"),
+                min_words=("word_count", "min"),
+                max_words=("word_count", "max"),
+                total_words=("word_count", "sum"),
+                avg_reading_minutes=("reading_minutes", "mean") # Average reading time
+            )
         )
+
+
+
 
 
