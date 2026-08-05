@@ -203,3 +203,13 @@ class StatisticsAnalyzer:
         )
 
 
+    def average_song_length(self) -> float:
+        """
+        Returns the average length of all songs.
+        """
+        return (
+            self.df["word_count"]
+            .mean()
+        )
+
+
