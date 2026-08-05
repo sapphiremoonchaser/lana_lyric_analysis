@@ -108,6 +108,9 @@ class StatisticsAnalyzer:
         """
         Returns the longest album by word count.
         """
+        if self.df.empty:
+            return ""
+
         return (
             self.summary_by_album()
             ["total_words"]
