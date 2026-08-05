@@ -12,6 +12,8 @@ from textstat import textstat
 import pandas as pd
 from collections.abc import Callable
 
+from lana_nlp.utils.text_utils import to_text
+
 
 class ReadabilityAnalyzer:
     """
@@ -30,25 +32,6 @@ class ReadabilityAnalyzer:
         self.text_column = text_column
 
 
-    def _to_text(
-        self,
-        text: str | list[str] | None
-    ) -> str:
-        """
-        Helper fuctions to covert tokens to a string.
-
-        Args:
-            text: lyrics or list of lyrics.
-        """
-        if isinstance(text, list):
-            return " ".join(text)
-
-        if isinstance(text, str):
-            return text
-
-        return ""
-
-
     def _apply_textstat(
         self,
         func: Callable[[str], float],
@@ -64,7 +47,7 @@ class ReadabilityAnalyzer:
             self.df[self.text_column]
             .apply(
                 lambda x: func(
-                    self._to_text(x)
+                    to_text(x)
                 )
             )
         )
