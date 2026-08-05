@@ -12,7 +12,8 @@ dependencies =[
     "scikit-learn",
     "textblob",
     "textstat",
-    "wordcloud"
+    "wordcloud",
+    "vadersentiment"
 ]
 
 [pyproject.optional-dependencies]
