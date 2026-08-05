@@ -192,3 +192,14 @@ class StatisticsAnalyzer:
             .size()                 # Count songs in each group
             .sort_values(ascending=False) # Show largest albums first
         )
+
+
+    def total_word_count(self) -> int:
+        """
+        Returns total number of words in all songs.
+        """
+        return int(
+            self.df["word_count"].sum()
+        )
+
+
