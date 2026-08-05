@@ -66,8 +66,6 @@ class ReadabilityAnalyzer:
                 lambda x: func(
                     self._to_text(x)
                 )
-                if x
-                else 0
             )
         )
 
