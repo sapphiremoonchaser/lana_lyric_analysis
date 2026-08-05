@@ -118,3 +118,12 @@ class FeatureEngineering:
                     else 0
             )
         )
+
+
+    def calculate_all(self) -> None:
+        """Calculate all derived features."""
+        self.calculate_word_count()
+        self.calculate_unique_words()
+        self.calculate_syllable_count()
+        self.calculate_line_count()
+        self.calculate_reading_time()
