@@ -11,6 +11,8 @@ estimated reading time for each song.
 """
 from collections import Counter
 
+import pandas as pd
+
 
 class VocabularyAnalyzer:
     """
@@ -19,6 +21,14 @@ class VocabularyAnalyzer:
     This class provides methods for calculating descriptive statistics about the
     song's vocabulary, top words used, and lexical diversity.
     """
+    def __init__(
+        self,
+        df: pd.DataFrame,
+        text_column: str = "lyrics",
+    ) -> None:
+        self.df = df
+        self.text_column = text_column
+
 
     def _words(self) -> list[str]:
         """
