@@ -151,68 +151,6 @@ class LyricsAnalyzer:
         )
 
 
-    def _calculate_emotions(
-        self,
-        words: list
-    ) -> dict:
-        """
-        Calculate scores for the emotion lexicon.
-        """
-        if isinstance(words, str):
-            words = words.split()
-
-        emotions = Counter()
-
-        for word in words:
-            if word in self.emotion_lexicon:
-                for emotion in self.emotion_lexicon[word]:
-                    emotions[emotion] += 1
-
-        total = sum(emotions.values())
-
-        if total == 0:
-            return {}
-
-        return {
-            emotion: count / total
-            for emotion, count in emotions.items()
-        }
-
-
-    def _load_emotion_lexicon(self) -> dict:
-        """
-        Load NRC emotion lexicon.
-        """
-        lexicon_df = pd.read_csv(
-            "data/raw/NRC-Emotion-Lexicon.csv",
-        )
-
-        lexicon = {}
-
-        emotion_columns = [
-            "Positive",
-            "Negative",
-            "Anger",
-            "Anticipation",
-            "Disgust",
-            "Fear",
-            "Joy",
-            "Sadness",
-            "Surprise",
-            "Trust"
-        ]
-
-        lexicon = {
-            row["English (en)"]: [
-                emotion
-                for emotion in emotion_columns
-                if row[emotion] == 1
-            ]
-            for _, row in lexicon_df.iterrows()
-        }
-
-        return lexicon
-
 
     # ======================================================
     # Dataset information
