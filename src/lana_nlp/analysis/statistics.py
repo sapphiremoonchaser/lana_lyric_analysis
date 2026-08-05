@@ -118,27 +118,6 @@ class StatisticsAnalyzer:
         )
 
 
-    def average_album_sentiment(self) -> pd.Series:
-        """
-        Calculate average sentiment polarity by album.
-
-        Returns:
-            Mean sentiment score per album.
-        """
-
-        if "sentiment_polarity" not in self.df.columns:
-            self.sentiment_polarity()
-
-        sentiment = (
-            self.df
-            .dropna(subset=["album"])
-            .groupby("album")["sentiment_polarity"]
-            .mean()
-        )
-
-        return sentiment.fillna(0.0)
-
-
     def average_song_length_by_album(self) -> pd.DataFrame:
         """
         Returns the average length of songs by album by word count.
