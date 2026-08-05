@@ -15,7 +15,7 @@ import pandas as pd
 from nltk.sentiment import SentimentIntensityAnalyzer
 from nltk.corpus import opinion_lexicon
 
-from lana_nlp.features.feature_engineering import LyricsFeatures
+from lana_nlp.features.lyrics_features import LyricsFeatures
 
 class Analyzer:
     """
