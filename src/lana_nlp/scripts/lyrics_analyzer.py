@@ -16,6 +16,8 @@ from itertools import count
 import pandas as pd
 from collections import Counter
 from collections import defaultdict
+
+from numpy.ma.extras import column_stack
 from textstat import textstat
 from textblob import TextBlob
 
@@ -227,10 +229,13 @@ class LyricsAnalyzer:
     def _calculate_emotions(
         self,
         words: list
-    ) -> Counter:
+    ) -> dict:
         """
         Calculate scores for the emotion lexicon.
         """
+        if isinstance(words, str):
+            words = words.split()
+
         emotions = Counter()
 
         for word in words:
@@ -238,7 +243,15 @@ class LyricsAnalyzer:
                 for emotion in self.emotion_lexicon[word]:
                     emotions[emotion] += 1
 
-        return emotions
+        total = sum(emotions.values())
+
+        if total == 0:
+            return {}
+
+        return {
+            emotion: count / total
+            for emotion, count in emotions.items()
+        }
 
 
     def _calculate_derived_columns(self) -> None:
@@ -323,16 +336,34 @@ class LyricsAnalyzer:
         Load NRC emotion lexicon.
         """
         lexicon_df = pd.read_csv(
-            "data/raw/NRC.csv"
+            "data/raw/NRC-Emotion-Lexicon.csv"
         )
 
-        lexicon = defaultdict(list)
+        lexicon = {}
+
+        emotion_columns = [
+            "Positive",
+            "Negative",
+            "Anger",
+            "Anticipation",
+            "Disgust",
+            "Fear",
+            "Joy",
+            "Sadness",
+            "Surprise",
+            "Trust"
+        ]
 
         for _, row in lexicon_df.iterrows():
-            if row["association"] == 1:
-                lexicon[row["word"]].append(row["emotion"])
+            emotions = []
 
-        return dict(lexicon)
+            for emotion in emotion_columns:
+                if row[emotion] == 1:
+                    emotions.append(emotion)
+
+            lexicon[row["English (en)"]] = emotions
+
+        return lexicon
 
 
     # ======================================================
@@ -896,13 +927,3 @@ class LyricsAnalyzer:
     # Emotions
     # ======================================================
 
-    def normalize_emotions(emotions):
-        total = sum(emotions.values())
-
-        if total == 0:
-            return {}
-
-        return {
-            emotion: count / total
-            for emotion, count in emotions.items()
-        }
