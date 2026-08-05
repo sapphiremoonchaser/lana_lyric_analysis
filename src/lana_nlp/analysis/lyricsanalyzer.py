@@ -10,12 +10,18 @@ The analyzer operates on a pandas DataFrame containing song metadata
 and lyrics, and creates derived metrics such as word count and
 estimated reading time for each song.
 """
-import pandas as pd
+from traceback import format_list
 
-from nltk.sentiment import SentimentIntensityAnalyzer
-from nltk.corpus import opinion_lexicon
+import pandas as pd
+from jedi.third_party.typeshed.stubs.flake8.flake8.statistics import Statistics
 
 from lana_nlp.features.lyrics_features import LyricsFeatures
+from lana_nlp.analysis.sentiment import SentimentAnalyzer
+from lana_nlp.analysis.statistics import StatisticsAnalyzer
+from lana_nlp.analysis.vocabulary import VocabularyAnalyzer
+from lana_nlp.analysis.readability import ReadabilityAnalyzer
+from nltk.lm import Vocabulary
+
 
 class LyricsAnalyzer:
     """
@@ -61,40 +67,6 @@ class LyricsAnalyzer:
         self.df = calculations.df
 
 
-    def _to_text(
-        self,
-        text
-    ) -> str:
-        """
-        If lyrics are tokens turn them into a string.
-        """
-
-        if isinstance(text, list):
-            return " ".join(text)
-
-        if isinstance(text, str):
-            return text
-
-        return ""
-
-
-    def _to_tokens(
-        self,
-        text: str | list
-    ) -> list[str]:
-        """
-        If lyrics are a string turn them to tokens.
-        """
-        if isinstance(text, list):
-            return text
-
-        if isinstance(text, str):
-            return text.lower().split()
-
-        return []
-
-
-
     def number_of_songs(self) -> int:
         """
         Return the total number of songs in the dataset.
@@ -102,6 +74,9 @@ class LyricsAnalyzer:
         Returns:
             The total number of rows (songs).
         """
+        if self.df.empty:
+            return 0
+
         return len(self.df)
 
 
@@ -114,6 +89,9 @@ class LyricsAnalyzer:
         Returns:
             A list of unique album names.
         """
+        if self.df.empty:
+            return []
+
         return sorted(self.df["album"].dropna().unique())
 
 
@@ -131,8 +109,11 @@ class LyricsAnalyzer:
             DataFrame with songs from specified album.
         """
         return self.df[
-            self.df["album"].fillna("").str.lower() == album.lower()
-        ]
+            self.df["album"]
+            .astype(str)
+            .str.lower()
+            .eq(album.lower())
+        ].copy()
 
 
     def songs_by_year(
@@ -188,3 +169,23 @@ class LyricsAnalyzer:
                 na=False
             )
         return self.df[mask]
+
+
+
+    def calculate_all(self) -> pd.DataFrame:
+        """
+        Calculate all features.
+        """
+
+        features = LyricsFeatures(self.df)
+        self.df = features.calculate_all()
+
+        self.statistics = StatisticsAnalyzer(self.df)
+        self.vocabulary = VocabularyAnalyzer(self.df)
+        self.sentiment = SentimentAnalyzer(self.df)
+        self.readability = ReadabilityAnalyzer(self.df)
+
+        return self.df
+
+
+
