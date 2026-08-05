@@ -1,8 +1,8 @@
 from pathlib import Path
 
-from src.lana_nlp.scripts.data_loader import LyricsDataLoader
+from lana_nlp.preprocessing.data_loader import LyricsDataLoader
 from src.lana_nlp.scripts.lyrics_analyzer import LyricsAnalyzer
-from src.lana_nlp.scripts.text_cleaner import TextCleaner
+from lana_nlp.preprocessing.text_cleaner import TextCleaner
 
 # Load the lyrics csv
 loader = LyricsDataLoader(
