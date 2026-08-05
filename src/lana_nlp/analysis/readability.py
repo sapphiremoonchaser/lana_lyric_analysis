@@ -119,3 +119,19 @@ class ReadabilityAnalyzer:
             textstat.coleman_liau,
             "coleman_liau"
         )
+
+
+    def calculate_all(self) -> pd.DataFrame:
+        """
+        Calculate all readability metrics.
+
+        Returns:
+            DataFrame with readability metrics.
+        """
+        self.flesch_reading_ease()
+        self.flesch_kincaid()
+        self.gunning_fog()
+        self.coleman_liau()
+
+        return self.df
+
