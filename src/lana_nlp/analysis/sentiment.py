@@ -14,6 +14,20 @@ class SentimentAnalyzer:
     Measure polarity, subjectivity, and positive and negative sentiment ratios.
     """
 
+    def __init__(
+        self,
+        df: pd.DataFrame,
+        text_column: str = "lyrics"
+    ):
+        self.df = df
+        self.text_column = text_column
+
+        self.emotion_lexicon = self._load_emotion_lexicon()
+
+        self.positive_words = set()
+        self.negative_words = set()
+
+
     def _load_emotion_lexicon(self) -> dict:
         """
         Load NRC emotion lexicon.
