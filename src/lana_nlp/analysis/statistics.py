@@ -1,14 +1,11 @@
 """
-Analyze song lyrics and compute descriptive statistics.
+Analyze descriptive statistics for song lyrics.
 
-This module contains the LyricsAnalyzer class, which provides methods
-for exploring a collection of song lyrics. It calculates song and album
-statistics, search lyrics, measures vocabulary usage, and computes
-basic NLP metrics such as lexical diversity and word frequency.
+This module contains the StatisticsAnalyzer class, which calculates aggregate
+statistics across songs, albums, and release years.
 
-The analyzer operates on a pandas DataFrame containing song metadata
-and lyrics, and creates derived metrics such as word count and
-estimated reading time for each song.
+Metrics include song length distributions, album summaries, ranking of songs by
+length, and sentiment summaries.
 """
 import pandas as pd
 
@@ -22,6 +19,12 @@ class StatisticsAnalyzer:
     of songs. Derived columns such as word_count and estimated reading
     time are calculated once during initialization.
     """
+    def __init__(
+        self,
+        df: pd.DataFrame
+    ) -> None:
+        self.df = df.copy()
+
 
     def song_length_stats(self) -> dict[str, float]:
         """
@@ -73,9 +76,7 @@ class StatisticsAnalyzer:
                 min_words=("word_count", "min"),
                 max_words=("word_count", "max"),
                 total_words=("word_count", "sum"),   # Total words
-                avg_reading_minutes=("reading_minutes", "mean"), # Average reading time
-                avg_sentiment=("sentiment_polarity", "mean"), # Average sentiment
-                avg_subjectivity=("subjectivity", "mean") # Average subjectivity
+                avg_reading_minutes=("reading_minutes", "mean") # Average reading time
             )
             .sort_values(
                 by="songs",
