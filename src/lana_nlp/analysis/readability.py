@@ -8,24 +8,8 @@ The analyzer operates on a pandas DataFrame containing song metadata
 and lyrics, and creates derived metrics such as word count and
 estimated reading time for each song.
 """
-from functools import total_ordering
-from itertools import count
-
-import pandas as pd
-from collections import Counter
-from collections import defaultdict
-
-from numpy.ma.extras import column_stack
 from textstat import textstat
-from textblob import TextBlob
-
-import nltk
-# nltk.download(
-#     'vader_lexicon',
-#     'opinion_lexicon'
-# )
-from nltk.sentiment import SentimentIntensityAnalyzer
-from nltk.corpus import opinion_lexicon
+import pandas as pd
 
 
 class ReadabilityAnalyzer:
@@ -35,6 +19,34 @@ class ReadabilityAnalyzer:
     This class provides methods for modeling readability using flesch reading ease,
     flesch kincaid, gunning fog, and coleman liau.
     """
+
+    def __init__(
+        self,
+        df: pd.DataFrame,
+        text_column: str = "lyrics"
+    ):
+        self.df = df
+        self.text_column = text_column
+
+
+    def _to_text(
+        self,
+        text: str | list[str] | None
+    ) -> str:
+        """
+        Helper fuctions to covert tokens to a string.
+
+        Args:
+            text: lyrics or list of lyrics.
+        """
+        if isinstance(text, list):
+            return " ".join(text)
+
+        if isinstance(text, str):
+            return text
+
+        return ""
+
 
     def _apply_textstat(
         self,
