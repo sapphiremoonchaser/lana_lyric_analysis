@@ -7,6 +7,11 @@ from collections import Counter
 from textblob import TextBlob
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
+from lana_nlp.utils.text_utils import (
+    to_text,
+    to_tokens
+)
+
 
 class SentimentAnalyzer:
     """
@@ -123,7 +128,7 @@ class SentimentAnalyzer:
         self.df["sentiment_polarity"] = self.df[self.text_column].apply(
             lambda x: (
                 self.sia.polarity_scores(
-                    self._to_text(x)
+                    to_text(x)
                 )["compound"]
             )
         )
@@ -144,7 +149,7 @@ class SentimentAnalyzer:
         self.df["subjectivity"] = self.df[self.text_column].apply(
             lambda x: (
                 TextBlob(
-                    self._to_text(x)
+                    to_text(x)
                 ).sentiment.subjectivity
             )
         )
@@ -159,7 +164,7 @@ class SentimentAnalyzer:
         """
 
         def calculate_ratio(text: str) -> float:
-            words = self._to_tokens(text)
+            words = to_tokens(text)
 
             if not words:
                 return 0.0
@@ -186,7 +191,7 @@ class SentimentAnalyzer:
         """
 
         def calculate_ratio(text):
-            words = self._to_tokens(text)
+            words = to_tokens(text)
 
             if not words:
                 return 0.0
@@ -213,7 +218,7 @@ class SentimentAnalyzer:
             self.df[self.text_column]
             .apply( # Calculate emotion columns
                 lambda x: self._calculate_emotions(
-                    self._to_tokens(x) # use tokens instead of string lyrics
+                    to_tokens(x) # use tokens instead of string lyrics
                 )
             )
         )
