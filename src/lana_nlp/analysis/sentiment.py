@@ -5,6 +5,7 @@ import pandas as pd
 from collections import Counter
 
 from textblob import TextBlob
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 
 class SentimentAnalyzer:
@@ -26,6 +27,8 @@ class SentimentAnalyzer:
 
         self.positive_words = set()
         self.negative_words = set()
+
+        self.sia = SentimentIntensityAnalyzer()
 
 
     def _load_emotion_lexicon(self) -> dict:
@@ -70,6 +73,19 @@ class SentimentAnalyzer:
         """
         Calculate scores for the emotion lexicon.
         """
+        EMOTIONS = [
+            "Positive",
+            "Negative",
+            "Anger",
+            "Anticipation",
+            "Disgust",
+            "Fear",
+            "Joy",
+            "Sadness",
+            "Surprise",
+            "Trust"
+        ]
+
         if isinstance(words, str):
             words = words.split()
 
@@ -86,8 +102,8 @@ class SentimentAnalyzer:
             return {}
 
         return {
-            emotion: count / total
-            for emotion, count in emotions.items()
+            emotion: emotions[emotion] / total
+            for emotion in EMOTIONS
         }
 
 
@@ -95,7 +111,10 @@ class SentimentAnalyzer:
         """
         Calculate VADER sentiment polarity scores.
 
-        The compound score ranges from -1 (negative) to 1 (positive).
+        Polarity ranges from:
+            -1.0 = negative
+            0.0 = neutral
+            1.0 = positive
 
         Returns:
             None. Adds "sentiment_polarity" to self.df.
@@ -183,3 +202,32 @@ class SentimentAnalyzer:
             self.df[self.text_column]
             .apply(calculate_ratio)
         )
+
+
+    def emotion_scores(self) -> None:
+        """
+        Add NRC emotion scores to dataframe.
+        """
+
+        emotions = (
+            self.df[self.text_column]
+            .apply( # Calculate emotion columns
+                lambda x: self._calculate_emotions(
+                    self._to_tokens(x) # use tokens instead of string lyrics
+                )
+            )
+        )
+
+        emotion_df = pd.DataFrame(
+            emotions.tolist()
+        ).fillna(0)
+
+        self.df = pd.concat(
+            [
+                self.df,
+                emotion_df.add_prefix("emotion")
+            ],
+            axis=1
+        )
+
+
