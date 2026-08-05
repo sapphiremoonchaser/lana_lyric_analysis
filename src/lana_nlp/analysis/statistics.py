@@ -108,18 +108,11 @@ class StatisticsAnalyzer:
         """
         Returns the longest album by word count.
         """
-        stats = self.summary_by_album()
-
-        # Handle missing dataframe
-        if stats.empty:
-            return ""
-
-        sorted_songs = stats.sort_values(
-            by="total_words",
-            ascending=False
+        return (
+            self.summary_by_album()
+            ["total_words"]
+            .idxmax()
         )
-
-        return sorted_songs.index[0]
 
 
     def average_album_sentiment(self) -> pd.Series:
