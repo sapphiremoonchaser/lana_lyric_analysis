@@ -15,7 +15,7 @@ import pandas as pd
 from nltk.sentiment import SentimentIntensityAnalyzer
 from nltk.corpus import opinion_lexicon
 
-from lana_nlp.features.feature_engineering import FeatureEngineering
+from lana_nlp.features.feature_engineering import LyricsFeatures
 
 class Analyzer:
     """
@@ -68,7 +68,7 @@ class Analyzer:
             None. Adds 3 columns to self.df.
         """
 
-        calculations = FeatureEngineering(self.df)
+        calculations = LyricsFeatures(self.df)
 
         calculations._calculate_word_count()
         calculations._calculate_unique_words()

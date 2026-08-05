@@ -5,12 +5,16 @@ from textstat import textstat
 import pandas as pd
 
 
-class FeatureEngineering:
+class LyricsFeatures:
     """
     Calculate word count, syllable count, line count, and reading time.
     """
 
-    def __init__(self, df, text_column):
+    def __init__(
+        self,
+        df: pd.DataFrame,
+        text_column: str
+    ):
         self.df = df
         self.text_column = text_column
 
