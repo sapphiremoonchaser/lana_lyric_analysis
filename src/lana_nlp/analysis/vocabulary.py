@@ -9,6 +9,7 @@ The VocabularyAnalyzer operates on a pandas DataFrame containing song metadata
 and lyrics, and creates derived metrics such as word count and
 estimated reading time for each song.
 """
+import re
 from collections import Counter
 
 import pandas as pd
@@ -30,7 +31,21 @@ class VocabularyAnalyzer:
         self.text_column = text_column
 
 
-    def _words(self) -> list[str]:
+    def _normalize_word(
+        self,
+        word: str,
+    ):
+        """
+        Remove punctuation and lowercase.
+        """
+        return re.sub(
+            r"[^\w']",
+            "",
+            word.lower(),
+        )
+
+
+    def _get_words(self) -> list[str]:
         """
         Return all lyrics as a single list of lowercase words.
 
@@ -58,13 +73,6 @@ class VocabularyAnalyzer:
         )
 
 
-    def _word_counter(self) -> Counter:
-        """
-        Return word frequencies across all lyrics.
-        """
-        return Counter(self._words())
-
-
     def word_frequency(self) -> Counter:
         """
         Calculate how many times each word appears across all lyrics.
@@ -73,7 +81,7 @@ class VocabularyAnalyzer:
             Counter mapping each word to the number of times it appears across the
             dataset.
         """
-        return self._word_counter()
+        return Counter(self._get_words())
 
 
     def top_n_words(
@@ -103,7 +111,7 @@ class VocabularyAnalyzer:
         Returns:
             The number of distinct words.
         """
-        words = self._words()
+        words = self._get_words()
 
         # Convert to a set to remove duplicates
         return len(set(words))
@@ -119,7 +127,7 @@ class VocabularyAnalyzer:
         Returns:
             A value between 0 and 1 representing vocabulary diversity.
         """
-        words = self._words()
+        words = self._get_words()
 
         # Avoid division by zero if there are no lyrics.
         if not words:
@@ -136,7 +144,7 @@ class VocabularyAnalyzer:
         Returns:
             The mean number of characters per word.
         """
-        words = self._words()
+        words = self._get_words()
 
         if not words:
             return 0.0
