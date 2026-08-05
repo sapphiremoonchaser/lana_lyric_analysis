@@ -12,7 +12,7 @@ estimated reading time for each song.
 from collections import Counter
 
 
-class LyricsAnalyzer:
+class VocabularyAnalyzer:
     """
     Analyze a dataset of song lyrics.
 

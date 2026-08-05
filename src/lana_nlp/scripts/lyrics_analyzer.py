@@ -179,30 +179,6 @@ class LyricsAnalyzer:
         }
 
 
-
-    def _apply_textstat(
-        self,
-        func,
-        column_name
-    ) -> None:
-        """
-        Apply textstat library for readability metrics.
-        Args:
-            func: textstat function to apply
-            column_name: output column
-        """
-        self.df[column_name] = (
-            self.df[self.text_column]
-            .apply(
-                lambda x: func(
-                    self._to_text(x)
-                )
-                if x
-                else 0
-            )
-        )
-
-
     def _load_emotion_lexicon(self) -> dict:
         """
         Load NRC emotion lexicon.
@@ -520,62 +496,6 @@ class LyricsAnalyzer:
             / len(words)
         )
 
-
-
-
-    # ======================================================
-    # Readability
-    # ======================================================
-
-    def flesch_reading_ease(self) -> None:
-        """
-        Calculate the flesch reading easy. It uses sentense length and syllables.
-
-        Returns:
-            None. Adds "flesch_reading_ease" to self.df.
-        """
-        self._apply_textstat(
-            textstat.flesch_reading_ease,
-            "flesch_reading_ease"
-        )
-
-
-    def flesch_kincaid(self) -> None:
-        """
-        Calculate the flesch kincaid reading ease.
-
-        Returns:
-            None. Adds "flesch_kincaid" to self.df.
-        """
-        self._apply_textstat(
-            textstat.flesch_kincaid_grade(),
-            "flesch_kincaid"
-        )
-
-
-    def gunning_fog(self) -> None:
-        """
-        Uses word complexity by number of syllables to calculate reading ease.
-        Returns:
-            None. Adds "gunning_fog" to self.df.
-        """
-        self._apply_textstat(
-            textstat.gunning_fog,
-            "gunning_fog"
-        )
-
-
-    def coleman_liau(self) -> None:
-        """
-        Uses average letters per word to calculate reading ease.
-
-        Returns:
-            None. Adds "coleman_liau" to self.df.
-        """
-        self._apply_textstat(
-            textstat.coleman_liau,
-            "coleman_liau"
-        )
 
 
     # ======================================================
