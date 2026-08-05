@@ -1415,4 +1415,44 @@ def test_positive_word_ratio_empty_lyrics():
 # Emotions
 # ======================================================
 
+def test_calculate_emotions_returns_dict(sample_df):
+    analyzer = LyricsAnalyzer(sample_df, text_column="lyrics")
 
+    scores = analyzer._calculate_emotions(
+        ["happy", "sad", "happy"]
+    )
+
+    assert isinstance(scores, dict)
+
+
+def test_calculate_emotions_between_zero_and_one(sample_df):
+    analyzer = LyricsAnalyzer(sample_df, text_column="lyrics")
+
+    scores = analyzer._calculate_emotions(
+        ["happy", "sad", "happy"]
+    )
+
+    assert all(
+        0 <= score <= 1
+        for score in scores.values()
+    )
+
+
+def test_calculate_emotions_unknown_words(sample_df):
+    analyzer = LyricsAnalyzer(sample_df, text_column="lyrics")
+
+    scores = analyzer._calculate_emotions(
+        ["asdf", "qwerty"]
+    )
+
+    assert scores == {}
+
+
+def test_calculate_emotions_normalization(sample_df):
+    analyzer = LyricsAnalyzer(sample_df, text_column="lyrics")
+
+    scores = analyzer._calculate_emotions(
+        ["Positive", "Joy", "Negative", "Sadness"]
+    )
+
+    assert scores["Positive"] == pytest.approx(0.25)

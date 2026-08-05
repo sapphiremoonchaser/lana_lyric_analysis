@@ -354,14 +354,14 @@ class LyricsAnalyzer:
             "Trust"
         ]
 
-        for _, row in lexicon_df.iterrows():
-            emotions = []
-
-            for emotion in emotion_columns:
-                if row[emotion] == 1:
-                    emotions.append(emotion)
-
-            lexicon[row["English (en)"]] = emotions
+        lexicon = {
+            row["English (en)"]: [
+                emotion
+                for emotion in emotion_columns
+                if row[emotion] == 1
+            ]
+            for _, row in lexicon_df.iterrows()
+        }
 
         return lexicon
 
