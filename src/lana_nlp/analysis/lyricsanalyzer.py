@@ -10,17 +10,13 @@ The analyzer operates on a pandas DataFrame containing song metadata
 and lyrics, and creates derived metrics such as word count and
 estimated reading time for each song.
 """
-from traceback import format_list
-
 import pandas as pd
-from jedi.third_party.typeshed.stubs.flake8.flake8.statistics import Statistics
 
 from lana_nlp.features.lyrics_features import LyricsFeatures
 from lana_nlp.analysis.sentiment import SentimentAnalyzer
 from lana_nlp.analysis.statistics import StatisticsAnalyzer
 from lana_nlp.analysis.vocabulary import VocabularyAnalyzer
 from lana_nlp.analysis.readability import ReadabilityAnalyzer
-from nltk.lm import Vocabulary
 
 
 class LyricsAnalyzer:
