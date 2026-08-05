@@ -1246,10 +1246,10 @@ def test_vocabulary_size_structure():
         text_column="lyrics"
     )
 
-    result = analyzer.vocabulary_size()
+    result = analyzer.unique_word_count()
 
     assert isinstance(result, int)
-    assert analyzer.vocabulary_size() == 3
+    assert analyzer.unique_word_count() == 3
 
 
 def test_vocabulary_size_empty_dataframe():
@@ -1262,7 +1262,7 @@ def test_vocabulary_size_empty_dataframe():
         text_column="lyrics"
     )
 
-    result = analyzer.vocabulary_size()
+    result = analyzer.unique_word_count()
 
     assert result == 0
 

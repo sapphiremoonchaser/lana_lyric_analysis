@@ -101,7 +101,7 @@ class VocabularyAnalyzer:
         return self.word_frequency().most_common(n)
 
 
-    def vocabulary_size(self) -> int:
+    def unique_word_count(self) -> int:
         """
         Calculate the size of the vocabulary.
 
