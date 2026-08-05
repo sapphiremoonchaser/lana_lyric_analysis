@@ -114,14 +114,6 @@ class Analyzer:
         return []
 
 
-    def _use_tokenized_text(self) -> bool:
-        non_null = self.df[self.text_column].dropna()
-
-        if non_null.empty:
-            return False
-
-        return isinstance(non_null.iloc[0], list)
-
 
     def number_of_songs(self) -> int:
         """
