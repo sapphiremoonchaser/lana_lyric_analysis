@@ -143,6 +143,8 @@ class StatisticsAnalyzer:
             A DataFrame containing the longest songs sorted by
             descending word count.
         """
+        if n <= 0:
+            return pd.DataFrame()
 
         return (
             self.df
@@ -168,6 +170,9 @@ class StatisticsAnalyzer:
             A DataFrame containing the shorted songs sorted by
             ascending word count.
         """
+        if n <= 0:
+            return pd.DataFrame()
+
         return (
             self.df
             .sort_values("word_count")
