@@ -10,6 +10,7 @@ estimated reading time for each song.
 """
 from textstat import textstat
 import pandas as pd
+from collections.abc import Callable
 
 
 class ReadabilityAnalyzer:
@@ -50,8 +51,8 @@ class ReadabilityAnalyzer:
 
     def _apply_textstat(
         self,
-        func,
-        column_name
+        func: Callable[[str], float],
+        column_name: str
     ) -> None:
         """
         Apply textstat library for readability metrics.
