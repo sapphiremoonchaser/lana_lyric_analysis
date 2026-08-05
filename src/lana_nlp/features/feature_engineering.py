@@ -14,6 +14,15 @@ class FeatureEngineering:
         self.text_column = text_column
 
 
+    def _use_tokenized_text(self) -> bool:
+        non_null = self.df[self.text_column].dropna()
+
+        if non_null.empty:
+            return False
+
+        return isinstance(non_null.iloc[0], list)
+
+
     def calculate_word_count(self) -> None:
         """
         Calculate word count by song.
