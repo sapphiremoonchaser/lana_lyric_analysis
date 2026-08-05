@@ -91,7 +91,7 @@ class ReadabilityAnalyzer:
             None. Adds "flesch_kincaid" to self.df.
         """
         self._apply_textstat(
-            textstat.flesch_kincaid_grade(),
+            textstat.flesch_kincaid_grade,
             "flesch_kincaid"
         )
 
