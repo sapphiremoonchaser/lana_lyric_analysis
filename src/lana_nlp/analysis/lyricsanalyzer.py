@@ -17,7 +17,7 @@ from nltk.corpus import opinion_lexicon
 
 from lana_nlp.features.lyrics_features import LyricsFeatures
 
-class Analyzer:
+class LyricsAnalyzer:
     """
     Analyze a dataset of song lyrics.
 
@@ -70,15 +70,9 @@ class Analyzer:
 
         calculations = LyricsFeatures(self.df)
 
-        calculations._calculate_word_count()
-        calculations._calculate_unique_words()
-        calculations._calculate_syllable_count()
-        calculations._calculate_reading_time()
-        calculations._calculate_line_count()
-        calculations.sentiment_polarity()
-        calculations.sentiment_subjectivity()
-        calculations.positive_word_ratio()
-        calculations.negative_word_ratio()
+        calculations.calculate_all()
+
+        self.df = calculations.df
 
 
     def _to_text(
