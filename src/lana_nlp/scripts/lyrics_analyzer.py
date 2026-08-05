@@ -179,40 +179,6 @@ class LyricsAnalyzer:
         }
 
 
-    def _words(self) -> list[str]:
-        """
-        Return all lyrics as a single list of lowercase words.
-
-        This private helper method centralizes text extraction so that
-        multiple analysis methods can reuse the same processing logic.
-
-        Returns:
-            A list containing every word from the song.
-        """
-        column = self.df[self.text_column]
-
-        if self._use_tokenized_text():
-            words = []
-
-            for tokens in column:
-                if isinstance(tokens, list):
-                    words.extend(tokens)
-
-            return [word.lower() for word in words]
-
-        return (
-            " ".join(column.fillna(""))
-            .lower()
-            .split()
-        )
-
-
-    def _word_counter(self) -> Counter:
-        """
-        Return word frequencies across all lyrics.
-        """
-        return Counter(self._words())
-
 
     def _apply_textstat(
         self,
@@ -536,22 +502,6 @@ class LyricsAnalyzer:
     # ======================================================
 
 
-    def top_n_words(
-        self,
-        n: int = 25
-    ) -> list[tuple[str, int]]:
-        """
-        Returns the most frequently occurring words.
-
-        Args:
-            n: Number of words to return.
-
-        Returns:
-            A list of (word, frequency) tuples sorted from
-            most common to least common.
-        """
-        return self.word_frequency().most_common(n)
-
 
     def average_word_length(self) -> float:
         """
@@ -571,51 +521,6 @@ class LyricsAnalyzer:
         )
 
 
-    def word_frequency(self) -> Counter:
-        """
-        Calculate how many times each word appears across all lyrics.
-
-        Returns:
-            Counter mapping each word to the number of times it appears across the
-            dataset.
-        """
-        return self._word_counter()
-
-
-    def vocabulary_size(self) -> int:
-        """
-        Calculate the size of the vocabulary.
-
-        Vocabulary size is the number of unique words that appear
-        across all lyrics.
-
-        Returns:
-            The number of distinct words.
-        """
-        words = self._words()
-
-        # Convert to a set to remove duplicates
-        return len(set(words))
-
-
-    def lexical_diversity(self) -> float:
-        """
-        Calculate lexical diversity.
-
-        Lexical diversity is the ratio of unique words to the total
-        number of words. Higher values indicate a more varied vocabulary.
-
-        Returns:
-            A value between 0 and 1 representing vocabulary diversity.
-        """
-        words = self._words()
-
-        # Avoid division by zero if there are no lyrics.
-        if not words:
-            return 0.0
-
-        # unique words / total number of words
-        return len(set(words)) / len(words)
 
 
     # ======================================================
