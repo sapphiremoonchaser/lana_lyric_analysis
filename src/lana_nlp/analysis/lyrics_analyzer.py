@@ -148,7 +148,10 @@ class LyricsAnalyzer:
         Calculate all features.
         """
 
-        features = LyricsFeatures(self.df)
+        features = LyricsFeatures(
+            self.df,
+            text_column=self.text_column
+        )
         self.df = features.calculate_all()
 
         self.statistics = StatisticsAnalyzer(self.df)

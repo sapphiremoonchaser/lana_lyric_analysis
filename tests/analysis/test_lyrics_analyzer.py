@@ -139,3 +139,4 @@ def test_calculate_all_structure_and_values(sample_df) -> None:
         assert "line_count" in result.columns
         assert "reading_minutes" in result.columns
 
+
