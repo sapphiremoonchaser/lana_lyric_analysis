@@ -41,15 +41,15 @@ def test_gunning_fog_returns_calculated_column(sample_df) -> None:
     assert pd.api.types.is_float_dtype(analyzer.df["gunning_fog"])
 
 
-def test_coleman_liau_returns_calculated_column(sample_df) -> None:
+def test_calculate_all_structure_and_values(sample_df) -> None:
     analyzer = ReadabilityAnalyzer(sample_df, text_column="lyrics")
 
-    analyzer.coleman_liau()
+    result = analyzer.analyze()
 
-    # Test structure
-    assert "coleman_liau" in analyzer.df.columns
+    # Check structure
+    assert isinstance(result, pd.DataFrame)
 
-    # Test value was calculated
-    assert pd.api.types.is_float_dtype(analyzer.df["coleman_liau"])
-
-
+    # Check for correct columns added
+    assert "flesch_reading_ease" in result.columns
+    assert "flesch_kincaid" in result.columns
+    assert "gunning_fog" in result.columns
