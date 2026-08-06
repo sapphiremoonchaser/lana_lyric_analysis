@@ -14,4 +14,42 @@ def test_flesch_reading_ease_returns_calculated_column(sample_df) -> None:
     assert "flesch_reading_ease" in analyzer.df.columns
 
     # Test value was calculated
-    assert isinstance(analyzer.df["flesch_reading_ease"], float)
+    assert pd.api.types.is_float_dtype(analyzer.df["flesch_reading_ease"])
+
+
+def test_flesch_kincaid_returns_calculated_column(sample_df) -> None:
+    analyzer = ReadabilityAnalyzer(sample_df, text_column="lyrics")
+
+    analyzer.flesch_kincaid()
+
+    # Test structure
+    assert "flesch_kincaid" in analyzer.df.columns
+
+    # Test value was calculated
+    assert pd.api.types.is_float_dtype(analyzer.df["flesch_kincaid"])
+
+
+def test_gunning_fog_returns_calculated_column(sample_df) -> None:
+    analyzer = ReadabilityAnalyzer(sample_df, text_column="lyrics")
+
+    analyzer.gunning_fog()
+
+    # Test structure
+    assert "gunning_fog" in analyzer.df.columns
+
+    # Test value was calculated
+    assert pd.api.types.is_float_dtype(analyzer.df["gunning_fog"])
+
+
+def test_coleman_liau_returns_calculated_column(sample_df) -> None:
+    analyzer = ReadabilityAnalyzer(sample_df, text_column="lyrics")
+
+    analyzer.coleman_liau()
+
+    # Test structure
+    assert "coleman_liau" in analyzer.df.columns
+
+    # Test value was calculated
+    assert pd.api.types.is_float_dtype(analyzer.df["coleman_liau"])
+
+
