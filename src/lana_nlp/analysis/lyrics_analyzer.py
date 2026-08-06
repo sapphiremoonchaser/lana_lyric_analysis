@@ -32,7 +32,7 @@ class LyricsAnalyzer:
     def __init__(
         self,
         lyrics_df: pd.DataFrame,
-        text_column: str = "basic_cleaned_lyrics"
+        text_column: str = "lyrics"
     ):
         """
         Initialize the LyricsAnalyzer object.
@@ -76,7 +76,12 @@ class LyricsAnalyzer:
         if self.df.empty:
             return 0
 
-        return len(self.df)
+        songs = self.df["song"].dropna()
+        songs = songs[
+            songs.str.strip() != "" # filter out songs that are just whitespace
+        ]
+
+        return len(songs)
 
 
     def albums(self) -> list[str]:
