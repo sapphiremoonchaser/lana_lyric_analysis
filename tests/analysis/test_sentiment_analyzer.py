@@ -26,9 +26,12 @@ def test_load_emotion_lexicon_returns_dict():
         }
     )
 
-    analyzer = SentimentAnalyzer(pd.DataFrame())
-
     with patch("pandas.read_csv", return_value=mock_lexicon):
+        analyzer = SentimentAnalyzer(
+            pd.DataFrame(),
+            lexicon_path="fake_path.csv"
+        )
+
         lexicon = analyzer._load_emotion_lexicon()
 
     assert isinstance(lexicon, dict)
