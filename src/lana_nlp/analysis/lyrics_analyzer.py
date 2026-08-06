@@ -56,7 +56,10 @@ class LyricsAnalyzer:
             None. Adds 3 columns to self.df.
         """
 
-        calculations = LyricsFeatures(self.df)
+        calculations = LyricsFeatures(
+            self.df,
+            self.text_column
+        )
 
         calculations.calculate_all()
 
