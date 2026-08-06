@@ -1,6 +1,5 @@
 # Imports
 import pandas as pd
-import numpy as np
 
 from lana_nlp.analysis.readability import ReadabilityAnalyzer
 

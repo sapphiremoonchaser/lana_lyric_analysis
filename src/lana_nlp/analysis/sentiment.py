@@ -23,10 +23,12 @@ class SentimentAnalyzer:
     def __init__(
         self,
         df: pd.DataFrame,
-        text_column: str = "lyrics"
+        text_column: str = "lyrics",
+        lexicon_path: str = "data/raw/NRC-Emotion-Lexicon.csv"
     ):
         self.df = df
         self.text_column = text_column
+        self.lexicon_path = lexicon_path
 
         self.emotion_lexicon = self._load_emotion_lexicon()
 
@@ -40,9 +42,7 @@ class SentimentAnalyzer:
         """
         Load NRC emotion lexicon.
         """
-        lexicon_df = pd.read_csv(
-            "data/raw/NRC-Emotion-Lexicon.csv"
-        )
+        lexicon_df = pd.read_csv(self.lexicon_path)
 
         lexicon = {}
 
