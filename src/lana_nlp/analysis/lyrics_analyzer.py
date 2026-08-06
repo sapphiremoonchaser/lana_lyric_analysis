@@ -96,7 +96,12 @@ class LyricsAnalyzer:
         if self.df.empty:
             return []
 
-        return sorted(self.df["album"].dropna().unique())
+        albums = self.df["album"].dropna()
+        albums = albums[
+            albums.str.strip() != ""
+        ]
+
+        return sorted(albums)
 
 
     def songs_by_album(
@@ -136,44 +141,6 @@ class LyricsAnalyzer:
         return self.df[
             self.df["year"] == year
         ]
-
-
-    def search(
-        self,
-        phrase: str
-    ) -> pd.DataFrame:
-        """
-        Search song lyrics for a word or phrase.
-
-        The search is case-insensitive and treats the search text
-        as a literal string rather than a regular expression.
-
-        Args:
-            phrase: Word or phrase to search for.
-
-        Returns:
-            A DataFrame containing matching songs.
-        """
-        column = self.df[self.text_column]
-
-        if self._use_tokenized_text():
-            mask = column.apply(
-                lambda x: (
-                    phrase.lower() in " ".join(x).lower()
-                    if isinstance(x, list)
-                    else False
-                )
-            )
-
-        else:
-            mask = column.str.contains(
-                phrase,
-                case=False,
-                regex=False,
-                na=False
-            )
-        return self.df[mask]
-
 
 
     def calculate_all(self) -> pd.DataFrame:

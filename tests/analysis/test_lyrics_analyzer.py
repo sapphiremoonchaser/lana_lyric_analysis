@@ -17,15 +17,10 @@ def test_calculate_derived_columns_adds_columns(sample_df) -> None:
         assert "reading_minutes" in analyzer.df.columns
 
 
-def test_number_of_songs_returns_int(sample_df) -> None:
+def test_number_of_songs_structure_and_value(sample_df) -> None:
         analyzer = LyricsAnalyzer(sample_df, text_column="lyrics")
 
         assert isinstance(analyzer.number_of_songs(), int)
-
-
-def test_number_of_songs_correct_value(sample_df) -> None:
-        analyzer = LyricsAnalyzer(sample_df, text_column="lyrics")
-
         assert analyzer.number_of_songs() == 3
 
 
@@ -46,4 +41,84 @@ def test_number_of_songs_missing_song() -> None:
         assert analyzer.number_of_songs() == 1
 
 
+def test_albums_structure_and_value(sample_df) -> None:
+        analyzer = LyricsAnalyzer(sample_df, text_column="lyrics")
 
+        assert isinstance(analyzer.albums(), list)
+        assert len(analyzer.albums()) == 2
+        assert analyzer.albums() == [
+                "Blue Banisters",       # also tests sorting
+                "NFR"
+        ]
+
+
+def test_albums_empty_dataframe(empty_df) -> None:
+        analyzer = LyricsAnalyzer(empty_df, text_column="lyrics")
+
+        assert analyzer.albums() == []
+
+
+def test_albums_missing_album() -> None:
+        df = pd.DataFrame({
+                "song": ["Honeymoon", "Love", "Doin' Time", "Kill Kill", "Bad Disease"],
+                "album": ["Honeymoon", None, np.nan, "", "   "],
+                "lyrics": ["a", "b", "c", "d", "e"]
+        })
+
+        analyzer = LyricsAnalyzer(df, text_column="lyrics")
+
+        assert len(analyzer.albums()) == 1
+
+
+def test_songs_by_album_structure_and_value(sample_df) -> None:
+        analyzer = LyricsAnalyzer(sample_df, text_column="lyrics")
+
+        songs_by_album = analyzer.songs_by_album("NFR")
+
+        # Test structure
+        assert isinstance(songs_by_album, pd.DataFrame)
+        assert songs_by_album.shape[0] == 2
+        assert "song" in songs_by_album.columns
+        assert "album" in songs_by_album.columns
+
+        # Test correct album is returned
+        assert set(songs_by_album["album"]) == {"NFR"}
+        assert set(songs_by_album["song"]) == {
+                "Venice Bitch",
+                "Fuck it I love you"
+        }
+
+
+def test_songs_by_album_empty_dataframe(empty_df) -> None:
+        analyzer = LyricsAnalyzer(empty_df, text_column="lyrics")
+
+        songs_by_album = analyzer.songs_by_album("NFR")
+
+        assert songs_by_album.empty
+
+
+def test_songs_by_year_structure_and_value(sample_df) -> None:
+        analyzer = LyricsAnalyzer(sample_df, text_column="lyrics")
+
+        songs_by_year = analyzer.songs_by_year(2019)
+
+        # Test structure
+        assert isinstance(songs_by_year, pd.DataFrame)
+        assert songs_by_year.shape[0] == 2
+        assert "song" in songs_by_year.columns
+        assert "year" in songs_by_year.columns
+
+        # Test correct album is returned
+        assert set(songs_by_year["year"]) == {2019}
+        assert set(songs_by_year["song"]) == {
+                "Venice Bitch",
+                "Fuck it I love you"
+        }
+
+
+def test_songs_by_year_empty_dataframe(empty_df) -> None:
+        analyzer = LyricsAnalyzer(empty_df, text_column="lyrics")
+
+        songs_by_year = analyzer.songs_by_year(2019)
+
+        assert songs_by_year.empty
