@@ -7,7 +7,6 @@ each string is one word from the song.
 
 
 def to_text(
-    self,
     text
 ) -> str:
     """
@@ -24,7 +23,6 @@ def to_text(
 
 
 def to_tokens(
-    self,
     text: str | list
 ) -> list[str]:
     """
