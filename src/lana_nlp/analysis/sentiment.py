@@ -37,6 +37,8 @@ class SentimentAnalyzer:
 
         self.sia = SentimentIntensityAnalyzer()
 
+        self._load_sentiment_words()
+
 
     def _load_emotion_lexicon(self) -> dict:
         """
@@ -69,6 +71,24 @@ class SentimentAnalyzer:
         }
 
         return lexicon
+
+
+    def _load_sentiment_words(self) -> None:
+        """
+        Extract positive and negative words from the NRC emotion lexicon.
+        """
+
+        self.positive_words = {
+            word
+            for word, emotions in self.emotion_lexicon.items()
+            if "Positive" in emotions
+        }
+
+        self.negative_words = {
+            word
+            for word, emotions in self.emotion_lexicon.items()
+            if "Negative" in emotions
+        }
 
 
     def _calculate_emotions(
