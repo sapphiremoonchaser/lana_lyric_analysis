@@ -122,3 +122,20 @@ def test_songs_by_year_empty_dataframe(empty_df) -> None:
         songs_by_year = analyzer.songs_by_year(2019)
 
         assert songs_by_year.empty
+
+
+def test_calculate_all_structure_and_values(sample_df) -> None:
+        analyzer = LyricsAnalyzer(sample_df, text_column="lyrics")
+
+        result = analyzer.analyze()
+
+        # Check structure
+        assert isinstance(result, pd.DataFrame)
+
+        # Check for correct columns added
+        assert "word_count" in result.columns
+        assert "unique_words" in result.columns
+        assert "syllable_count" in result.columns
+        assert "line_count" in result.columns
+        assert "reading_minutes" in result.columns
+
