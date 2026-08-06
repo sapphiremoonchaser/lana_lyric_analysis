@@ -1,4 +1,4 @@
-from src.lana_nlp.scripts.text_cleaner import TextCleaner
+from lana_nlp.preprocessing.text_cleaner import TextCleaner
 
 
 def test_lowercase():

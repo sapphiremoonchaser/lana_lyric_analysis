@@ -1246,10 +1246,10 @@ def test_vocabulary_size_structure():
         text_column="lyrics"
     )
 
-    result = analyzer.vocabulary_size()
+    result = analyzer.unique_word_count()
 
     assert isinstance(result, int)
-    assert analyzer.vocabulary_size() == 3
+    assert analyzer.unique_word_count() == 3
 
 
 def test_vocabulary_size_empty_dataframe():
@@ -1262,7 +1262,7 @@ def test_vocabulary_size_empty_dataframe():
         text_column="lyrics"
     )
 
-    result = analyzer.vocabulary_size()
+    result = analyzer.unique_word_count()
 
     assert result == 0
 
@@ -1307,16 +1307,16 @@ def test_lexical_diversity_all_same_word():
 
     assert analyzer.lexical_diversity() == pytest.approx(1 / 3)
 
-    # ======================================================
-    # Readability
-    # ======================================================
+# ======================================================
+# Readability
+# ======================================================
 
 
 
 
-    # ======================================================
-    # Sentiment
-    # ======================================================
+# ======================================================
+# Sentiment
+# ======================================================
 
 def test_positive_sentiment():
     df = pd.DataFrame({
@@ -1411,5 +1411,48 @@ def test_positive_word_ratio_empty_lyrics():
     assert analyzer.df.loc[0, "positive_word_ratio"] == 0.0
 
 
+# ======================================================
+# Emotions
+# ======================================================
+
+def test_calculate_emotions_returns_dict(sample_df):
+    analyzer = LyricsAnalyzer(sample_df, text_column="lyrics")
+
+    scores = analyzer._calculate_emotions(
+        ["happy", "sad", "happy"]
+    )
+
+    assert isinstance(scores, dict)
 
 
+def test_calculate_emotions_between_zero_and_one(sample_df):
+    analyzer = LyricsAnalyzer(sample_df, text_column="lyrics")
+
+    scores = analyzer._calculate_emotions(
+        ["happy", "sad", "happy"]
+    )
+
+    assert all(
+        0 <= score <= 1
+        for score in scores.values()
+    )
+
+
+def test_calculate_emotions_unknown_words(sample_df):
+    analyzer = LyricsAnalyzer(sample_df, text_column="lyrics")
+
+    scores = analyzer._calculate_emotions(
+        ["asdf", "qwerty"]
+    )
+
+    assert scores == {}
+
+
+def test_calculate_emotions_normalization(sample_df):
+    analyzer = LyricsAnalyzer(sample_df, text_column="lyrics")
+
+    scores = analyzer._calculate_emotions(
+        ["happy", "abandon"]
+    )
+
+    assert scores["Positive"] == pytest.approx(1 / 7)
