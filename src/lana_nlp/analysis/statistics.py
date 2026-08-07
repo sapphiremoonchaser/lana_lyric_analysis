@@ -181,7 +181,7 @@ class StatisticsAnalyzer:
         """
         stats = self.summary_by_album()
 
-        stats.reset_index(inplace=True)
+        stats = stats.reset_index()
 
         return stats[["album", "avg_words"]]
 
