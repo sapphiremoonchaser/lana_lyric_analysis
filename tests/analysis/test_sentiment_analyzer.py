@@ -52,6 +52,27 @@ def test_load_emotion_lexicon_returns_dict():
     ]
 
 
+def test_load_sentiment_words_creates_sets():
+    analyzer = SentimentAnalyzer.__new__(SentimentAnalyzer)
+
+    analyzer.emotion_lexicon = {
+        "happy": ["Positive", "Joy"],
+        "sad": ["Negative", "Sadness"],
+        "love": ["Positive"]
+    }
+
+    analyzer._load_sentiment_words()
+
+    assert analyzer.positive_words == {
+        "happy",
+        "love"
+    }
+
+    assert analyzer.negative_words == {
+        "sad"
+    }
+
+
 def test_calculate_emotions_returns_normalized_scores():
     analyzer = SentimentAnalyzer.__new__(SentimentAnalyzer)
 
@@ -218,5 +239,139 @@ def test_positive_word_ratio_returns_zero_for_empty_text():
     analyzer.positive_word_ratio()
 
     assert analyzer.df.loc[0, "positive_word_ratio"] == 0.0
+
+
+def test_negative_word_ratio_structure(sample_df) -> None:
+    analyzer = SentimentAnalyzer(sample_df, text_column="lyrics")
+
+    analyzer.negative_word_ratio()
+
+    ratios = analyzer.df["negative_word_ratio"]
+
+    assert "negative_word_ratio" in analyzer.df.columns
+    assert ratios.between(0, 1).all()
+
+
+def test_negative_word_ratio_value() -> None:
+    analyzer = SentimentAnalyzer.__new__(SentimentAnalyzer)
+
+    analyzer.df = pd.DataFrame({
+        "lyrics": ["happy love sad"]
+    })
+
+    analyzer.text_column = "lyrics"
+    analyzer.negative_words = {"sad"}
+
+    analyzer.negative_word_ratio()
+
+    assert analyzer.df.loc[0, "negative_word_ratio"] == 1 / 3
+
+
+def test_negative_word_ratio_returns_zero_for_empty_text():
+    analyzer = SentimentAnalyzer.__new__(SentimentAnalyzer)
+
+    analyzer.df = pd.DataFrame({
+        "lyrics": [""]
+    })
+    analyzer.text_column = "lyrics"
+    analyzer.negative_words = {"happy"}
+
+    analyzer.negative_word_ratio()
+
+    assert analyzer.df.loc[0, "negative_word_ratio"] == 0.0
+
+
+def test_emotion_scores_adds_emotion_columns(sample_df) -> None:
+    analyzer = SentimentAnalyzer(sample_df, text_column="lyrics")
+
+    analyzer.emotion_scores()
+
+    expected_columns = [
+        "emotionPositive",
+        "emotionNegative",
+        "emotionAnger",
+        "emotionAnticipation",
+        "emotionDisgust",
+        "emotionFear",
+        "emotionJoy",
+        "emotionSadness",
+        "emotionSurprise",
+        "emotionTrust",
+    ]
+
+    for column in expected_columns:
+        assert column in analyzer.df.columns
+
+
+def test_emotion_scores_calculates_values() -> None:
+    df = pd.DataFrame({
+        "lyrics": [
+            "happy sad"
+        ]
+    })
+
+    analyzer = SentimentAnalyzer.__new__(SentimentAnalyzer)
+    analyzer.df = df.copy()
+    analyzer.text_column = "lyrics"
+    analyzer.emotion_lexicon = {
+        "happy": ["Positive", "Joy"],
+        "sad": ["Negative", "Sadness"],
+    }
+
+    analyzer.emotion_scores()
+
+    assert analyzer.df.loc[0, "emotionPositive"] == 0.25
+    assert analyzer.df.loc[0, "emotionJoy"] == 0.25
+    assert analyzer.df.loc[0, "emotionNegative"] == 0.25
+    assert analyzer.df.loc[0, "emotionSadness"] == 0.25
+
+
+def test_emotion_scores_fills_missing_emotions_with_zero() -> None:
+    df = pd.DataFrame({
+        "lyrics": ["happy"]
+    })
+
+    analyzer = SentimentAnalyzer.__new__(SentimentAnalyzer)
+    analyzer.df = df.copy()
+    analyzer.text_column = "lyrics"
+    analyzer.emotion_lexicon = {
+        "happy": ["Positive", "Joy"],
+    }
+
+    analyzer.emotion_scores()
+
+    assert analyzer.df.loc[0, "emotionPositive"] == 0.5
+    assert analyzer.df.loc[0, "emotionJoy"] == 0.5
+    assert analyzer.df.loc[0, "emotionNegative"] == 0
+    assert analyzer.df.loc[0, "emotionAnger"] == 0
+
+
+def test_emotion_scores_preserves_original_columns(sample_df) -> None:
+    analyzer = SentimentAnalyzer(sample_df, text_column="lyrics")
+
+    original_columns = sample_df.columns.tolist()
+
+    analyzer.emotion_scores()
+
+    for column in original_columns:
+        assert column in analyzer.df.columns
+
+
+def test_emotion_scores_returns_zero_for_no_matches() -> None:
+    df = pd.DataFrame({
+        "lyrics": ["xyzabc"]
+    })
+
+    analyzer = SentimentAnalyzer.__new__(SentimentAnalyzer)
+    analyzer.df = df.copy()
+    analyzer.text_column = "lyrics"
+    analyzer.emotion_lexicon = {
+        "happy": ["Positive", "Joy"],
+    }
+
+    analyzer.emotion_scores()
+
+    assert analyzer.df.loc[0, "emotionPositive"] == 0
+    assert analyzer.df.loc[0, "emotionJoy"] == 0
 
 

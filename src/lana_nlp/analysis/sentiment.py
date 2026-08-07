@@ -19,6 +19,18 @@ class SentimentAnalyzer:
 
     Measure polarity, subjectivity, and positive and negative sentiment ratios.
     """
+    EMOTIONS = [
+        "Positive",
+        "Negative",
+        "Anger",
+        "Anticipation",
+        "Disgust",
+        "Fear",
+        "Joy",
+        "Sadness",
+        "Surprise",
+        "Trust"
+    ]
 
     def __init__(
         self,
@@ -245,7 +257,10 @@ class SentimentAnalyzer:
 
         emotion_df = pd.DataFrame(
             emotions.tolist()
-        ).fillna(0)
+        ).reindex(
+            columns=self.EMOTIONS,
+            fill_value=0
+        )
 
         self.df = pd.concat(
             [
