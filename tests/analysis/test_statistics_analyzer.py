@@ -342,3 +342,95 @@ def test_average_song_length_by_album_empty_dataframe():
     assert result.empty
     assert result.columns.tolist() == ["album", "avg_words"]
 
+
+def test_number_of_songs_by_album_structure_values_and_sorting():
+    df = pd.DataFrame({
+        "album": [
+            "NFR",
+            "NFR",
+            "NFR",
+            "Blue Banisters",
+            "Blue Banisters",
+            "Honeymoon"
+        ],
+        "song": ["A", "B", "C", "D", "E", "F"]
+    })
+
+    analyzer = StatisticsAnalyzer(df)
+
+    result = analyzer.number_of_songs_by_album()
+
+    assert isinstance(result, pd.Series)
+
+    assert result.to_dict() == {
+        "NFR": 3,
+        "Blue Banisters": 2,
+        "Honeymoon": 1
+    }
+
+
+def test_number_of_songs_by_album_empty_dataframe():
+    df = pd.DataFrame(columns=["album", "song"])
+
+    analyzer = StatisticsAnalyzer(df)
+
+    result = analyzer.number_of_songs_by_album()
+
+    assert isinstance(result, pd.Series)
+    assert result.empty
+
+
+def test_summary_by_year_returns_expected_statistics():
+    df = pd.DataFrame({
+        "year": [2019, 2019, 2021],
+        "song": ["A", "B", "C"],
+        "word_count": [100, 200, 300],
+        "reading_minutes": [0.5, 1.0, 1.5],
+    })
+
+    analyzer = StatisticsAnalyzer(df)
+
+    result = analyzer.summary_by_year()
+
+    assert isinstance(result, pd.DataFrame)
+
+    assert result.loc[2019, "songs"] == 2
+    assert result.loc[2019, "avg_words"] == pytest.approx(150)
+    assert result.loc[2019, "median_words"] == pytest.approx(150)
+    assert result.loc[2019, "min_words"] == 100
+    assert result.loc[2019, "max_words"] == 200
+    assert result.loc[2019, "total_words"] == 300
+    assert result.loc[2019, "avg_reading_minutes"] == pytest.approx(0.75)
+
+
+def test_summary_by_year_sorts_by_song_count():
+    df = pd.DataFrame({
+        "year": [2016, 2019, 2019, 2019],
+        "song": ["1", "2", "3", "4"],
+        "word_count": [100, 100, 200, 300],
+        "reading_minutes": [1, 1, 2, 3],
+    })
+
+    analyzer = StatisticsAnalyzer(df)
+
+    result = analyzer.summary_by_year()
+
+    assert result.index.tolist() == [2016, 2019]
+
+
+def test_summary_by_year_empty_dataframe():
+    df = pd.DataFrame(
+        columns=[
+            "year",
+            "song",
+            "word_count",
+            "reading_minutes"
+        ]
+    )
+
+    analyzer = StatisticsAnalyzer(df)
+
+    result = analyzer.summary_by_year()
+
+    assert isinstance(result, pd.DataFrame)
+    assert result.empty
