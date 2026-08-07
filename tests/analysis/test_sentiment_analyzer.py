@@ -1,6 +1,7 @@
 # Imports
 from unittest.mock import patch
 import pandas as pd
+import pytest
 
 from lana_nlp.analysis.sentiment import SentimentAnalyzer
 
@@ -373,5 +374,44 @@ def test_emotion_scores_returns_zero_for_no_matches() -> None:
 
     assert analyzer.df.loc[0, "emotionPositive"] == 0
     assert analyzer.df.loc[0, "emotionJoy"] == 0
+
+
+def test_calculate_all_structure_and_values(sample_df) -> None:
+    analyzer = SentimentAnalyzer(sample_df, text_column="lyrics")
+
+    result = analyzer.analyze()
+
+    # Check structure
+    assert isinstance(result, pd.DataFrame)
+
+    # Check for correct columns added
+    assert "sentiment_polarity" in result.columns
+    assert "subjectivity" in result.columns
+    assert "positive_word_ratio" in result.columns
+    assert "negative_word_ratio" in result.columns
+    assert "emotionPositive" in result.columns
+
+
+def test_average_album_sentiment_structure(sample_df) -> None:
+    analyzer = SentimentAnalyzer(sample_df, text_column="lyrics")
+
+    result = analyzer.average_album_sentiment()
+
+    assert isinstance(result, pd.Series)
+
+
+def test_average_album_sentiment_ignores_missing_albums():
+    df = pd.DataFrame({
+        "album": ["NFR", None, "NFR"],
+        "sentiment_polarity": [0.5, 0.9, -0.1],
+    })
+
+    analyzer = SentimentAnalyzer(df, text_column="lyrics")
+
+    result = analyzer.average_album_sentiment()
+
+    assert list(result.index) == ["NFR"]
+    assert result["NFR"] == pytest.approx(0.2)
+
 
 

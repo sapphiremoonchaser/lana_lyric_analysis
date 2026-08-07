@@ -271,7 +271,7 @@ class SentimentAnalyzer:
         )
 
 
-    def calculate_all(self) -> pd.DataFrame:
+    def analyze(self) -> pd.DataFrame:
         """
         Calculate all sentiment columns.
         """
