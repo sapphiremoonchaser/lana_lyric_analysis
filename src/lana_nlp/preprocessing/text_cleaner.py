@@ -153,6 +153,8 @@ class TextCleaner:
 
         text = self.remove_annotations(text)
         text = self.remove_whitespace(text)
+        text = self.lowercase(text)
+        text = self.remove_punctuation(text)
 
         return text.strip()
 
@@ -169,8 +171,6 @@ class TextCleaner:
         """
 
         text = self.basic_clean(text)
-        text = self.lowercase(text)
-        text = self.remove_punctuation(text)
 
         tokens = self.tokenize(text)
         tokens = self.remove_stopwords(tokens)
