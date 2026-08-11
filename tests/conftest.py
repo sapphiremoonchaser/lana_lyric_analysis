@@ -67,9 +67,9 @@ def tokenized_sample_df():
                 2021,
             ],
             "lyrics": [
-                ["fresh" "out" "of" "fucks" "forever"],
-                ["veins" "in" "neon" "forever"],
-                ["star" "drip" "iv's"]
+                ["fresh", "out", "of", "fucks", "forever"],
+                ["veins", "in", "neon", "forever"],
+                ["star", "drip", "iv's"]
             ],
         }
     )

@@ -61,7 +61,7 @@ class LyricsAnalyzer:
             self.text_column
         )
 
-        calculations.calculate_all()
+        calculations.analyze()
 
         self.df = calculations.df
 
@@ -152,7 +152,7 @@ class LyricsAnalyzer:
             self.df,
             text_column=self.text_column
         )
-        self.df = features.calculate_all()
+        self.df = features.analyze()
 
         self.statistics = StatisticsAnalyzer(self.df)
         self.vocabulary = VocabularyAnalyzer(self.df)
