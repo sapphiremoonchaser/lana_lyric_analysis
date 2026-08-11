@@ -32,7 +32,7 @@ class LyricsAnalyzer:
     def __init__(
         self,
         lyrics_df: pd.DataFrame,
-        text_column: str = "basic_cleaned_lyrics"
+        text_column: str = "lyrics"
     ):
         """
         Initialize the LyricsAnalyzer object.
@@ -56,9 +56,12 @@ class LyricsAnalyzer:
             None. Adds 3 columns to self.df.
         """
 
-        calculations = LyricsFeatures(self.df)
+        calculations = LyricsFeatures(
+            self.df,
+            self.text_column
+        )
 
-        calculations.calculate_all()
+        calculations.analyze()
 
         self.df = calculations.df
 
@@ -73,7 +76,12 @@ class LyricsAnalyzer:
         if self.df.empty:
             return 0
 
-        return len(self.df)
+        songs = self.df["song"].dropna()
+        songs = songs[
+            songs.str.strip() != "" # filter out songs that are just whitespace
+        ]
+
+        return len(songs)
 
 
     def albums(self) -> list[str]:
@@ -88,7 +96,12 @@ class LyricsAnalyzer:
         if self.df.empty:
             return []
 
-        return sorted(self.df["album"].dropna().unique())
+        albums = self.df["album"].dropna()
+        albums = albums[
+            albums.str.strip() != ""
+        ]
+
+        return sorted(albums)
 
 
     def songs_by_album(
@@ -130,51 +143,16 @@ class LyricsAnalyzer:
         ]
 
 
-    def search(
-        self,
-        phrase: str
-    ) -> pd.DataFrame:
-        """
-        Search song lyrics for a word or phrase.
-
-        The search is case-insensitive and treats the search text
-        as a literal string rather than a regular expression.
-
-        Args:
-            phrase: Word or phrase to search for.
-
-        Returns:
-            A DataFrame containing matching songs.
-        """
-        column = self.df[self.text_column]
-
-        if self._use_tokenized_text():
-            mask = column.apply(
-                lambda x: (
-                    phrase.lower() in " ".join(x).lower()
-                    if isinstance(x, list)
-                    else False
-                )
-            )
-
-        else:
-            mask = column.str.contains(
-                phrase,
-                case=False,
-                regex=False,
-                na=False
-            )
-        return self.df[mask]
-
-
-
-    def calculate_all(self) -> pd.DataFrame:
+    def analyze(self) -> pd.DataFrame:
         """
         Calculate all features.
         """
 
-        features = LyricsFeatures(self.df)
-        self.df = features.calculate_all()
+        features = LyricsFeatures(
+            self.df,
+            text_column=self.text_column
+        )
+        self.df = features.analyze()
 
         self.statistics = StatisticsAnalyzer(self.df)
         self.vocabulary = VocabularyAnalyzer(self.df)

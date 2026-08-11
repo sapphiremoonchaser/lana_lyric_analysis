@@ -19,14 +19,28 @@ class SentimentAnalyzer:
 
     Measure polarity, subjectivity, and positive and negative sentiment ratios.
     """
+    EMOTIONS = [
+        "Positive",
+        "Negative",
+        "Anger",
+        "Anticipation",
+        "Disgust",
+        "Fear",
+        "Joy",
+        "Sadness",
+        "Surprise",
+        "Trust"
+    ]
 
     def __init__(
         self,
         df: pd.DataFrame,
-        text_column: str = "lyrics"
+        text_column: str = "lyrics",
+        lexicon_path: str = "data/raw/NRC-Emotion-Lexicon.csv"
     ):
         self.df = df
         self.text_column = text_column
+        self.lexicon_path = lexicon_path
 
         self.emotion_lexicon = self._load_emotion_lexicon()
 
@@ -35,14 +49,14 @@ class SentimentAnalyzer:
 
         self.sia = SentimentIntensityAnalyzer()
 
+        self._load_sentiment_words()
+
 
     def _load_emotion_lexicon(self) -> dict:
         """
         Load NRC emotion lexicon.
         """
-        lexicon_df = pd.read_csv(
-            "data/raw/NRC-Emotion-Lexicon.csv"
-        )
+        lexicon_df = pd.read_csv(self.lexicon_path)
 
         lexicon = {}
 
@@ -69,6 +83,24 @@ class SentimentAnalyzer:
         }
 
         return lexicon
+
+
+    def _load_sentiment_words(self) -> None:
+        """
+        Extract positive and negative words from the NRC emotion lexicon.
+        """
+
+        self.positive_words = {
+            word
+            for word, emotions in self.emotion_lexicon.items()
+            if "Positive" in emotions
+        }
+
+        self.negative_words = {
+            word
+            for word, emotions in self.emotion_lexicon.items()
+            if "Negative" in emotions
+        }
 
 
     def _calculate_emotions(
@@ -225,7 +257,10 @@ class SentimentAnalyzer:
 
         emotion_df = pd.DataFrame(
             emotions.tolist()
-        ).fillna(0)
+        ).reindex(
+            columns=self.EMOTIONS,
+            fill_value=0
+        )
 
         self.df = pd.concat(
             [
@@ -236,7 +271,7 @@ class SentimentAnalyzer:
         )
 
 
-    def calculate_all(self) -> pd.DataFrame:
+    def analyze(self) -> pd.DataFrame:
         """
         Calculate all sentiment columns.
         """

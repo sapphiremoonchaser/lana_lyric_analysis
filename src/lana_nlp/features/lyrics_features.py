@@ -134,7 +134,7 @@ class LyricsFeatures:
         )
 
 
-    def calculate_all(self) -> pd.DataFrame:
+    def analyze(self) -> pd.DataFrame:
         """Calculate all derived features."""
         self.calculate_word_count()
         self.calculate_unique_words()

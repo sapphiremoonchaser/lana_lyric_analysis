@@ -91,20 +91,7 @@ class ReadabilityAnalyzer:
         )
 
 
-    def coleman_liau(self) -> None:
-        """
-        Uses average letters per word to calculate reading ease.
-
-        Returns:
-            None. Adds "coleman_liau" to self.df.
-        """
-        self._apply_textstat(
-            textstat.coleman_liau,
-            "coleman_liau"
-        )
-
-
-    def calculate_all(self) -> pd.DataFrame:
+    def analyze(self) -> pd.DataFrame:
         """
         Calculate all readability metrics.
 
@@ -114,7 +101,6 @@ class ReadabilityAnalyzer:
         self.flesch_reading_ease()
         self.flesch_kincaid()
         self.gunning_fog()
-        self.coleman_liau()
 
         return self.df
 

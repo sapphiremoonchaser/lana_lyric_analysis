@@ -34,7 +34,7 @@ class VocabularyAnalyzer:
     def _normalize_word(
         self,
         word: str,
-    ):
+    ) -> str:
         """
         Remove punctuation and lowercase.
         """
@@ -43,6 +43,31 @@ class VocabularyAnalyzer:
             "",
             word.lower(),
         )
+
+
+    def _use_tokenized_text(self) -> bool:
+        """
+        Determine whether the text column contains tokenized lyrics.
+
+        Returns:
+            True if the text column contains lists of tokens.
+        """
+        values = self.df[self.text_column].dropna()
+
+        if values.empty:
+            return False
+
+        is_tokenized = values.apply(
+            lambda x: isinstance(x, list)
+        )
+
+        if is_tokenized.any() and not is_tokenized.any():
+            raise TypeError(
+                f"{self.text_column} must contain either all strings "
+                "or all token lists."
+            )
+
+        return is_tokenized.all()
 
 
     def _get_words(self) -> list[str]:
