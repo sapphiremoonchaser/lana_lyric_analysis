@@ -3,6 +3,7 @@ Perform sentiment analysis on song lyrics..
 """
 import pandas as pd
 from collections import Counter
+from pathlib import Path
 
 from textblob import TextBlob
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
@@ -32,15 +33,21 @@ class SentimentAnalyzer:
         "Trust"
     ]
 
+    PROJECT_ROOT = Path(__file__).resolve().parents[3]
+
+    DEFAULT_LEXICON_PATH = (
+            PROJECT_ROOT / "data" / "raw" / "NRC-Emotion-Lexicon.csv"
+    )
+
     def __init__(
         self,
         df: pd.DataFrame,
         text_column: str = "lyrics",
-        lexicon_path: str = "data/raw/NRC-Emotion-Lexicon.csv"
+        lexicon_path: str | Path = DEFAULT_LEXICON_PATH
     ):
         self.df = df
         self.text_column = text_column
-        self.lexicon_path = lexicon_path
+        self.lexicon_path = Path(lexicon_path)
 
         self.emotion_lexicon = self._load_emotion_lexicon()
 

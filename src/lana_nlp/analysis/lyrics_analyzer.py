@@ -32,7 +32,8 @@ class LyricsAnalyzer:
     def __init__(
         self,
         lyrics_df: pd.DataFrame,
-        text_column: str = "lyrics"
+        basic_text_column: str = "basic_cleaned_lyrics",
+        nlp_text_column: str = "nlp_cleaned_lyrics"
     ):
         """
         Initialize the LyricsAnalyzer object.
@@ -45,7 +46,9 @@ class LyricsAnalyzer:
             lyrics_df: DataFrame containing song metadata and lyrics.
         """
         self.df = lyrics_df.copy()
-        self.text_column = text_column
+
+        self.basic_text_column = basic_text_column
+        self.nlp_text_column = nlp_text_column
 
 
     def _calculate_derived_columns(self) -> None:
@@ -58,7 +61,7 @@ class LyricsAnalyzer:
 
         calculations = LyricsFeatures(
             self.df,
-            self.text_column
+            self.basic_text_column
         )
 
         calculations.analyze()
@@ -150,14 +153,29 @@ class LyricsAnalyzer:
 
         features = LyricsFeatures(
             self.df,
-            text_column=self.text_column
+            text_column=self.basic_text_column
         )
+
         self.df = features.analyze()
 
-        self.statistics = StatisticsAnalyzer(self.df)
-        self.vocabulary = VocabularyAnalyzer(self.df)
-        self.sentiment = SentimentAnalyzer(self.df)
-        self.readability = ReadabilityAnalyzer(self.df)
+        self.statistics = StatisticsAnalyzer(
+            self.df
+        )
+
+        self.vocabulary = VocabularyAnalyzer(
+            self.df,
+            text_column=self.nlp_text_column
+        )
+
+        self.sentiment = SentimentAnalyzer(
+            self.df,
+            text_column=self.nlp_text_column
+        )
+
+        self.readability = ReadabilityAnalyzer(
+            self.df,
+            text_column=self.nlp_text_column
+        )
 
         return self.df
 
