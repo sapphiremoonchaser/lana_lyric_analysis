@@ -1,16 +1,9 @@
 import re
 
-import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 import pandas as pd
-
-# # Errors out without this
-# nltk.download('punkt_tab')  # Needed for word tokenization for nltk 3.10+
-# nltk.download('stopwords')
-# nltk.download('wordnet')    # Needed for lemmatization
-# nltk.download("omw-1.4")    # WordNet language data
 
 
 class TextCleaner:
@@ -66,6 +59,7 @@ class TextCleaner:
             text
         )
 
+
     def remove_whitespace(
         self,
         text: str
@@ -74,30 +68,6 @@ class TextCleaner:
         Normalize whitespace.
         """
         return " ".join(text.split())
-
-
-    def clean_text(
-        self,
-        text: str
-    ) -> str:
-        """
-        Apply all cleaning steps.
-
-        Empty text appear as NaN is dealt with by converting it to "".
-        """
-        if not isinstance(
-            text,
-            str
-        ):
-            return ""
-
-        text = self.lowercase(text)
-
-        text = self.remove_punctuation(text)
-
-        text = self.remove_whitespace(text)
-
-        return text
 
 
     def tokenize(
