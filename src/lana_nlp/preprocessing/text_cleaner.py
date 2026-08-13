@@ -65,9 +65,11 @@ class TextCleaner:
         text: str
     ) -> str:
         """
-        Normalize whitespace.
+        Normalize whitespace while preserving line breaks.
         """
-        return " ".join(text.split())
+        return "\n".join(
+            " ".join(line.split()) for line in text.splitlines()
+        )
 
 
     def tokenize(
