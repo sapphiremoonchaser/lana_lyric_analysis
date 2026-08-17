@@ -4,14 +4,19 @@ the data.
 """
 import pandas as pd
 
+from lana_nlp.features.lyrics_features import LyricsFeatures
 from lana_nlp.preprocessing.data_loader import LyricsDataLoader
 from lana_nlp.preprocessing.text_cleaner import TextCleaner
+from lana_nlp.analysis.readability import ReadabilityAnalyzer
+from lana_nlp.analysis.sentiment import SentimentAnalyzer
+
 
 def pipeline(
         filepath: str
 ) -> pd.DataFrame:
     """
-    Pipeline to read a csv file containing lyrics, clean the data and analyze
+    Pipeline to read a csv file containing lyrics, clean the data and analyze. It
+    gets dataframes for basic stats, readability, vocabulary, and sentiment.
 
     Args:
         filepath: the filepath of the csv file containing lyrics  to analyze
@@ -29,5 +34,31 @@ def pipeline(
     cleaner = TextCleaner()
     df["basic_cleaned_lyrics"] = df["lyrics"].apply(cleaner.basic_clean)
     df["nlp_cleaned_lyrics"] = df["lyrics"].apply(cleaner.nlp_clean)
+
+    # Add basic features like word and line counts
+    features_analyzer = LyricsFeatures(
+        df,
+        text_column="basic_cleaned_lyrics"
+    )
+
+    features_analyzer.analyze()
+
+    # Add readability features
+    readability_analyzer =  ReadabilityAnalyzer(
+        df,
+        text_column="basic_cleaned_lyrics"
+    )
+
+    readability_analyzer.analyze()
+
+    # Add sentiment features
+    sentiment_analyzer = SentimentAnalyzer(
+        df,
+        text_column="nlp_cleaned_lyrics"
+    )
+
+    sentiment_analyzer.analyze()
+
+    df.to_csv("../data/processed/lyrics.csv")
 
     return df
