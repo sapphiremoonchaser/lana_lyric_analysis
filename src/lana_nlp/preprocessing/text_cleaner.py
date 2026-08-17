@@ -196,7 +196,7 @@ class TextCleaner:
         text = self.remove_annotations(text)
         text = self.remove_whitespace(text)
         text = self.lowercase(text)
-        text = self.expand_contractions()
+        text = self.expand_contractions(text)
         text = self.remove_punctuation(text)
 
         return text.strip()
