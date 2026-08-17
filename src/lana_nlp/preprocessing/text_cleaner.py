@@ -27,7 +27,8 @@ class TextCleaner:
             "lala",
             "get",
             "let",
-            "ha"
+            "ha",
+            "wan"
         }
 
 
