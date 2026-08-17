@@ -46,27 +46,12 @@ def pipeline(
     features_analyzer.analyze()
 
     # Vocabulary features
-    vocabulary_analyzer = VocabularyAnalyzer()
-
-    df["lexical_diversity"] = (
-        df["nlp_cleaned_lyrics"]
-        .apply(vocabulary_analyzer.lexical_diversity)
+    vocabulary_analyzer = VocabularyAnalyzer(
+        df,
+        text_column="nlp_cleaned_lyrics"
     )
 
-    df["vocabulary_size"] = (
-        df["nlp_cleaned_lyrics"]
-        .apply(vocabulary_analyzer.vocabulary_size)
-    )
-
-    df["word_frequency"] = (
-        df["nlp_cleaned_lyrics"]
-        .apply(vocabulary_analyzer.word_frequency())
-    )
-
-    df["unique_word_count"] = (
-        df["nlp_cleaned_lyrics"]
-        .apply(vocabulary_analyzer.unique_word_count())
-    )
+    vocabulary_analyzer.analyze()
 
     # Add readability features
     readability_analyzer =  ReadabilityAnalyzer(
