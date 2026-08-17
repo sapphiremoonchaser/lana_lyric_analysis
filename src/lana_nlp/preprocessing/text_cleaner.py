@@ -28,7 +28,10 @@ class TextCleaner:
             "get",
             "let",
             "ha",
-            "wan"
+            "wan",
+            "oohooh",
+            "oohoohooh",
+            "ohohohoh"
         }
 
 
