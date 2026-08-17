@@ -203,7 +203,7 @@ class SentimentAnalyzer:
         """
 
         def calculate_ratio(text: str) -> float:
-            words = to_tokens(text)
+            words = text if isinstance(text, list) else to_tokens(text)
 
             if not words:
                 return 0.0
@@ -229,8 +229,8 @@ class SentimentAnalyzer:
         Higher values indicate more negative language.
         """
 
-        def calculate_ratio(text):
-            words = to_tokens(text)
+        def calculate_ratio(text) -> float:
+            words = text if isinstance(text, list) else to_tokens(text)
 
             if not words:
                 return 0.0
@@ -272,7 +272,7 @@ class SentimentAnalyzer:
         self.df = pd.concat(
             [
                 self.df,
-                emotion_df.add_prefix("emotion")
+                emotion_df.add_prefix("emotion_")
             ],
             axis=1
         )

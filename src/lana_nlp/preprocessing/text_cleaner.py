@@ -13,6 +13,23 @@ class TextCleaner:
             stopwords.words('english')
         )
 
+        self.custom_stopwords = {
+            "dont",
+            "im",
+            "na",
+            "youre",
+            "like",
+            "oh",
+            "ahahahahah",
+            "yeah",
+            "ah",
+            "ooh",
+            "lala",
+            "get",
+            "let",
+            "ha"
+        }
+
         self.lemmatizer = WordNetLemmatizer()
 
 
@@ -143,6 +160,10 @@ class TextCleaner:
         """
 
         text = self.basic_clean(text)
+
+        text = text.replace("[", "")
+        text = text.replace("]", "")
+        text = text.replace("'", "")
 
         tokens = self.tokenize(text)
         tokens = self.remove_stopwords(tokens)
