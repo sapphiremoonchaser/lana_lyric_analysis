@@ -8,6 +8,7 @@ dependencies =[
     "nltk",
     "numpy",
     "pandas",
+    "plotly",
     "seaborn",
     "scikit-learn",
     "textblob",

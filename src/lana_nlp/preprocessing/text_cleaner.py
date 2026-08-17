@@ -1,16 +1,9 @@
 import re
 
-import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 import pandas as pd
-
-# # Errors out without this
-# nltk.download('punkt_tab')  # Needed for word tokenization for nltk 3.10+
-# nltk.download('stopwords')
-# nltk.download('wordnet')    # Needed for lemmatization
-# nltk.download("omw-1.4")    # WordNet language data
 
 
 class TextCleaner:
@@ -20,7 +13,80 @@ class TextCleaner:
             stopwords.words('english')
         )
 
+        self.custom_stopwords = {
+            "dont",
+            "im",
+            "na",
+            "youre",
+            "like",
+            "oh",
+            "ahahahahah",
+            "yeah",
+            "ah",
+            "ooh",
+            "lala",
+            "get",
+            "let",
+            "ha",
+            "wan",
+            "oohooh",
+            "oohoohooh",
+            "ohohohoh"
+        }
+
+
         self.lemmatizer = WordNetLemmatizer()
+
+    def expand_contractions(
+            self,
+            text: str
+    ) -> str:
+        """
+        Expand common English contractions.
+        """
+
+        contractions = {
+            "can't": "cannot",
+            "won't": "will not",
+            "don't": "do not",
+            "doesn't": "does not",
+            "didn't": "did not",
+            "isn't": "is not",
+            "aren't": "are not",
+            "wasn't": "was not",
+            "weren't": "were not",
+            "haven't": "have not",
+            "hasn't": "has not",
+            "hadn't": "had not",
+            "wouldn't": "would not",
+            "couldn't": "could not",
+            "shouldn't": "should not",
+            "I'm": "I am",
+            "I've": "I have",
+            "I'll": "I will",
+            "I'd": "I would",
+            "you're": "you are",
+            "you've": "you have",
+            "you'll": "you will",
+            "you'd": "you would",
+            "he's": "he is",
+            "she's": "she is",
+            "it's": "it is",
+            "we're": "we are",
+            "we've": "we have",
+            "they're": "they are",
+            "they've": "they have",
+        }
+
+        for contraction, expanded in contractions.items():
+            text = re.sub(
+                rf"\b{re.escape(contraction)}\b",
+                expanded,
+                text,
+                flags=re.IGNORECASE
+            )
+
+        return text
 
 
     def remove_annotations(
@@ -66,38 +132,17 @@ class TextCleaner:
             text
         )
 
+
     def remove_whitespace(
         self,
         text: str
     ) -> str:
         """
-        Normalize whitespace.
+        Normalize whitespace while preserving line breaks.
         """
-        return " ".join(text.split())
-
-
-    def clean_text(
-        self,
-        text: str
-    ) -> str:
-        """
-        Apply all cleaning steps.
-
-        Empty text appear as NaN is dealt with by converting it to "".
-        """
-        if not isinstance(
-            text,
-            str
-        ):
-            return ""
-
-        text = self.lowercase(text)
-
-        text = self.remove_punctuation(text)
-
-        text = self.remove_whitespace(text)
-
-        return text
+        return "\n".join(
+            " ".join(line.split()) for line in text.splitlines()
+        )
 
 
     def tokenize(
@@ -117,11 +162,12 @@ class TextCleaner:
         """
         Remove words like a and the.
         """
+        all_stopwords = self.stop_words | self.custom_stopwords
 
         return [
             word
             for word in tokens
-            if word not in self.stop_words
+            if word not in all_stopwords
         ]
 
 
@@ -154,6 +200,7 @@ class TextCleaner:
         text = self.remove_annotations(text)
         text = self.remove_whitespace(text)
         text = self.lowercase(text)
+        text = self.expand_contractions(text)
         text = self.remove_punctuation(text)
 
         return text.strip()
@@ -171,6 +218,10 @@ class TextCleaner:
         """
 
         text = self.basic_clean(text)
+
+        # text = text.replace("[", "")
+        # text = text.replace("]", "")
+        # text = text.replace("'", "")
 
         tokens = self.tokenize(text)
         tokens = self.remove_stopwords(tokens)

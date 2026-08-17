@@ -9,7 +9,6 @@ LyricsDataLoader does the following:
 from pathlib import Path
 
 import pandas as pd
-from jinja2.utils import missing
 
 REQUIRED_COLUMNS = {
     "artist",
@@ -21,16 +20,21 @@ REQUIRED_COLUMNS = {
 
 
 class LyricsDataLoader:
-
+    """
+    This class loads the lyrics data from a csv file.
+    """
     def __init__(
         self,
         filepath: str | Path
     ):
-        # Setup the initial variables
+        # Set up the initial variables
         self.filepath = Path(filepath)
         self.df = None
 
     def load(self):
+        """
+        Load the lyrics data from a csv file.
+        """
         df = pd.read_csv(self.filepath)
 
         missing = REQUIRED_COLUMNS - set(df.columns)
