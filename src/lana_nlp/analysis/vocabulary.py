@@ -224,7 +224,11 @@ class VocabularyAnalyzer:
 
         return sum(len(word) for word in words) / len(words)
 
+
     def analyze(self) -> None:
+        """
+        Add song level metrics to final analysis dataframe.
+        """
         self.df["vocabulary_size"] = (
             self.df[self.text_column]
             .apply(self.song_unique_word_count)
