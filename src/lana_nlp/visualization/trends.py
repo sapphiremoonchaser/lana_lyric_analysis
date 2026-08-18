@@ -6,6 +6,24 @@ from lana_nlp.visualization.preparation import (
     prepare_words_by_album
 )
 
+song_structure_metrics = {
+    "avg_words_per_song": {
+        "title": "Average Words per Song",
+        "y_label": "Words",
+    },
+    "avg_lines_per_song": {
+        "title": "Average Lines per Song",
+        "y_label": "Lines",
+    },
+    "avg_words_per_line": {
+        "title": "Average Words per Line",
+        "y_label": "Words per Line",
+    },
+    "reading_minutes": {
+        "title": "Average Reading Time",
+        "y_label": "Minutes",
+    },
+}
 
 def average_words_over_time_scatterplot(df: pd.DataFrame) -> Figure:
     """
@@ -32,7 +50,7 @@ def average_words_over_time_scatterplot(df: pd.DataFrame) -> Figure:
 
     return fig
 
-def create_structure_metrics_dataframe(
+def create_metrics_scatter(
     df: pd.DataFrame,
     metric: str,
     title: str,

@@ -1,9 +1,12 @@
 
 import streamlit as st
 import pandas as pd
+from tinycss2 import color3, color4
 
-from lana_nlp.visualization.trends import(
-    average_words_over_time_scatterplot
+from lana_nlp.visualization.trends import (
+    average_words_over_time_scatterplot,
+    create_metrics_scatter,
+    song_structure_metrics
 )
 
 from lana_nlp.visualization.comparisons import (
@@ -129,77 +132,74 @@ elif page == "Lyrical Style":
         metric_groups.keys()
     )
 
-    style_df = (
-        album_df[
-            ["album", "year", "avg_words_per_song"]
-        ]
-        .drop_duplicates()
-    )
+    if selected_group == "Song Structure":
 
-    style_df["year"] = pd.to_numeric(
-        style_df["year"]
-    )
+        col1, col2 = st.columns(2)
 
-    style_df = style_df.sort_values("year")
+        with col1:
+            fig = create_metrics_scatter(
+                album_df,
+                "avg_words_per_song",
+                "Average Words per Song",
+                "Words"
+            )
+            st.plotly_chart(fig, use_container_width=True)
 
-    st.line_chart(
-        style_df.set_index("year")["avg_words_per_song"]
-    )
+        with col2:
+            st.write(
+                "In the future this will show average line count."
+            )
 
-    st.caption(
-        "Average number of words per song for each album."
-    )
+        col3, col4 = st.columns(2)
 
-    # Lexical Diversity
-    st.subheader("Lexical Diversity")
+        with col3:
+            st.write(
+                "In the future this will show average words per line"
+            )
 
-    diversity_df = (
-        album_df[
-            ["album", "year", "lexical_diversity"]
-        ]
-        .drop_duplicates()
-    )
+        with col4:
+            st.write(
+                "In the future this will show reading time."
+            )
 
-    diversity_df["year"] = pd.to_numeric(
-        diversity_df["year"]
-    )
+    if selected_group == "Vocabulary":
+        col1, col2 = st.columns(2)
 
-    st.line_chart(
-        diversity_df.set_index("year")["lexical_diversity"]
-    )
+        with col1:
+            fig = create_metrics_scatter(
+                album_df,
+                "flesch_reading_ease",
+                "Flesch Reading Ease",
+                "score"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            st.caption(
+                "Lower values indicate a more difficult reading level."
+            )
 
-    st.caption(
-        "Average lexical diversity for each album. "
-        "Higher values indicate a greater variety of unique words."
-    )
 
-    # Readability
-    st.subheader("Readability")
+        with col2:
+            fig = create_metrics_scatter(
+                album_df,
+                "flesch_kincaid",
+                "Flesch-Kincaid",
+                "score"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            st.caption(
+                "Lower values indicate a more difficult reading level."
+            )
 
-    readability_df = (
-        album_df[
-            ["album", "year", "flesch_reading_ease"]
-        ]
-        .drop_duplicates()
-    )
-
-    readability_df["year"] = pd.to_numeric(
-        readability_df["year"]
-    )
-
-    readability_df = readability_df.sort_values("year")
-
-    st.line_chart(
-        readability_df.set_index("year")[
-            "flesch_reading_ease"
-        ]
-    )
-
-    st.caption(
-        "Flesch Reading Ease score for each album. "
-        "Higher scores generally indicate easier-to-read lyrics."
-    )
-
+        fig = create_metrics_scatter(
+            album_df,
+            "gunning_fog",
+            "Gunning Fog",
+            "score"
+        )
+        st.plotly_chart(fig, use_container_width=True)
+        st.caption(
+            "Higher values indicate a more difficult reading level."
+        )
 
 elif page == "Album Comparison":
 
