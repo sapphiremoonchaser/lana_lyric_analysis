@@ -31,3 +31,33 @@ def average_words_over_time_scatterplot(df: pd.DataFrame) -> Figure:
     )
 
     return fig
+
+def create_structure_metrics_dataframe(
+    df: pd.DataFrame,
+    metric: str,
+    title: str,
+    y_label: str
+) -> Figure:
+    """
+    Create four scatter plots with average word count, average line count, average
+    words per line, and readability score.
+    """
+    fig = px.scatter(
+        df,
+        x="year",
+        y=metric,
+        hover_name="album",
+        hover_data={
+            "year": True,
+            metric: ":.2f"
+        },
+        title=title,
+    )
+
+    fig.update_layout(
+        xaxis_title="Year",
+        yaxis_title=y_label
+    )
+
+    return fig
+
