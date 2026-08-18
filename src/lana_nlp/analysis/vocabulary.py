@@ -61,7 +61,7 @@ class VocabularyAnalyzer:
             lambda x: isinstance(x, list)
         )
 
-        if is_tokenized.any() and not is_tokenized.any():
+        if is_tokenized.any() and not is_tokenized.all():
             raise TypeError(
                 f"{self.text_column} must contain either all strings "
                 "or all token lists."
