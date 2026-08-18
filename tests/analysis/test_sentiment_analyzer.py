@@ -3,7 +3,7 @@ from unittest.mock import patch
 import pandas as pd
 import pytest
 
-from lana_nlp.analysis.sentiment import SentimentAnalyzer
+from lana_nlp.features.sentiment import SentimentAnalyzer
 
 
 def test_load_emotion_lexicon_returns_dict():

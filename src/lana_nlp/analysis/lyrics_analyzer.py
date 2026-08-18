@@ -12,11 +12,11 @@ estimated reading time for each song.
 """
 import pandas as pd
 
-from lana_nlp.analysis.basic_features import FeaturesAnalyzer
-from lana_nlp.analysis.sentiment import SentimentAnalyzer
+from lana_nlp.features.basic_features import FeaturesAnalyzer
+from lana_nlp.features.sentiment import SentimentAnalyzer
 from lana_nlp.analysis.statistics import StatisticsAnalyzer
-from lana_nlp.analysis.vocabulary import VocabularyAnalyzer
-from lana_nlp.analysis.readability import ReadabilityAnalyzer
+from lana_nlp.features.vocabulary import VocabularyAnalyzer
+from lana_nlp.features.readability import ReadabilityAnalyzer
 
 
 class LyricsAnalyzer:

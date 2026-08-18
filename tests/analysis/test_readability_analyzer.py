@@ -1,7 +1,7 @@
 # Imports
 import pandas as pd
 
-from lana_nlp.analysis.readability import ReadabilityAnalyzer
+from lana_nlp.features.readability import ReadabilityAnalyzer
 
 
 def test_flesch_reading_ease_returns_calculated_column(sample_df) -> None:

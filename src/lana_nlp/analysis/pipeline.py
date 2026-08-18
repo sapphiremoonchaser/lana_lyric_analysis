@@ -4,12 +4,12 @@ the data.
 """
 import pandas as pd
 
-from lana_nlp.analysis.basic_features import FeaturesAnalyzer
+from lana_nlp.features.basic_features import FeaturesAnalyzer
 from lana_nlp.preprocessing.data_loader import LyricsDataLoader
 from lana_nlp.preprocessing.text_cleaner import TextCleaner
-from lana_nlp.analysis.readability import ReadabilityAnalyzer
-from lana_nlp.analysis.sentiment import SentimentAnalyzer
-from lana_nlp.analysis.vocabulary import VocabularyAnalyzer
+from lana_nlp.features.readability import ReadabilityAnalyzer
+from lana_nlp.features.sentiment import SentimentAnalyzer
+from lana_nlp.features.vocabulary import VocabularyAnalyzer
 
 
 def pipeline(
