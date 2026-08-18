@@ -113,6 +113,6 @@ def pipeline(
         how="left"
     )
 
-    album_stats.to_csv("../data/processed/album_level_stats.csv", )
+    album_stats.to_csv("../data/processed/album_level_stats.csv")
 
     return df, album_stats
