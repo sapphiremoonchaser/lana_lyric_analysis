@@ -1,5 +1,5 @@
 """
-Analyze vocabulary habits in songs..
+Analyze vocabulary habits in songs.
 
 This module contains the VocabularyAnalyzer class, which provides methods
 for exploring a song's vocabulary. It looks at word frequency, top words used,
@@ -9,7 +9,6 @@ The VocabularyAnalyzer operates on a pandas DataFrame containing song metadata
 and lyrics, and creates derived metrics such as word count and
 estimated reading time for each song.
 """
-import re
 from collections import Counter
 
 import pandas as pd
