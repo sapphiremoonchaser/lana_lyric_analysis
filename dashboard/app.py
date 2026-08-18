@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 
-
 st.set_page_config(
     page_title="Lana Del Rey Lyric Analysis",
     page_icon="🍒",
@@ -38,7 +37,7 @@ if page == "Overview":
     st.title("Lana Del Rey Lyric Analysis")
 
     st.write(
-        "An exploration of Lana Del Rey's lyrics"
+        "An exploration of Lana Del Rey's lyrics "
         "using natural language processing."
     )
 
@@ -69,17 +68,87 @@ if page == "Overview":
         album_df[
             ["album", "year", "avg_words_per_song"]
         ]
+        .drop_duplicates()
         .sort_values("year")
+    )
+
+    words_by_album["album"] = pd.Categorical(
+        words_by_album["album"],
+        categories=words_by_album["album"],
+        ordered=True
     )
 
     st.bar_chart(
         words_by_album.set_index("album")["avg_words_per_song"]
     )
 
+    st.caption(
+        "Average number of words per song across Lana Del Rey's albums."
+    )
+
 
 elif page == "Lyrical Style":
 
     st.title("Lyrical Style Over Time")
+
+    # st.write(album_df.columns.tolist())
+
+    st.write(
+        "How does Lana Del Rey's lyrical style change "
+        "across her discography?"
+    )
+
+    # Line chart showing average words per song
+    st.subheader("Average Words per Song")
+
+    style_df = (
+        album_df[
+            ["album", "year", "avg_words_per_song"]
+        ]
+        .drop_duplicates()
+    )
+
+    style_df["year"] = pd.to_numeric(
+        style_df["year"]
+    )
+
+    style_df = style_df.sort_values("year")
+
+    st.line_chart(
+        style_df.set_index("year")["avg_words_per_song"]
+    )
+
+    st.caption(
+        "Average number of words per song for each album."
+    )
+
+    # Lexical Diversity
+    st.subheader("Lexical Diversity")
+
+    diversity_df = (
+        album_df[
+            ["album", "year", "lexical_diversity"]
+        ]
+        .drop_duplicates()
+    )
+
+    diversity_df["year"] = pd.to_numeric(
+        diversity_df["year"]
+    )
+
+    st.line_chart(
+        diversity_df.set_index("year")["lexical_diversity"]
+    )
+
+    st.caption(
+        "Average lexical diversity for each album. "
+        "Higher values indicate a greater variety of unique words."
+    )
+
+
+
+
+
 
 elif page == "Album Comparison":
 
