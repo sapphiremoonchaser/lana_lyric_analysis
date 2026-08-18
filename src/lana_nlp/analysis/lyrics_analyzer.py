@@ -16,7 +16,7 @@ from lana_nlp.features.basic_features import BasicFeatures
 from lana_nlp.features.sentiment import SentimentAnalyzer
 from lana_nlp.analysis.statistics import StatisticsAnalyzer
 from lana_nlp.features.vocabulary import VocabularyFeatures
-from lana_nlp.features.readability import ReadabilityAnalyzer
+from lana_nlp.features.readability import ReadabilityFeatures
 
 
 class LyricsAnalyzer:
@@ -172,7 +172,7 @@ class LyricsAnalyzer:
             text_column=self.nlp_text_column
         )
 
-        self.readability = ReadabilityAnalyzer(
+        self.readability = ReadabilityFeatures(
             self.df,
             text_column=self.nlp_text_column
         )

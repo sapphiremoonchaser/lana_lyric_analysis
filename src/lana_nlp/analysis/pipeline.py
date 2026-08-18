@@ -7,7 +7,7 @@ import pandas as pd
 from lana_nlp.features.basic_features import BasicFeatures
 from lana_nlp.preprocessing.data_loader import LyricsDataLoader
 from lana_nlp.preprocessing.text_cleaner import TextCleaner
-from lana_nlp.features.readability import ReadabilityAnalyzer
+from lana_nlp.features.readability import ReadabilityFeatures
 from lana_nlp.features.sentiment import SentimentAnalyzer
 from lana_nlp.features.vocabulary import VocabularyFeatures
 
@@ -53,7 +53,7 @@ def pipeline(
     vocabulary_analyzer.analyze()
 
     # Add readability features
-    readability_analyzer =  ReadabilityAnalyzer(
+    readability_analyzer =  ReadabilityFeatures(
         df,
         text_column="basic_cleaned_lyrics"
     )

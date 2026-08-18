@@ -14,7 +14,7 @@ from collections.abc import Callable
 from lana_nlp.utils.text_utils import to_text
 
 
-class ReadabilityAnalyzer:
+class ReadabilityFeatures:
     """
     Analyze a dataset of song lyrics for readability.
 
