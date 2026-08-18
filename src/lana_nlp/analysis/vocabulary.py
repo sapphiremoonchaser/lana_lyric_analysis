@@ -106,6 +106,9 @@ class VocabularyAnalyzer:
         if isinstance(text, list):
             return [word.lower() for word in text]
 
+        if isinstance(text, str):
+            return text.lower().split()
+
         return text.lower().split()
 
 ##############################
