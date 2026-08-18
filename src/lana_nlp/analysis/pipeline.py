@@ -11,11 +11,12 @@ from lana_nlp.preprocessing.text_cleaner import TextCleaner
 from lana_nlp.analysis.readability import ReadabilityAnalyzer
 from lana_nlp.analysis.sentiment import SentimentAnalyzer
 from lana_nlp.analysis.vocabulary import VocabularyAnalyzer
+from lana_nlp.analysis.statistics import StatisticsAnalyzer
 
 
 def pipeline(
         filepath: str
-) -> pd.DataFrame:
+) -> tuple[[pd.DataFrame], [pd.DataFrame]]:
     """
     Pipeline to read a csv file containing lyrics, clean the data and analyze. It
     gets dataframes for basic stats, readability, vocabulary, and sentiment.
@@ -69,6 +70,51 @@ def pipeline(
 
     sentiment_analyzer.analyze()
 
-    df.to_csv("../data/processed/lyrics.csv")
+    # Save by song dataframe
+    df.to_csv(
+        "../data/processed/song_level_stats.csv",
+        index=False
+    )
 
-    return df
+    # Save by album dataframe
+    emotion_columns = [
+        column
+        for column in df.columns
+        if column.startswith("emotion_")
+    ]
+
+    emotion_stats = (
+        df.groupby(["album", "year"])[emotion_columns]
+        .mean()
+        .reset_index()
+    )
+
+    album_stats = (
+        df.groupby(["album", "year"])
+        .agg(
+            total_words=("word_count", "sum"),
+            avg_words_per_song=("word_count", "mean"),
+            vocabulary_size=("vocabulary_size", "mean"),
+            lexical_diversity=("lexical_diversity", "mean"),
+            average_word_length=("average_word_length", "mean"),
+            flesch_reading_ease=("flesch_reading_ease", "mean"),
+            flesch_kincaid=("flesch_kincaid", "mean"),
+            gunning_fog=("gunning_fog", "mean"),
+            sentiment_polarity=("sentiment_polarity", "mean"),
+            subjectivity=("subjectivity", "mean"),
+            positive_word_ratio=("positive_word_ratio", "mean"),
+            negative_word_ratio=("negative_word_ratio", "mean"),
+        )
+        .reset_index()
+    )
+
+    # Add emotion statistics
+    album_stats = album_stats.merge(
+        emotion_stats,
+        on=["album", "year"],
+        how="left"
+    )
+
+    album_stats.to_csv("../data/processed/album_level_stats.csv", )
+
+    return df, album_stats
