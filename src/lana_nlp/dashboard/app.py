@@ -228,13 +228,13 @@ elif page == "Lyrical Style":
             fig = create_metrics_scatter(
                 album_df,
                 "positive_word_ratio",
-                "Ratio of Positive to Total Words",
+                "Positive Language",
                 "ratio",
                 "#00ffff"
             )
             st.plotly_chart(fig, use_container_width=True)
             st.caption(
-                "Larger values indicate more positive words, with 0 being 0 positive "
+                "Larger values indicates positive language, with 0 being 0 positive "
                 "words."
             )
 
@@ -242,13 +242,13 @@ elif page == "Lyrical Style":
                 fig = create_metrics_scatter(
                     album_df,
                     "negative_word_ratio",
-                    "Ratio of Negative to Total Words",
+                    "Negative Language",
                     "ratio",
                     "#99ff99"
                 )
                 st.plotly_chart(fig, use_container_width=True)
                 st.caption(
-                    "Larger values indicate more negative words, with 0 being 0 "
+                    "Larger values indicates negative language, with 0 being 0 "
                     "negative words."
                 )
 

@@ -65,3 +65,37 @@ def create_metrics_scatter(
 
     return fig
 
+
+def create_sentiment_scatter(df: pd.DataFrame) -> Figure:
+    """
+    Create a scatter plot with positive and negative word ratio.
+    """
+    fig = px.scatter(
+        df,
+        x="year",
+        y="positive_word_ratio",
+        hover_name="album",
+        title="Positive and Negative Language"
+    )
+
+    fig.update_traces(
+        marker=dict(color="#6699ff"),
+        name="Positive",
+    )
+
+    fig.add_scatter(
+        x=df["year"],
+        y=df["negative_word_ratio"],
+        mode="markers",
+        name="Negative",
+        marker=dict(color="#ff99cc")
+    )
+
+    fig.update_layout(
+        xaxis_title="Year",
+        yaxis_title="Word Ratio"
+    )
+
+    return fig
+
+
