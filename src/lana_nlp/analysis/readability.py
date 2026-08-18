@@ -1,12 +1,11 @@
 """
-Analyze song lyrics and compute readability metrics..
+Analyze song lyrics and compute readability metrics.
 
 This module contains the ReadabilityAnalyzer class, which provides methods
-for exploring different readability metrics..
+for exploring different readability metrics.
 
 The analyzer operates on a pandas DataFrame containing song metadata
-and lyrics, and creates derived metrics such as word count and
-estimated reading time for each song.
+and lyrics, and creates derived metrics.
 """
 from textstat import textstat
 import pandas as pd
@@ -17,7 +16,7 @@ from lana_nlp.utils.text_utils import to_text
 
 class ReadabilityAnalyzer:
     """
-    Analyze a dataset of song lyrics for readability..
+    Analyze a dataset of song lyrics for readability.
 
     This class provides methods for modeling readability using flesch reading ease,
     flesch kincaid, gunning fog, and coleman liau.
@@ -55,7 +54,9 @@ class ReadabilityAnalyzer:
 
     def flesch_reading_ease(self) -> None:
         """
-        Calculate the flesch reading easy. It uses sentense length and syllables.
+        Calculate the flesch reading easy. It uses sentence length and syllables.
+
+        A lower flesch reading ease score means the text is more difficult.
 
         Returns:
             None. Adds "flesch_reading_ease" to self.df.
@@ -70,6 +71,8 @@ class ReadabilityAnalyzer:
         """
         Calculate the flesch kincaid reading ease.
 
+        A lower flesch kincaid score means the text is more difficult.
+
         Returns:
             None. Adds "flesch_kincaid" to self.df.
         """
@@ -82,6 +85,9 @@ class ReadabilityAnalyzer:
     def gunning_fog(self) -> None:
         """
         Uses word complexity by number of syllables to calculate reading ease.
+
+        A higher score means the text is more difficult.
+
         Returns:
             None. Adds "gunning_fog" to self.df.
         """
