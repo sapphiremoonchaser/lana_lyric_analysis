@@ -6,6 +6,10 @@ from lana_nlp.visualization.trends import (
     create_metrics_scatter
 )
 
+from lana_nlp.visualization.preparation import (
+    metric_groups
+)
+
 from lana_nlp.visualization.emotions import (
     album_emotion_heatmap
 )
@@ -101,25 +105,6 @@ elif page == "Lyrical Style":
     # Line chart showing average words per song
     st.subheader("Average Words per Song")
 
-    metric_groups = {
-        "Song Structure": [
-            "avg_words_per_song",
-            "avg_lines_per_song",
-            "avg_words_per_line",
-            "reading_minutes",
-        ],
-        "Vocabulary": [
-            "unique_words",
-            "lexical_diversity",
-            "avg_word_length",
-        ],
-        "Readability": [
-            "flesch_reading_ease",
-            "flesch_kincaid",
-            "gunning_fog",
-        ],
-    }
-
     selected_group = st.selectbox(
         "Metric Group",
         metric_groups.keys()
@@ -134,7 +119,8 @@ elif page == "Lyrical Style":
                 album_df,
                 "avg_words_per_song",
                 "Average Words per Song",
-                "Words"
+                "Words",
+                 "#00ffff"
             )
             st.plotly_chart(fig, use_container_width=True)
 
@@ -156,6 +142,11 @@ elif page == "Lyrical Style":
             )
 
     if selected_group == "Vocabulary":
+        # ToDo: Vocab on page 2
+
+
+
+    if selected_group == "Readability":
         col1, col2 = st.columns(2)
 
         with col1:
@@ -163,7 +154,8 @@ elif page == "Lyrical Style":
                 album_df,
                 "flesch_reading_ease",
                 "Flesch Reading Ease",
-                "score"
+                "score",
+                "#00ffff"
             )
             st.plotly_chart(fig, use_container_width=True)
             st.caption(
@@ -176,7 +168,8 @@ elif page == "Lyrical Style":
                 album_df,
                 "flesch_kincaid",
                 "Flesch-Kincaid",
-                "score"
+                "score",
+                "#99ff99"
             )
             st.plotly_chart(fig, use_container_width=True)
             st.caption(
@@ -187,12 +180,14 @@ elif page == "Lyrical Style":
             album_df,
             "gunning_fog",
             "Gunning Fog",
-            "score"
+            "score",
+            "#cc99ff"
         )
         st.plotly_chart(fig, use_container_width=True)
         st.caption(
             "Higher values indicate a more difficult reading level."
         )
+
 
 elif page == "Album Comparison":
 
@@ -280,6 +275,7 @@ elif page == "Album Comparison":
         f"Comparing {selected_metric.lower()} "
         "across Lana Del Rey's albums."
     )
+
 
 elif page == "Song Explorer":
 

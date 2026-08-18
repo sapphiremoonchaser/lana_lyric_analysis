@@ -1,5 +1,23 @@
 import pandas as pd
 
+metric_groups = {
+        "Song Structure": [
+            "avg_words_per_song",
+            "avg_lines_per_song",
+            "avg_words_per_line",
+            "reading_minutes",
+        ],
+        "Vocabulary": [
+            "unique_words",
+            "lexical_diversity",
+            "avg_word_length",
+        ],
+        "Readability": [
+            "flesch_reading_ease",
+            "flesch_kincaid",
+            "gunning_fog",
+        ],
+    }
 
 song_structure_metrics = {
     "avg_words_per_song": {
