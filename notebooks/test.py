@@ -1,4 +1,4 @@
-from lana_nlp.analysis.pipeline import pipeline
+from lana_nlp.pipeline.pipeline import pipeline
 
 df = pipeline("../data/raw/lyrics.csv")
 

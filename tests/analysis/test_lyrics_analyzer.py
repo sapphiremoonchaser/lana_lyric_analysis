@@ -2,7 +2,7 @@
 import pandas as pd
 import numpy as np
 
-from lana_nlp.analysis.lyrics_analyzer import LyricsAnalyzer
+from lana_nlp.pipeline.create_features import LyricsAnalyzer
 
 
 def test_calculate_derived_columns_adds_columns(sample_df) -> None:
