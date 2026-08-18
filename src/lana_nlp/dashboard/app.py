@@ -10,6 +10,10 @@ from lana_nlp.visualization.comparisons import (
     average_words_by_album
 )
 
+from lana_nlp.visualization.emotions import (
+    album_emotion_heatmap
+)
+
 st.set_page_config(
     page_title="Lana Del Rey Lyric Analysis",
     page_icon="🍒",
@@ -95,9 +99,13 @@ if page == "Overview":
         "Average number of words per song across Lana Del Rey's albums."
     )
 
-    # Bar Chart
-    fig = average_words_by_album(words_by_album)
+    # Emotional Profile Heatmap
+    fig = album_emotion_heatmap(album_df)
     st.plotly_chart(fig, use_container_width=True)
+
+    st.caption(
+        "Higher values indicate a higher association to a particular emotion."
+    )
 
 
 elif page == "Lyrical Style":
