@@ -5,7 +5,7 @@ from textstat import textstat
 import pandas as pd
 
 
-class LyricsFeatures:
+class FeaturesAnalyzer:
     """
     Calculate word count, syllable count, line count, and reading time.
     """

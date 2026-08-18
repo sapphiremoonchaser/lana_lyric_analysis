@@ -12,7 +12,7 @@ estimated reading time for each song.
 """
 import pandas as pd
 
-from lana_nlp.features.lyrics_features import LyricsFeatures
+from lana_nlp.analysis.basic_features import FeaturesAnalyzer
 from lana_nlp.analysis.sentiment import SentimentAnalyzer
 from lana_nlp.analysis.statistics import StatisticsAnalyzer
 from lana_nlp.analysis.vocabulary import VocabularyAnalyzer
@@ -59,7 +59,7 @@ class LyricsAnalyzer:
             None. Adds 3 columns to self.df.
         """
 
-        calculations = LyricsFeatures(
+        calculations = FeaturesAnalyzer(
             self.df,
             self.basic_text_column
         )
@@ -151,7 +151,7 @@ class LyricsAnalyzer:
         Calculate all features.
         """
 
-        features = LyricsFeatures(
+        features = FeaturesAnalyzer(
             self.df,
             text_column=self.basic_text_column
         )
