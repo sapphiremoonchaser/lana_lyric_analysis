@@ -62,6 +62,20 @@ if page == "Overview":
     with col4:
         st.metric("Latest Album", last_year)
 
+    # Visualize average words per song
+    st.subheader("Average Words per Song")
+
+    words_by_album = (
+        album_df[
+            ["album", "year", "avg_words_per_song"]
+        ]
+        .sort_values("year")
+    )
+
+    st.bar_chart(
+        words_by_album.set_index("album")["avg_words_per_song"]
+    )
+
 
 elif page == "Lyrical Style":
 
