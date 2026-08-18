@@ -3,9 +3,12 @@ import streamlit as st
 import pandas as pd
 
 from lana_nlp.visualization.trends import(
-    average_words_over_time
+    average_words_over_time_scatterplot
 )
 
+from lana_nlp.visualization.comparisons import (
+    average_words_by_album
+)
 
 st.set_page_config(
     page_title="Lana Del Rey Lyric Analysis",
@@ -84,12 +87,17 @@ if page == "Overview":
         ordered=True
     )
 
-    fig = average_words_over_time(words_by_album)
+    # Scatter Plot
+    fig = average_words_over_time_scatterplot(words_by_album)
     st.plotly_chart(fig, use_container_width=True)
 
     st.caption(
         "Average number of words per song across Lana Del Rey's albums."
     )
+
+    # Bar Chart
+    fig = average_words_by_album(words_by_album)
+    st.plotly_chart(fig, use_container_width=True)
 
 
 elif page == "Lyrical Style":

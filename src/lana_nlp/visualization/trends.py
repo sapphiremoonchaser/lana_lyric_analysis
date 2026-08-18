@@ -3,7 +3,7 @@ import plotly.express as px
 from plotly.graph_objs import Figure
 
 
-def average_words_over_time(df: pd.DataFrame) -> Figure:
+def average_words_over_time_scatterplot(df: pd.DataFrame) -> Figure:
     """
     Create a scatter plot to show average words over time by album.
     Args:
