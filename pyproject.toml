@@ -12,6 +12,7 @@ dependencies =[
     "pyarrow",
     "seaborn",
     "scikit-learn",
+    "streamlit",
     "textblob",
     "textstat",
     "wordcloud",
