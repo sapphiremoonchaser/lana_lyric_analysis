@@ -1,5 +1,7 @@
 import streamlit as st
 import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 st.set_page_config(
     page_title="Lana Del Rey Lyric Analysis",
@@ -173,13 +175,74 @@ elif page == "Lyrical Style":
     )
 
 
-
-
-
-
 elif page == "Album Comparison":
 
     st.title("Album Comparison")
+
+    st.write(
+        "Compare lyrical characteristics across Lana Del Rey's Albums."
+    )
+
+    metric_options = {
+        "Total Words": "total_words",
+        "Average Words per Song": "avg_words_per_song",
+        "Vocabulary Size": "vocabulary_size",
+        "Lexical Diversity": "lexical_diversity",
+        "Average Word Length": "average_word_length",
+        "Flesch Reading Ease": "flesch_reading_ease",
+        "Flesch-Kincaid": "flesch_kincaid",
+        "Gunning Fog": "gunning_fog",
+        "Sentiment Polarity": "sentiment_polarity",
+        "Subjectivity": "subjectivity",
+        "Positive Word Ratio": "positive_word_ratio",
+        "Negative Word Ratio": "negative_word_ratio",
+        "Positive Emotion": "emotion_Positive",
+        "Negative Emotion": "emotion_Negative",
+        "Anger": "emotion_Anger",
+        "Anticipation": "emotion_Anticipation",
+        "Disgust": "emotion_Disgust",
+        "Fear": "emotion_Fear",
+        "Joy": "emotion_Joy",
+        "Sadness": "emotion_Sadness",
+        "Surprise": "emotion_Surprise",
+        "Trust": "emotion_Trust",
+    }
+
+    selected_metric = st.selectbox(
+        "Choose a metric",
+        options=list(metric_options.keys())
+    )
+
+    selected_column = metric_options[selected_metric]
+
+    comparison_df = (
+        album_df[
+            ["album", "year", selected_column]
+        ]
+        .drop_duplicates()
+        .sort_values("year")
+    )
+
+    comparison_df["album"] = pd.Categorical(
+        comparison_df["album"],
+        categories=comparison_df["album"],
+        ordered=True
+    )
+
+    st.subheader(
+        f"{selected_column} by Album"
+    )
+
+    st.bar_chart(
+        comparison_df.set_index("album")[selected_column]
+    )
+
+
+
+
+
+
+
 
 elif page == "Song Explorer":
 
