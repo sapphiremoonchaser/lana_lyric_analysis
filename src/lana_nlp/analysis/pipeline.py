@@ -4,7 +4,7 @@ the data.
 """
 import pandas as pd
 
-from lana_nlp.features.basic_features import FeaturesAnalyzer
+from lana_nlp.features.basic_features import BasicFeatures
 from lana_nlp.preprocessing.data_loader import LyricsDataLoader
 from lana_nlp.preprocessing.text_cleaner import TextCleaner
 from lana_nlp.features.readability import ReadabilityAnalyzer
@@ -37,7 +37,7 @@ def pipeline(
     df["nlp_cleaned_lyrics"] = df["lyrics"].apply(cleaner.nlp_clean)
 
     # Add basic features like word and line counts
-    features_analyzer = FeaturesAnalyzer(
+    features_analyzer = BasicFeatures(
         df,
         text_column="basic_cleaned_lyrics"
     )

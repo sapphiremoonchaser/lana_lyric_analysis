@@ -5,7 +5,7 @@ from textstat import textstat
 import pandas as pd
 
 
-class FeaturesAnalyzer:
+class BasicFeatures:
     """
     Calculate word count, syllable count, line count, and reading time.
     """
