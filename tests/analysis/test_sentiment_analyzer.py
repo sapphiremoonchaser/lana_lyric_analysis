@@ -3,7 +3,7 @@ from unittest.mock import patch
 import pandas as pd
 import pytest
 
-from lana_nlp.features.sentiment import SentimentAnalyzer
+from lana_nlp.features.sentiment import SentimentFeatures
 
 
 def test_load_emotion_lexicon_returns_dict():
@@ -28,7 +28,7 @@ def test_load_emotion_lexicon_returns_dict():
     )
 
     with patch("pandas.read_csv", return_value=mock_lexicon):
-        analyzer = SentimentAnalyzer(
+        analyzer = SentimentFeatures(
             pd.DataFrame(),
             lexicon_path="fake_path.csv"
         )
@@ -54,7 +54,7 @@ def test_load_emotion_lexicon_returns_dict():
 
 
 def test_load_sentiment_words_creates_sets():
-    analyzer = SentimentAnalyzer.__new__(SentimentAnalyzer)
+    analyzer = SentimentFeatures.__new__(SentimentFeatures)
 
     analyzer.emotion_lexicon = {
         "happy": ["Positive", "Joy"],
@@ -75,7 +75,7 @@ def test_load_sentiment_words_creates_sets():
 
 
 def test_calculate_emotions_returns_normalized_scores():
-    analyzer = SentimentAnalyzer.__new__(SentimentAnalyzer)
+    analyzer = SentimentFeatures.__new__(SentimentFeatures)
 
     analyzer.emotion_lexicon = {
         "happy": ["Positive", "Joy"],
@@ -93,7 +93,7 @@ def test_calculate_emotions_returns_normalized_scores():
 
 
 def test_calculate_emotions_accepts_string():
-    analyzer = SentimentAnalyzer.__new__(SentimentAnalyzer)
+    analyzer = SentimentFeatures.__new__(SentimentFeatures)
 
     analyzer.emotion_lexicon = {
         "happy": ["Joy"]
@@ -107,7 +107,7 @@ def test_calculate_emotions_accepts_string():
 
 
 def test_calculate_emotions_returns_empty_dict_when_no_matches():
-    analyzer = SentimentAnalyzer.__new__(SentimentAnalyzer)
+    analyzer = SentimentFeatures.__new__(SentimentFeatures)
 
     analyzer.emotion_lexicon = {
         "happy": ["Joy"]
@@ -121,7 +121,7 @@ def test_calculate_emotions_returns_empty_dict_when_no_matches():
 
 
 def test_calculate_emotions_ignores_unknown_words():
-    analyzer = SentimentAnalyzer.__new__(SentimentAnalyzer)
+    analyzer = SentimentFeatures.__new__(SentimentFeatures)
 
     analyzer.emotion_lexicon = {
         "happy": ["Joy"]
@@ -135,7 +135,7 @@ def test_calculate_emotions_ignores_unknown_words():
 
 
 def test_sentiment_polarity_structure_and_value(sample_df):
-    analyzer = SentimentAnalyzer(sample_df, text_column="lyrics")
+    analyzer = SentimentFeatures(sample_df, text_column="lyrics")
 
     analyzer.sentiment_polarity()
 
@@ -161,7 +161,7 @@ def test_sentiment_polarity_handles_tokens() -> None:
         ]
     })
 
-    analyzer = SentimentAnalyzer(df, text_column="lyrics")
+    analyzer = SentimentFeatures(df, text_column="lyrics")
 
     analyzer.sentiment_polarity()
 
@@ -169,7 +169,7 @@ def test_sentiment_polarity_handles_tokens() -> None:
 
 
 def test_sentiment_subjectivity_structure_and_value(sample_df):
-    analyzer = SentimentAnalyzer(sample_df, text_column="lyrics")
+    analyzer = SentimentFeatures(sample_df, text_column="lyrics")
 
     analyzer.sentiment_subjectivity()
 
@@ -195,7 +195,7 @@ def test_sentiment_subjectivity_handles_tokens() -> None:
         ]
     })
 
-    analyzer = SentimentAnalyzer(df, text_column="lyrics")
+    analyzer = SentimentFeatures(df, text_column="lyrics")
 
     analyzer.sentiment_subjectivity()
 
@@ -203,7 +203,7 @@ def test_sentiment_subjectivity_handles_tokens() -> None:
 
 
 def test_positive_word_ratio_structure(sample_df) -> None:
-    analyzer = SentimentAnalyzer(sample_df, text_column="lyrics")
+    analyzer = SentimentFeatures(sample_df, text_column="lyrics")
 
     analyzer.positive_word_ratio()
 
@@ -214,7 +214,7 @@ def test_positive_word_ratio_structure(sample_df) -> None:
 
 
 def test_positive_word_ratio_value() -> None:
-    analyzer = SentimentAnalyzer.__new__(SentimentAnalyzer)
+    analyzer = SentimentFeatures.__new__(SentimentFeatures)
 
     analyzer.df = pd.DataFrame({
         "lyrics": ["happy love sad"]
@@ -229,7 +229,7 @@ def test_positive_word_ratio_value() -> None:
 
 
 def test_positive_word_ratio_returns_zero_for_empty_text():
-    analyzer = SentimentAnalyzer.__new__(SentimentAnalyzer)
+    analyzer = SentimentFeatures.__new__(SentimentFeatures)
 
     analyzer.df = pd.DataFrame({
         "lyrics": [""]
@@ -243,7 +243,7 @@ def test_positive_word_ratio_returns_zero_for_empty_text():
 
 
 def test_negative_word_ratio_structure(sample_df) -> None:
-    analyzer = SentimentAnalyzer(sample_df, text_column="lyrics")
+    analyzer = SentimentFeatures(sample_df, text_column="lyrics")
 
     analyzer.negative_word_ratio()
 
@@ -254,7 +254,7 @@ def test_negative_word_ratio_structure(sample_df) -> None:
 
 
 def test_negative_word_ratio_value() -> None:
-    analyzer = SentimentAnalyzer.__new__(SentimentAnalyzer)
+    analyzer = SentimentFeatures.__new__(SentimentFeatures)
 
     analyzer.df = pd.DataFrame({
         "lyrics": ["happy love sad"]
@@ -269,7 +269,7 @@ def test_negative_word_ratio_value() -> None:
 
 
 def test_negative_word_ratio_returns_zero_for_empty_text():
-    analyzer = SentimentAnalyzer.__new__(SentimentAnalyzer)
+    analyzer = SentimentFeatures.__new__(SentimentFeatures)
 
     analyzer.df = pd.DataFrame({
         "lyrics": [""]
@@ -283,7 +283,7 @@ def test_negative_word_ratio_returns_zero_for_empty_text():
 
 
 def test_emotion_scores_adds_emotion_columns(sample_df) -> None:
-    analyzer = SentimentAnalyzer(sample_df, text_column="lyrics")
+    analyzer = SentimentFeatures(sample_df, text_column="lyrics")
 
     analyzer.emotion_scores()
 
@@ -311,7 +311,7 @@ def test_emotion_scores_calculates_values() -> None:
         ]
     })
 
-    analyzer = SentimentAnalyzer.__new__(SentimentAnalyzer)
+    analyzer = SentimentFeatures.__new__(SentimentFeatures)
     analyzer.df = df.copy()
     analyzer.text_column = "lyrics"
     analyzer.emotion_lexicon = {
@@ -332,7 +332,7 @@ def test_emotion_scores_fills_missing_emotions_with_zero() -> None:
         "lyrics": ["happy"]
     })
 
-    analyzer = SentimentAnalyzer.__new__(SentimentAnalyzer)
+    analyzer = SentimentFeatures.__new__(SentimentFeatures)
     analyzer.df = df.copy()
     analyzer.text_column = "lyrics"
     analyzer.emotion_lexicon = {
@@ -348,7 +348,7 @@ def test_emotion_scores_fills_missing_emotions_with_zero() -> None:
 
 
 def test_emotion_scores_preserves_original_columns(sample_df) -> None:
-    analyzer = SentimentAnalyzer(sample_df, text_column="lyrics")
+    analyzer = SentimentFeatures(sample_df, text_column="lyrics")
 
     original_columns = sample_df.columns.tolist()
 
@@ -363,7 +363,7 @@ def test_emotion_scores_returns_zero_for_no_matches() -> None:
         "lyrics": ["xyzabc"]
     })
 
-    analyzer = SentimentAnalyzer.__new__(SentimentAnalyzer)
+    analyzer = SentimentFeatures.__new__(SentimentFeatures)
     analyzer.df = df.copy()
     analyzer.text_column = "lyrics"
     analyzer.emotion_lexicon = {
@@ -377,7 +377,7 @@ def test_emotion_scores_returns_zero_for_no_matches() -> None:
 
 
 def test_calculate_all_structure_and_values(sample_df) -> None:
-    analyzer = SentimentAnalyzer(sample_df, text_column="lyrics")
+    analyzer = SentimentFeatures(sample_df, text_column="lyrics")
 
     result = analyzer.analyze()
 
@@ -393,7 +393,7 @@ def test_calculate_all_structure_and_values(sample_df) -> None:
 
 
 def test_average_album_sentiment_structure(sample_df) -> None:
-    analyzer = SentimentAnalyzer(sample_df, text_column="lyrics")
+    analyzer = SentimentFeatures(sample_df, text_column="lyrics")
 
     result = analyzer.average_album_sentiment()
 
@@ -406,7 +406,7 @@ def test_average_album_sentiment_ignores_missing_albums():
         "sentiment_polarity": [0.5, 0.9, -0.1],
     })
 
-    analyzer = SentimentAnalyzer(df, text_column="lyrics")
+    analyzer = SentimentFeatures(df, text_column="lyrics")
 
     result = analyzer.average_album_sentiment()
 

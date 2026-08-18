@@ -14,7 +14,7 @@ from lana_nlp.utils.text_utils import (
 )
 
 
-class SentimentAnalyzer:
+class SentimentFeatures:
     """
     Perform sentiment analysis on song lyrics.
 
