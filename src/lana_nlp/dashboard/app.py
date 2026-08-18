@@ -1,11 +1,11 @@
-from enum import unique
-from os import write
 
 import streamlit as st
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
-from pyarrow.interchange import column
+
+from lana_nlp.visualization.trends import(
+    average_words_over_time
+)
+
 
 st.set_page_config(
     page_title="Lana Del Rey Lyric Analysis",
@@ -84,9 +84,8 @@ if page == "Overview":
         ordered=True
     )
 
-    st.bar_chart(
-        words_by_album.set_index("album")["avg_words_per_song"]
-    )
+    fig = average_words_over_time(words_by_album)
+    st.plotly_chart(fig, use_container_width=True)
 
     st.caption(
         "Average number of words per song across Lana Del Rey's albums."
