@@ -1,4 +1,5 @@
 from enum import unique
+from os import write
 
 import streamlit as st
 import pandas as pd
@@ -363,13 +364,48 @@ elif page == "Song Explorer":
             f"{selected_row['negative_word_ratio']:.2%}"
         )
 
+    # Readability
+    st.subheader("Readability")
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.metric(
+            "Flesch Reading Ease",
+            f"{selected_row['flesch_reading_ease']:.1f}"
+        )
+
+    with col2:
+        st.metric(
+            "Flesch-Kincaid",
+            f"{selected_row['flesch_kincaid']:.1f}"
+        )
+
+    with col3:
+        st.metric(
+            "Gunning Fog",
+            f"{selected_row['gunning_fog']:.1f}"
+        )
+
     # Emotion profile
     st.subheader("Emotion Profile")
 
+    emotion_order = [
+        "Positive",
+        "Negative",
+        "Anger",
+        "Anticipation",
+        "Disgust",
+        "Fear",
+        "Joy",
+        "Sadness",
+        "Surprise",
+        "Trust",
+    ]
+
     emotion_columns = [
-        column
-        for column in song_df.columns
-        if column.startswith("emotion_")
+        f"emotion_{emotion}"
+        for emotion in emotion_order
     ]
 
     emotion_data = (
@@ -383,3 +419,11 @@ elif page == "Song Explorer":
         emotion_data
     )
 
+    # Add the lyrics
+    st.subheader("Lyrics")
+
+    st.text_area(
+        "Song lyrics",
+        selected_row["lyrics"],
+        height=400
+    )
