@@ -1,7 +1,6 @@
 import pandas as pd
 import plotly.express as px
 from plotly.graph_objs import Figure
-from plotly.graph_objs.choroplethmap import marker
 
 from lana_nlp.visualization.preparation import (
     prepare_words_by_album

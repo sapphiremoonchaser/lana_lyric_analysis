@@ -221,6 +221,37 @@ elif page == "Lyrical Style":
             "Higher values indicate a more difficult reading level."
         )
 
+    if selected_group == "Sentiment and Emotion":
+        col1, col2 = st.columns(2)
+
+        with col1:
+            fig = create_metrics_scatter(
+                album_df,
+                "positive_word_ratio",
+                "Ratio of Positive to Total Words",
+                "ratio",
+                "#00ffff"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            st.caption(
+                "Larger values indicate more positive words, with 0 being 0 positive "
+                "words."
+            )
+
+            with col2:
+                fig = create_metrics_scatter(
+                    album_df,
+                    "negative_word_ratio",
+                    "Ratio of Negative to Total Words",
+                    "ratio",
+                    "#99ff99"
+                )
+                st.plotly_chart(fig, use_container_width=True)
+                st.caption(
+                    "Larger values indicate more negative words, with 0 being 0 "
+                    "negative words."
+                )
+
 
 elif page == "Album Comparison":
 
