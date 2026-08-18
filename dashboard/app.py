@@ -145,6 +145,33 @@ elif page == "Lyrical Style":
         "Higher values indicate a greater variety of unique words."
     )
 
+    # Readability
+    st.subheader("Readability")
+
+    readability_df = (
+        album_df[
+            ["album", "year", "flesch_reading_ease"]
+        ]
+        .drop_duplicates()
+    )
+
+    readability_df["year"] = pd.to_numeric(
+        readability_df["year"]
+    )
+
+    readability_df = readability_df.sort_values("year")
+
+    st.line_chart(
+        readability_df.set_index("year")[
+            "flesch_reading_ease"
+        ]
+    )
+
+    st.caption(
+        "Flesch Reading Ease score for each album. "
+        "Higher scores generally indicate easier-to-read lyrics."
+    )
+
 
 
 
