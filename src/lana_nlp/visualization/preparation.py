@@ -27,3 +27,22 @@ def prepare_words_by_album(df: pd.DataFrame) -> pd.DataFrame:
     )
 
     return words_by_album
+
+
+def prepare_structure_metric_group(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Prepare a dataframe with words by album, lines per song, average words per line,
+    average reading minutes by album.
+    """
+    df = (
+        df.groupby(["album", "year"], as_index=False)
+        .agg(
+            avg_words_per_song=("word_count", "mean"),
+            avg_lines_per_song=("line_count", "mean"),
+            avg_words_per_line=("words_per_line", "mean"),
+            avg_reading_minutes=("reading_minutes", "mean"),
+        )
+        .sort_values("year")
+    )
+
+    return df
