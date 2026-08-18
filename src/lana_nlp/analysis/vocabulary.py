@@ -31,20 +31,6 @@ class VocabularyAnalyzer:
         self.text_column = text_column
 
 
-    def _normalize_word(
-        self,
-        word: str,
-    ) -> str:
-        """
-        Remove punctuation and lowercase.
-        """
-        return re.sub(
-            r"[^\w']",
-            "",
-            word.lower(),
-        )
-
-
     def _use_tokenized_text(self) -> bool:
         """
         Determine whether the text column contains tokenized lyrics.
