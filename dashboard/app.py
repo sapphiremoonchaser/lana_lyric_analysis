@@ -42,6 +42,27 @@ if page == "Overview":
         "using natural language processing."
     )
 
+    # KPI Cards
+    album_count = album_df["album"].nunique()
+    song_count = song_df["song"].nunique()
+    first_year = album_df["year"].min()
+    last_year = album_df["year"].max()
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    with col1:
+        st.metric("Albums", album_count)
+
+    with col2:
+        st.metric("Songs", song_count)
+
+    with col3:
+        st.metric("First Album", first_year)
+
+    with col4:
+        st.metric("Latest Album", last_year)
+
+
 elif page == "Lyrical Style":
 
     st.title("Lyrical Style Over Time")
