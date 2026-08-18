@@ -117,18 +117,6 @@ class SentimentAnalyzer:
         """
         Calculate scores for the emotion lexicon.
         """
-        EMOTIONS = [
-            "Positive",
-            "Negative",
-            "Anger",
-            "Anticipation",
-            "Disgust",
-            "Fear",
-            "Joy",
-            "Sadness",
-            "Surprise",
-            "Trust"
-        ]
 
         if isinstance(words, str):
             words = words.split()
@@ -147,7 +135,7 @@ class SentimentAnalyzer:
 
         return {
             emotion: emotions[emotion] / total
-            for emotion in EMOTIONS
+            for emotion in self.EMOTIONS
         }
 
 
