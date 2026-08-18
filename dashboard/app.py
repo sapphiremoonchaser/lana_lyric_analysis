@@ -1,3 +1,5 @@
+from enum import unique
+
 import streamlit as st
 import pandas as pd
 import seaborn as sns
@@ -265,6 +267,39 @@ elif page == "Album Comparison":
 elif page == "Song Explorer":
 
     st.title("Song Explorer")
+
+    st.write(
+        "Explore the lyrical, sentiment, and emotional "
+        "characteristics of individual songs."
+    )
+
+    # Drop down to choose album
+    albums = sorted(
+        song_df["album"].dropna().unique()
+    )
+
+    selected_album = st.selectbox(
+        "Choose an album.",
+        albums
+    )
+
+    # Drop down to select song
+    album_songs = (
+        song_df[
+            song_df["album"] == selected_album
+        ]
+        .sort_values("song")
+    )
+
+    selected_song = st.selectbox(
+        "Choose a song.",
+        album_songs["song"].tolist()
+    )
+
+    selected_row = album_songs[
+        album_songs["song"] == selected_song
+    ].iloc[0]
+
 
 
 
