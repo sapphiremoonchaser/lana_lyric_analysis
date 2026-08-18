@@ -105,6 +105,30 @@ elif page == "Lyrical Style":
     # Line chart showing average words per song
     st.subheader("Average Words per Song")
 
+    metric_groups = {
+        "Song Structure": [
+            "avg_words_per_song",
+            "avg_lines_per_song",
+            "avg_words_per_line",
+            "reading_minutes",
+        ],
+        "Vocabulary": [
+            "unique_words",
+            "lexical_diversity",
+            "avg_word_length",
+        ],
+        "Readability": [
+            "flesch_reading_ease",
+            "flesch_kincaid",
+            "gunning_fog",
+        ],
+    }
+
+    selected_group = st.selectbox(
+        "Metric Group",
+        metric_groups.keys()
+    )
+
     style_df = (
         album_df[
             ["album", "year", "avg_words_per_song"]
