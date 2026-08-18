@@ -2,6 +2,10 @@ import pandas as pd
 import plotly.express as px
 from plotly.graph_objs import Figure
 
+from lana_nlp.visualization.preparation import (
+    prepare_words_by_album
+)
+
 
 def average_words_over_time_scatterplot(df: pd.DataFrame) -> Figure:
     """
@@ -12,6 +16,8 @@ def average_words_over_time_scatterplot(df: pd.DataFrame) -> Figure:
     Returns:
         plotly scatter plot with avg word over time
     """
+    df = prepare_words_by_album(df)
+
     fig = px.scatter(
         df,
         x="year",

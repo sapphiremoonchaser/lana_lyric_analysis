@@ -74,25 +74,8 @@ if page == "Overview":
     with col4:
         st.metric("Latest Album", last_year)
 
-    # Visualize average words per song
-    st.subheader("Average Words per Song")
-
-    words_by_album = (
-        album_df[
-            ["album", "year", "avg_words_per_song"]
-        ]
-        .drop_duplicates()
-        .sort_values("year")
-    )
-
-    words_by_album["album"] = pd.Categorical(
-        words_by_album["album"],
-        categories=words_by_album["album"],
-        ordered=True
-    )
-
     # Scatter Plot
-    fig = average_words_over_time_scatterplot(words_by_album)
+    fig = average_words_over_time_scatterplot(album_df)
     st.plotly_chart(fig, use_container_width=True)
 
     st.caption(
