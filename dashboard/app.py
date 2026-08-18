@@ -4,6 +4,7 @@ import streamlit as st
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+from pyarrow.interchange import column
 
 st.set_page_config(
     page_title="Lana Del Rey Lyric Analysis",
@@ -300,7 +301,85 @@ elif page == "Song Explorer":
         album_songs["song"] == selected_song
     ].iloc[0]
 
+    st.header(selected_song)
 
+    st.caption(
+        f"{selected_album} - {selected_row['year']}"
+    )
 
+    # KPI columns
+    col1, col2, col3, col4 = st.columns(4)
 
+    with col1:
+        st.metric(
+            "Words",
+            int(selected_row["word_count"])
+        )
+
+    with col2:
+        st.metric(
+            "Unique Words",
+            int(selected_row["unique_words"])
+        )
+
+    with col3:
+        st.metric(
+            "Lexical Diversity",
+            f"{selected_row['lexical_diversity']:.2f}"
+        )
+
+    with col4:
+        st.metric(
+            "Reading Time",
+            f"{selected_row['reading_minutes']:.1f}"
+        )
+
+    # Sentiment Profile
+    st.subheader("Sentiment Profile")
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    with col1:
+        st.metric(
+            "Sentiment Polarity",
+            f"{selected_row['sentiment_polarity']:.2f}"
+        )
+
+    with col2:
+        st.metric(
+            "Subjectivity",
+            f"{selected_row['subjectivity']:.2f}"
+        )
+
+    with col3:
+        st.metric(
+            "Positive Language",
+            f"{selected_row['positive_word_ratio']:.2%}"
+        )
+
+    with col4:
+        st.metric(
+            "Negative Language",
+            f"{selected_row['negative_word_ratio']:.2%}"
+        )
+
+    # Emotion profile
+    st.subheader("Emotion Profile")
+
+    emotion_columns = [
+        column
+        for column in song_df.columns
+        if column.startswith("emotion_")
+    ]
+
+    emotion_data = (
+        selected_row[emotion_columns]
+        .rename(
+            lambda x: x.replace("emotion_", "")
+        )
+    )
+
+    st.bar_chart(
+        emotion_data
+    )
 
