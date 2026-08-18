@@ -19,7 +19,7 @@ class ReadabilityAnalyzer:
     Analyze a dataset of song lyrics for readability.
 
     This class provides methods for modeling readability using flesch reading ease,
-    flesch kincaid, gunning fog, and coleman liau.
+    flesch kincaid, gunning fog.
     """
 
     def __init__(
