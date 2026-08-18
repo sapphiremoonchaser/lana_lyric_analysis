@@ -268,3 +268,11 @@ def test_average_word_length_empty_dataframe(empty_df):
     result = analyzer.average_word_length()
 
     assert result == 0.0
+
+
+# def test_song_unique_word_count_structure_and_value(sample_df):
+#     analyzer = VocabularyAnalyzer(sample_df)
+#
+#     result = analyzer.song_unique_word_count(sample_df["lyrics"])
+#
+#     assert isinstance(result, int)

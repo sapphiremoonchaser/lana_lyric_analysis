@@ -98,6 +98,23 @@ class VocabularyAnalyzer:
         )
 
 
+    def _get_song_words(
+        self,
+        text
+    ) -> list[str]:
+        """Return normalized words for a single song."""
+        if isinstance(text, list):
+            return [word.lower() for word in text]
+
+        if isinstance(text, str):
+            return text.lower().split()
+
+        return text.lower().split()
+
+##############################
+    # DataFrame level methods
+##############################
+
     def word_frequency(self) -> Counter:
         """
         Calculate how many times each word appears across all lyrics.
@@ -178,3 +195,95 @@ class VocabularyAnalyzer:
             sum(len(word) for word in words)
             / len(words)
         )
+
+
+############################
+    # Song level metrics
+############################
+
+    def song_unique_word_count(self, text) -> int:
+        """Calculate vocabulary size for a single song."""
+        words = self._get_song_words(text)
+
+        return len(set(words))
+
+
+    def song_lexical_diversity(self, text) -> float:
+        """Calculate lexical diversity for a single song."""
+        words = self._get_song_words(text)
+
+        if not words:
+            return 0.0
+
+        return len(set(words)) / len(words)
+
+
+    def song_average_word_length(self, text) -> float:
+        """Calculate average word length for a single song."""
+        words = self._get_song_words(text)
+
+        if not words:
+            return 0.0
+
+        return sum(len(word) for word in words) / len(words)
+
+
+    def analyze(self) -> None:
+        """
+        Add song level metrics to final analysis dataframe.
+        """
+        self.df["vocabulary_size"] = (
+            self.df[self.text_column]
+            .apply(self.song_unique_word_count)
+        )
+
+        self.df["lexical_diversity"] = (
+            self.df[self.text_column]
+            .apply(self.song_lexical_diversity)
+        )
+
+        self.df["average_word_length"] = (
+            self.df[self.text_column]
+            .apply(self.song_average_word_length)
+        )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

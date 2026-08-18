@@ -205,6 +205,54 @@ class StatisticsAnalyzer:
         )
 
 
+    def album_statistics(df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Create a dataframe with all features aggregated to the album level
+
+        Args:
+            df (pd.DataFrame): the dataframe to be aggregated
+        """
+        emotion_columns = [
+            column
+            for column in df.columns
+            if column.startswith("emotion_")
+        ]
+
+        emotion_stats = (
+            df.groupby(["album", "year"])[emotion_columns]
+            .mean()
+            .reset_index()
+        )
+
+        album_stats = (
+            df.groupby(["album", "year"])
+            .agg(
+                total_words=("word_count", "sum"),
+                avg_words_per_song=("word_count", "mean"),
+                vocabulary_size=("vocabulary_size", "mean"),
+                lexical_diversity=("lexical_diversity", "mean"),
+                average_word_length=("average_word_length", "mean"),
+                flesch_reading_ease=("flesch_reading_ease", "mean"),
+                flesch_kincaid=("flesch_kincaid", "mean"),
+                gunning_fog=("gunning_fog", "mean"),
+                sentiment_polarity=("sentiment_polarity", "mean"),
+                subjectivity=("subjectivity", "mean"),
+                positive_word_ratio=("positive_word_ratio", "mean"),
+                negative_word_ratio=("negative_word_ratio", "mean"),
+            )
+            .reset_index()
+        )
+
+        # Add emotion statistics
+        album_stats = album_stats.merge(
+            emotion_stats,
+            on=["album", "year"],
+            how="left"
+        )
+
+        return album_stats
+
+
     # Time
     def summary_by_year(self) -> pd.DataFrame:
         """
@@ -223,6 +271,7 @@ class StatisticsAnalyzer:
                 avg_reading_minutes=("reading_minutes", "mean") # Average reading time
             )
         )
+
 
 
 

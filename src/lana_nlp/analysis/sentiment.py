@@ -257,7 +257,7 @@ class SentimentAnalyzer:
             self.df[self.text_column]
             .apply( # Calculate emotion columns
                 lambda x: self._calculate_emotions(
-                    to_tokens(x) # use tokens instead of string lyrics
+                    x if isinstance(x, list) else to_tokens(x)
                 )
             )
         )
@@ -269,13 +269,9 @@ class SentimentAnalyzer:
             fill_value=0
         )
 
-        self.df = pd.concat(
-            [
-                self.df,
-                emotion_df.add_prefix("emotion_")
-            ],
-            axis=1
-        )
+        emotion_df = emotion_df.add_prefix("emotion_")
+
+        self.df[emotion_df.columns] = emotion_df
 
 
     def analyze(self) -> pd.DataFrame:
