@@ -1,29 +1,11 @@
 import pandas as pd
 import plotly.express as px
 from plotly.graph_objs import Figure
+from plotly.graph_objs.choroplethmap import marker
 
 from lana_nlp.visualization.preparation import (
     prepare_words_by_album
 )
-
-song_structure_metrics = {
-    "avg_words_per_song": {
-        "title": "Average Words per Song",
-        "y_label": "Words",
-    },
-    "avg_lines_per_song": {
-        "title": "Average Lines per Song",
-        "y_label": "Lines",
-    },
-    "avg_words_per_line": {
-        "title": "Average Words per Line",
-        "y_label": "Words per Line",
-    },
-    "reading_minutes": {
-        "title": "Average Reading Time",
-        "y_label": "Minutes",
-    },
-}
 
 def average_words_over_time_scatterplot(df: pd.DataFrame) -> Figure:
     """
@@ -54,7 +36,8 @@ def create_metrics_scatter(
     df: pd.DataFrame,
     metric: str,
     title: str,
-    y_label: str
+    y_label: str,
+    color: str
 ) -> Figure:
     """
     Create four scatter plots with average word count, average line count, average
@@ -70,6 +53,10 @@ def create_metrics_scatter(
             metric: ":.2f"
         },
         title=title,
+    )
+
+    fig.update_traces(
+        marker=dict(color=color),
     )
 
     fig.update_layout(

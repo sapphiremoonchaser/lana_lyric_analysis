@@ -1,16 +1,9 @@
 
 import streamlit as st
 import pandas as pd
-from tinycss2 import color3, color4
-
 from lana_nlp.visualization.trends import (
     average_words_over_time_scatterplot,
-    create_metrics_scatter,
-    song_structure_metrics
-)
-
-from lana_nlp.visualization.comparisons import (
-    average_words_by_album
+    create_metrics_scatter
 )
 
 from lana_nlp.visualization.emotions import (
@@ -174,7 +167,7 @@ elif page == "Lyrical Style":
             )
             st.plotly_chart(fig, use_container_width=True)
             st.caption(
-                "Lower values indicate a more difficult reading level."
+                "Smaller negative values indicate a more difficult reading level."
             )
 
 
