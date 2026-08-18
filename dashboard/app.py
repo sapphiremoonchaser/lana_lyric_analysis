@@ -183,37 +183,57 @@ elif page == "Album Comparison":
         "Compare lyrical characteristics across Lana Del Rey's Albums."
     )
 
-    metric_options = {
-        "Total Words": "total_words",
-        "Average Words per Song": "avg_words_per_song",
-        "Vocabulary Size": "vocabulary_size",
-        "Lexical Diversity": "lexical_diversity",
-        "Average Word Length": "average_word_length",
-        "Flesch Reading Ease": "flesch_reading_ease",
-        "Flesch-Kincaid": "flesch_kincaid",
-        "Gunning Fog": "gunning_fog",
-        "Sentiment Polarity": "sentiment_polarity",
-        "Subjectivity": "subjectivity",
-        "Positive Word Ratio": "positive_word_ratio",
-        "Negative Word Ratio": "negative_word_ratio",
-        "Positive Emotion": "emotion_Positive",
-        "Negative Emotion": "emotion_Negative",
-        "Anger": "emotion_Anger",
-        "Anticipation": "emotion_Anticipation",
-        "Disgust": "emotion_Disgust",
-        "Fear": "emotion_Fear",
-        "Joy": "emotion_Joy",
-        "Sadness": "emotion_Sadness",
-        "Surprise": "emotion_Surprise",
-        "Trust": "emotion_Trust",
+    metric_groups = {
+        "Lyrical Structure": {
+            "Total Words": "total_words",
+            "Average Words per Song": "avg_words_per_song",
+            "Vocabulary Size": "vocabulary_size",
+            "Lexical Diversity": "lexical_diversity",
+            "Average Word Length": "average_word_length",
+        },
+
+        "Readability": {
+            "Flesch Reading Ease": "flesch_reading_ease",
+            "Flesch-Kincaid": "flesch_kincaid",
+            "Gunning Fog": "gunning_fog",
+        },
+
+        "Sentiment": {
+            "Sentiment Polarity": "sentiment_polarity",
+            "Subjectivity": "subjectivity",
+            "Positive Word Ratio": "positive_word_ratio",
+            "Negative Word Ratio": "negative_word_ratio",
+        },
+
+        "Emotion": {
+            "Positive": "emotion_Positive",
+            "Negative": "emotion_Negative",
+            "Anger": "emotion_Anger",
+            "Anticipation": "emotion_Anticipation",
+            "Disgust": "emotion_Disgust",
+            "Fear": "emotion_Fear",
+            "Joy": "emotion_Joy",
+            "Sadness": "emotion_Sadness",
+            "Surprise": "emotion_Surprise",
+            "Trust": "emotion_Trust",
+        },
     }
+
+    selected_group = st.selectbox(
+        "Metric Category",
+        options=metric_groups.keys()
+    )
 
     selected_metric = st.selectbox(
         "Choose a metric",
-        options=list(metric_options.keys())
+        options=list(
+            metric_groups[selected_group].keys()
+        )
     )
 
-    selected_column = metric_options[selected_metric]
+    selected_column = metric_groups[
+        selected_group
+    ][selected_metric]
 
     comparison_df = (
         album_df[
@@ -237,12 +257,10 @@ elif page == "Album Comparison":
         comparison_df.set_index("album")[selected_column]
     )
 
-
-
-
-
-
-
+    st.caption(
+        f"Comparing {selected_metric.lower()} "
+        "across Lana Del Rey's albums."
+    )
 
 elif page == "Song Explorer":
 
