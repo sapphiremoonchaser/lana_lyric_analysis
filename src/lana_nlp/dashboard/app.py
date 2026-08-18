@@ -142,9 +142,42 @@ elif page == "Lyrical Style":
             )
 
     if selected_group == "Vocabulary":
-        # ToDo: Vocab on page 2
+        col1, col2 = st.columns(2)
 
+        with col1:
+            fig = create_metrics_scatter(
+                album_df,
+                "vocabulary_size",
+                "Vocabulary Size",
+                "words",
+                "#00ffff"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            st.caption(
+                "Based on unique word count"
+            )
 
+        with col2:
+            fig = create_metrics_scatter(
+                album_df,
+                "lexical_diversity",
+                "Lexical Diversity",
+                "score",
+                "#99ff99"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            st.caption(
+                "Higher values may indicate less repetition"
+            )
+
+        fig = create_metrics_scatter(
+            album_df,
+            "average_word_length",
+            "Word Length",
+            "characters",
+            "#cc99ff"
+        )
+        st.plotly_chart(fig, use_container_width=True)
 
     if selected_group == "Readability":
         col1, col2 = st.columns(2)

@@ -17,6 +17,10 @@ metric_groups = {
             "flesch_kincaid",
             "gunning_fog",
         ],
+        "Sentiment and Emotion": [
+            "positive_word_ratio",
+            "negative_word_ratio"
+        ]
     }
 
 song_structure_metrics = {
