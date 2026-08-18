@@ -4,11 +4,11 @@ import pandas as pd
 import numpy as np
 import pytest
 
-from lana_nlp.features.vocabulary import VocabularyAnalyzer
+from lana_nlp.features.vocabulary import VocabularyFeatures
 
 
 def test_normalize_word_lowercases_and_removes_punctuation():
-    analyzer = VocabularyAnalyzer(pd.DataFrame)
+    analyzer = VocabularyFeatures(pd.DataFrame)
 
     result = analyzer._normalize_word("Hello!")
 
@@ -16,7 +16,7 @@ def test_normalize_word_lowercases_and_removes_punctuation():
 
 
 def test_normalize_word_preserves_apostrophes():
-    analyzer = VocabularyAnalyzer(pd.DataFrame)
+    analyzer = VocabularyFeatures(pd.DataFrame)
 
     result = analyzer._normalize_word("Don't")
 
@@ -24,7 +24,7 @@ def test_normalize_word_preserves_apostrophes():
 
 
 def test_normalize_word_removes_symbols():
-    analyzer = VocabularyAnalyzer(pd.DataFrame)
+    analyzer = VocabularyFeatures(pd.DataFrame)
 
     result = analyzer._normalize_word("Hello, world!")
 
@@ -32,13 +32,13 @@ def test_normalize_word_removes_symbols():
 
 
 def test_use_tokenized_text_returns_true_for_token_lists(tokenized_sample_df):
-    analyzer = VocabularyAnalyzer(tokenized_sample_df)
+    analyzer = VocabularyFeatures(tokenized_sample_df)
 
     assert analyzer._use_tokenized_text() is np.True_
 
 
 def test_use_tokenized_text_returns_false_for_token_lists(sample_df):
-    analyzer = VocabularyAnalyzer(sample_df)
+    analyzer = VocabularyFeatures(sample_df)
 
     assert analyzer._use_tokenized_text() is np.False_
 
@@ -46,7 +46,7 @@ def test_use_tokenized_text_returns_false_for_token_lists(sample_df):
 def test_use_tokenized_text_returns_false_for_empty_dataframe():
     df = pd.DataFrame(columns=["lyrics"])
 
-    analyzer = VocabularyAnalyzer(df, text_column="lyrics")
+    analyzer = VocabularyFeatures(df, text_column="lyrics")
 
     assert analyzer._use_tokenized_text() is np.False_
 
@@ -59,7 +59,7 @@ def test_get_words_returns_lowercase_words():
         ]
     })
 
-    analyzer = VocabularyAnalyzer(df, text_column="lyrics")
+    analyzer = VocabularyFeatures(df, text_column="lyrics")
 
     result = analyzer._get_words()
 
@@ -77,7 +77,7 @@ def test_get_words_handles_tokenized_text():
         ]
     })
 
-    analyzer = VocabularyAnalyzer(df, text_column="lyrics")
+    analyzer = VocabularyFeatures(df, text_column="lyrics")
 
     result = analyzer._get_words()
 
@@ -97,7 +97,7 @@ def test_get_words_handles_missing_lyrics():
         ]
     })
 
-    analyzer = VocabularyAnalyzer(df, text_column="lyrics")
+    analyzer = VocabularyFeatures(df, text_column="lyrics")
 
     result = analyzer._get_words()
 
@@ -108,7 +108,7 @@ def test_get_words_handles_missing_lyrics():
 
 
 def test_get_words_empty_dataframe_returns_empty_list(empty_df):
-    analyzer = VocabularyAnalyzer(empty_df, text_column="lyrics")
+    analyzer = VocabularyFeatures(empty_df, text_column="lyrics")
 
     result = analyzer._get_words()
 
@@ -124,7 +124,7 @@ def test_word_frequency_structure_and_counts():
         ]
     })
 
-    analyzer = VocabularyAnalyzer(df)
+    analyzer = VocabularyFeatures(df)
 
     result = analyzer.word_frequency()
 
@@ -142,7 +142,7 @@ def test_word_frequency_is_case_insensitive():
         ]
     })
 
-    analyzer = VocabularyAnalyzer(df, text_column="lyrics")
+    analyzer = VocabularyFeatures(df, text_column="lyrics")
 
     result = analyzer.word_frequency()
 
@@ -152,7 +152,7 @@ def test_word_frequency_is_case_insensitive():
 
 
 def test_word_frequency_empty_dataframe(empty_df):
-    analyzer = VocabularyAnalyzer(empty_df)
+    analyzer = VocabularyFeatures(empty_df)
 
     result = analyzer.word_frequency()
 
@@ -161,7 +161,7 @@ def test_word_frequency_empty_dataframe(empty_df):
 
 
 def test_top_n_words_structure_and_counts(sample_df):
-    analyzer = VocabularyAnalyzer(sample_df)
+    analyzer = VocabularyFeatures(sample_df)
 
     result = analyzer.top_n_words(n=1)
 
@@ -171,7 +171,7 @@ def test_top_n_words_structure_and_counts(sample_df):
 
 
 def test_top_n_words_empty_for_n_equals_zero(sample_df):
-    analyzer = VocabularyAnalyzer(sample_df)
+    analyzer = VocabularyFeatures(sample_df)
 
     result = analyzer.top_n_words(n=0)
 
@@ -179,7 +179,7 @@ def test_top_n_words_empty_for_n_equals_zero(sample_df):
 
 
 def test_unique_word_count_returns_correct_count(sample_df):
-    analyzer = VocabularyAnalyzer(sample_df)
+    analyzer = VocabularyFeatures(sample_df)
 
     result = analyzer.unique_word_count()
 
@@ -191,7 +191,7 @@ def test_unique_word_count_is_case_insensitive():
         "lyrics": ["Love love LOVE forever"]
     })
 
-    analyzer = VocabularyAnalyzer(df)
+    analyzer = VocabularyFeatures(df)
 
     result = analyzer.unique_word_count()
 
@@ -199,7 +199,7 @@ def test_unique_word_count_is_case_insensitive():
 
 
 def test_unique_word_count_empty_dataframe(empty_df):
-    analyzer = VocabularyAnalyzer(empty_df)
+    analyzer = VocabularyFeatures(empty_df)
 
     result = analyzer.unique_word_count()
 
@@ -207,7 +207,7 @@ def test_unique_word_count_empty_dataframe(empty_df):
 
 
 def test_lexical_diversity_returns_correct_ratio(sample_df):
-    analyzer = VocabularyAnalyzer(sample_df)
+    analyzer = VocabularyFeatures(sample_df)
 
     result = analyzer.lexical_diversity()
 
@@ -221,7 +221,7 @@ def test_lexical_diversity_returns_one_when_all_words_unique():
         ]
     })
 
-    analyzer = VocabularyAnalyzer(df, text_column="lyrics")
+    analyzer = VocabularyFeatures(df, text_column="lyrics")
 
     result = analyzer.lexical_diversity()
 
@@ -229,7 +229,7 @@ def test_lexical_diversity_returns_one_when_all_words_unique():
 
 
 def test_lexical_diversity_empty_dataframe(empty_df):
-    analyzer = VocabularyAnalyzer(empty_df)
+    analyzer = VocabularyFeatures(empty_df)
 
     result = analyzer.lexical_diversity()
 
@@ -241,7 +241,7 @@ def test_average_word_length_returns_correct_average():
         "lyrics": ["love dream forever"]
     })
 
-    analyzer = VocabularyAnalyzer(df, text_column="lyrics")
+    analyzer = VocabularyFeatures(df, text_column="lyrics")
 
     result = analyzer.average_word_length()
 
@@ -255,7 +255,7 @@ def test_average_word_length_returns_word_length_when_all_words_same_length():
         "lyrics": ["love hope wish"]
     })
 
-    analyzer = VocabularyAnalyzer(df, text_column="lyrics")
+    analyzer = VocabularyFeatures(df, text_column="lyrics")
 
     result = analyzer.average_word_length()
 
@@ -263,7 +263,7 @@ def test_average_word_length_returns_word_length_when_all_words_same_length():
 
 
 def test_average_word_length_empty_dataframe(empty_df):
-    analyzer = VocabularyAnalyzer(empty_df)
+    analyzer = VocabularyFeatures(empty_df)
 
     result = analyzer.average_word_length()
 

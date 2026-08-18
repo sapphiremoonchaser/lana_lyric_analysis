@@ -15,7 +15,7 @@ import pandas as pd
 from lana_nlp.features.basic_features import FeaturesAnalyzer
 from lana_nlp.features.sentiment import SentimentAnalyzer
 from lana_nlp.analysis.statistics import StatisticsAnalyzer
-from lana_nlp.features.vocabulary import VocabularyAnalyzer
+from lana_nlp.features.vocabulary import VocabularyFeatures
 from lana_nlp.features.readability import ReadabilityAnalyzer
 
 
@@ -162,7 +162,7 @@ class LyricsAnalyzer:
             self.df
         )
 
-        self.vocabulary = VocabularyAnalyzer(
+        self.vocabulary = VocabularyFeatures(
             self.df,
             text_column=self.nlp_text_column
         )

@@ -9,7 +9,7 @@ from lana_nlp.preprocessing.data_loader import LyricsDataLoader
 from lana_nlp.preprocessing.text_cleaner import TextCleaner
 from lana_nlp.features.readability import ReadabilityAnalyzer
 from lana_nlp.features.sentiment import SentimentAnalyzer
-from lana_nlp.features.vocabulary import VocabularyAnalyzer
+from lana_nlp.features.vocabulary import VocabularyFeatures
 
 
 def pipeline(
@@ -45,7 +45,7 @@ def pipeline(
     features_analyzer.analyze()
 
     # Vocabulary features
-    vocabulary_analyzer = VocabularyAnalyzer(
+    vocabulary_analyzer = VocabularyFeatures(
         df,
         text_column="nlp_cleaned_lyrics"
     )

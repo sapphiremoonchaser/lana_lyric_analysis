@@ -14,7 +14,7 @@ from collections import Counter
 import pandas as pd
 
 
-class VocabularyAnalyzer:
+class VocabularyFeatures:
     """
     Analyze a dataset of song lyrics.
 
