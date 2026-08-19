@@ -240,84 +240,25 @@ elif page == "Album Comparison":
         "Compare lyrical characteristics across Lana Del Rey's Albums."
     )
 
-    metric_groups = {
-        "Lyrical Structure": {
-            "Total Words": "total_words",
-            "Average Words per Song": "avg_words_per_song",
-            "Vocabulary Size": "vocabulary_size",
-            "Lexical Diversity": "lexical_diversity",
-            "Average Word Length": "average_word_length",
-        },
+    st.subheader("Select Albums to Compare")
 
-        "Readability": {
-            "Flesch Reading Ease": "flesch_reading_ease",
-            "Flesch-Kincaid": "flesch_kincaid",
-            "Gunning Fog": "gunning_fog",
-        },
+    album_names = album_df["album"].tolist()
 
-        "Sentiment": {
-            "Sentiment Polarity": "sentiment_polarity",
-            "Subjectivity": "subjectivity",
-            "Positive Word Ratio": "positive_word_ratio",
-            "Negative Word Ratio": "negative_word_ratio",
-        },
+    col1, col2 = st.columns(2)
 
-        "Emotion": {
-            "Positive": "emotion_Positive",
-            "Negative": "emotion_Negative",
-            "Anger": "emotion_Anger",
-            "Anticipation": "emotion_Anticipation",
-            "Disgust": "emotion_Disgust",
-            "Fear": "emotion_Fear",
-            "Joy": "emotion_Joy",
-            "Sadness": "emotion_Sadness",
-            "Surprise": "emotion_Surprise",
-            "Trust": "emotion_Trust",
-        },
-    }
-
-    selected_group = st.selectbox(
-        "Metric Category",
-        options=metric_groups.keys()
-    )
-
-    selected_metric = st.selectbox(
-        "Choose a metric",
-        options=list(
-            metric_groups[selected_group].keys()
+    with col1:
+        album_1 = st.selectbox(
+            "Album 1",
+            album_names,
+            index=1
         )
-    )
 
-    selected_column = metric_groups[
-        selected_group
-    ][selected_metric]
-
-    comparison_df = (
-        album_df[
-            ["album", "year", selected_column]
-        ]
-        .drop_duplicates()
-        .sort_values("year")
-    )
-
-    comparison_df["album"] = pd.Categorical(
-        comparison_df["album"],
-        categories=comparison_df["album"],
-        ordered=True
-    )
-
-    st.subheader(
-        f"{selected_column} by Album"
-    )
-
-    st.bar_chart(
-        comparison_df.set_index("album")[selected_column]
-    )
-
-    st.caption(
-        f"Comparing {selected_metric.lower()} "
-        "across Lana Del Rey's albums."
-    )
+    with col2:
+        album_2 = st.selectbox(
+            "Album 2",
+            album_names,
+            index=4
+        )
 
 
 elif page == "Song Explorer":
