@@ -2,6 +2,10 @@
 import streamlit as st
 import pandas as pd
 
+from lana_nlp.visualization.comparisons import (
+    create_album_comparison_bar
+)
+
 from lana_nlp.visualization.trends import (
     average_words_over_time_scatterplot,
     create_metrics_scatter,
@@ -9,7 +13,8 @@ from lana_nlp.visualization.trends import (
 )
 
 from lana_nlp.visualization.preparation import (
-    metric_groups
+    metric_groups,
+    prepare_words_by_album, prepare_structural_comparison
 )
 
 from lana_nlp.visualization.emotions import (
@@ -244,6 +249,7 @@ elif page == "Album Comparison":
 
     album_names = album_df["album"].tolist()
 
+    # Album Selectors
     col1, col2 = st.columns(2)
 
     with col1:
@@ -259,6 +265,20 @@ elif page == "Album Comparison":
             album_names,
             index=4
         )
+
+    comparison_df = album_df[
+        album_df["album"].isin([album_1, album_2])
+    ].copy()
+
+    # Table for structural comparison
+    structural_comparison = prepare_structural_comparison(comparison_df)
+
+    st.subheader("Structural Comparison")
+
+    st.dataframe(
+        structural_comparison,
+        use_container_width=True
+    )
 
 
 elif page == "Song Explorer":

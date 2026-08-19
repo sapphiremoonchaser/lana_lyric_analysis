@@ -20,3 +20,24 @@ def average_words_by_album(df: pd.DataFrame) -> Figure:
     )
 
     return fig
+
+
+def create_album_comparison_bar(
+    df: pd.DataFrame,
+    metric: str,
+    title: str,
+    y_label: str
+) -> Figure:
+    fig = px.bar(
+        df,
+        x="album",
+        y=metric,
+        title=title
+    )
+
+    fig.update_layout(
+        xaxis_title="Album",
+        yaxis_title=y_label
+    )
+
+    return fig

@@ -92,3 +92,27 @@ def prepare_structure_metric_group(df: pd.DataFrame) -> pd.DataFrame:
     )
 
     return df
+
+
+def prepare_structural_comparison(comparison_df) -> pd.DataFrame:
+    """
+    Prepare a dataframe for lyrical structural analysis for Album Comparison.
+    """
+    structural_comparison = comparison_df[
+        [
+            "album",
+            "avg_words_per_song",
+            "avg_lines_per_song",
+            "avg_words_per_line",
+            "avg_reading_time"
+        ]
+    ].set_index("album").T
+
+    structural_comparison.index = [
+        "Average Words per Song",
+        "Average Lines per Song",
+        "Average Words per Line",
+        "Average Reading Time (minutes)"
+    ]
+
+    return structural_comparison.round(2)
