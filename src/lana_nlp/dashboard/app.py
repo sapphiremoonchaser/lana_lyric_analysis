@@ -1,9 +1,11 @@
 
 import streamlit as st
 import pandas as pd
+
 from lana_nlp.visualization.trends import (
     average_words_over_time_scatterplot,
-    create_metrics_scatter
+    create_metrics_scatter,
+    create_sentiment_scatter
 )
 
 from lana_nlp.visualization.preparation import (
@@ -222,35 +224,13 @@ elif page == "Lyrical Style":
         )
 
     if selected_group == "Sentiment and Emotion":
-        col1, col2 = st.columns(2)
 
-        with col1:
-            fig = create_metrics_scatter(
-                album_df,
-                "positive_word_ratio",
-                "Positive Language",
-                "ratio",
-                "#00ffff"
-            )
-            st.plotly_chart(fig, use_container_width=True)
-            st.caption(
-                "Larger values indicates positive language, with 0 being 0 positive "
-                "words."
-            )
-
-            with col2:
-                fig = create_metrics_scatter(
-                    album_df,
-                    "negative_word_ratio",
-                    "Negative Language",
-                    "ratio",
-                    "#99ff99"
-                )
-                st.plotly_chart(fig, use_container_width=True)
-                st.caption(
-                    "Larger values indicates negative language, with 0 being 0 "
-                    "negative words."
-                )
+        fig = create_sentiment_scatter(album_df)
+        st.plotly_chart(fig, use_container_width=True)
+        st.caption(
+            "Larger values indicates positive language, with 0 being 0 positive "
+            "words."
+        )
 
 
 elif page == "Album Comparison":
