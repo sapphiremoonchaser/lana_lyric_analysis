@@ -1,6 +1,8 @@
 import pandas as pd
 import plotly.express as px
 from plotly.graph_objects import Figure
+from wordcloud import WordCloud
+import ast
 
 
 def average_words_by_album(df: pd.DataFrame) -> Figure:
@@ -72,3 +74,23 @@ def create_album_boxplot(
     return fig
 
 
+def create_wordcloud(text):
+    """
+    Create a wordcloud based on a string of text.
+    """
+    if isinstance(text, str):
+        try:
+            text = ast.literal_eval(text)
+        except (ValueError, SyntaxError):
+            pass
+
+    if isinstance(text, list):
+        text = " ".join(text)
+
+    wordcloud = WordCloud(
+        width=800,
+        height=400,
+        background_color="white",
+    ).generate(text)
+
+    return wordcloud

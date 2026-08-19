@@ -1,9 +1,10 @@
 
 import streamlit as st
 import pandas as pd
+import ast
 
 from lana_nlp.visualization.comparisons import (
-    create_album_boxplot
+    create_album_boxplot, create_wordcloud
 )
 
 from lana_nlp.visualization.trends import (
@@ -430,6 +431,25 @@ elif page == "Album Comparison":
         fig = create_emotion_heatmap(comparison_df)
 
         st.plotly_chart(fig, use_container_width=True)
+
+    # Filter song level dataframe
+    album_1_lyrics = song_df[
+        song_df["album"] == album_1
+    ]["nlp_cleaned_lyrics"]
+
+    album_1_text = " ".join(
+        " ".join(ast.literal_eval(lyrics))
+        if isinstance(lyrics, str)
+        else " ".join(lyrics)
+        for lyrics in album_1_lyrics
+    )
+
+    wordcloud = create_wordcloud(album_1_text)
+
+    st.image(
+        wordcloud.to_array(),
+        use_container_width=True
+    )
 
 
 elif page == "Song Explorer":
