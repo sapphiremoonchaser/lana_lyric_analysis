@@ -116,3 +116,25 @@ def prepare_structural_comparison(comparison_df) -> pd.DataFrame:
     ]
 
     return structural_comparison.round(2)
+
+
+def prepare_vocabulary_comparison(comparison_df) -> pd.DataFrame:
+    """
+    Prepare a dataframe for the vocabulary comparison for Album Comparison.
+    """
+    vocabulary_comparison = comparison_df[
+        [
+            "album",
+            "vocabulary_size",
+            "lexical_diversity",
+            "average_word_length"
+        ]
+    ].set_index("album").T
+
+    vocabulary_comparison.index = [
+        "Average Vocabulary Size",
+        "Average Lexical Diversity",
+        "Average Word Length"
+    ]
+
+    return vocabulary_comparison.round(2)

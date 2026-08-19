@@ -14,8 +14,8 @@ from lana_nlp.visualization.trends import (
 
 from lana_nlp.visualization.preparation import (
     metric_groups,
-    prepare_words_by_album,
-    prepare_structural_comparison
+    prepare_structural_comparison,
+    prepare_vocabulary_comparison
 )
 
 from lana_nlp.visualization.emotions import (
@@ -281,10 +281,11 @@ elif page == "Album Comparison":
         song_df["album"].isin([album_1, album_2])
     ].copy()
 
-    # Table for structural comparison
-    structural_comparison = prepare_structural_comparison(comparison_df)
+
 
     if selected_group == "Song Structure":
+        # Table for structural comparison
+        structural_comparison = prepare_structural_comparison(comparison_df)
 
         st.subheader("Structural Comparison")
 
@@ -314,7 +315,46 @@ elif page == "Album Comparison":
             st.plotly_chart(fig, use_container_width=True)
 
     if selected_group == "Vocabulary":
-        pass
+        # Table for Vocabulary Comparison
+        vocabulary_comparison = prepare_vocabulary_comparison(comparison_df)
+
+        st.subheader("Vocabulary Comparison")
+
+        st.dataframe(
+            vocabulary_comparison,
+            use_container_width=True
+        )
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            fig = create_album_boxplot(
+                comparison_songs,
+                "vocabulary_size",
+                "Vocabulary Size Distribution",
+                "Words"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+
+        with col2:
+            fig = create_album_boxplot(
+                comparison_songs,
+                "lexical_diversity",
+                "Lexical Diversity Distribution",
+                "Score"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+
+        fig = create_album_boxplot(
+            comparison_songs,
+            "average_word_length",
+            "Word Length Distribution",
+            "Characters"
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+
+
 
     if selected_group == "Readability":
         pass
