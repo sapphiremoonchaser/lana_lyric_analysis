@@ -52,7 +52,7 @@ song_structure_metrics = {
 
 def prepare_words_by_album(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Prepare a dataframe with words by album to be used in the visualization
+    Prepare a dataframe with words by album to be used in the visualizations
     of word count over time or word count comparisons on the album level.
 
     Args:

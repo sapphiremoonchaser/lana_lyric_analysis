@@ -5,6 +5,8 @@ from wordcloud import WordCloud
 import ast
 
 
+
+
 def average_words_by_album(df: pd.DataFrame) -> Figure:
     """
     Create a bar chart showing average words per song for each album.
@@ -74,7 +76,7 @@ def create_album_boxplot(
     return fig
 
 
-def create_wordcloud(text):
+def create_wordcloud(text, palatte):
     """
     Create a wordcloud based on a string of text.
     """

@@ -3,17 +3,20 @@ import streamlit as st
 import pandas as pd
 import ast
 
-from lana_nlp.dashboard.visualization.comparisons import (
-    create_album_boxplot, create_wordcloud
+from lana_nlp.dashboard.visualizations.comparisons import (
+    create_album_boxplot,
+    create_wordcloud
 )
 
-from lana_nlp.dashboard.visualization.trends import (
+from lana_nlp.dashboard.visualizations.color_palettes import album_palettes
+
+from lana_nlp.dashboard.visualizations.trends import (
     average_words_over_time_scatterplot,
     create_metrics_scatter,
     create_sentiment_scatter
 )
 
-from lana_nlp.dashboard.visualization.preparation import (
+from lana_nlp.dashboard.visualizations.preparation import (
     metric_groups,
     prepare_structural_comparison,
     prepare_vocabulary_comparison,
@@ -21,7 +24,7 @@ from lana_nlp.dashboard.visualization.preparation import (
     prepare_sentiment_comparison
 )
 
-from lana_nlp.dashboard.visualization.emotions import (
+from lana_nlp.dashboard.visualizations.emotions import (
     album_emotion_heatmap,
     create_emotion_heatmap,
     create_emotion_bar_chart
@@ -444,10 +447,15 @@ elif page == "Album Comparison":
         for lyrics in album_1_lyrics
     )
 
-    wordcloud = create_wordcloud(album_1_text)
+    album_1_palette = album_palettes[album_1]
+
+    album_1_wordcloud = create_wordcloud(
+        album_1_text,
+        album_1_palette,
+    )
 
     st.image(
-        wordcloud.to_array(),
+        album_1_wordcloud.to_array(),
         use_container_width=True
     )
 
