@@ -104,9 +104,6 @@ elif page == "Lyrical Style":
         "across her discography?"
     )
 
-    # Line chart showing average words per song
-    st.subheader("Average Words per Song")
-
     selected_group = st.selectbox(
         "Metric Group",
         metric_groups.keys()
