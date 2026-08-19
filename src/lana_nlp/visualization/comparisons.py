@@ -41,3 +41,28 @@ def create_album_comparison_bar(
     )
 
     return fig
+
+
+def create_album_boxplot(
+    df: pd.DataFrame,
+    metric: str,
+    title: str,
+    y_label: str
+) -> Figure:
+    fig = px.box(
+        df,
+        x="album",
+        y=metric,
+        color="album",
+        points="all",
+        hover_name="song",
+        title=title
+    )
+
+    fig.update_layout(
+        xaxis_title="Album",
+        yaxis_title=y_label,
+        showlegend = False
+    )
+
+    return fig

@@ -3,7 +3,7 @@ import streamlit as st
 import pandas as pd
 
 from lana_nlp.visualization.comparisons import (
-    create_album_comparison_bar
+    create_album_boxplot
 )
 
 from lana_nlp.visualization.trends import (
@@ -14,7 +14,8 @@ from lana_nlp.visualization.trends import (
 
 from lana_nlp.visualization.preparation import (
     metric_groups,
-    prepare_words_by_album, prepare_structural_comparison
+    prepare_words_by_album,
+    prepare_structural_comparison
 )
 
 from lana_nlp.visualization.emotions import (
@@ -279,6 +280,31 @@ elif page == "Album Comparison":
         structural_comparison,
         use_container_width=True
     )
+
+    # Switch back to song level df to make boxplots
+    comparison_songs = song_df[
+        song_df["album"].isin([album_1, album_2])
+    ].copy()
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        fig = create_album_boxplot(
+            comparison_songs,
+            "word_count",
+            "Song Word Count Distribution",
+            "Words per Song"
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+    with col2:
+        fig = create_album_boxplot(
+            comparison_songs,
+            "line_count",
+            "Song Line Count Distribution",
+            "lines per Song"
+        )
+        st.plotly_chart(fig, use_container_width=True)
 
 
 elif page == "Song Explorer":
