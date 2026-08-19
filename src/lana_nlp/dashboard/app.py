@@ -267,44 +267,62 @@ elif page == "Album Comparison":
             index=4
         )
 
+    selected_group = st.selectbox(
+        "Metric Group",
+        metric_groups.keys()
+    )
+
     comparison_df = album_df[
         album_df["album"].isin([album_1, album_2])
+    ].copy()
+
+    # Song level df for box plots
+    comparison_songs = song_df[
+        song_df["album"].isin([album_1, album_2])
     ].copy()
 
     # Table for structural comparison
     structural_comparison = prepare_structural_comparison(comparison_df)
 
-    st.subheader("Structural Comparison")
+    if selected_group == "Song Structure":
 
-    st.dataframe(
-        structural_comparison,
-        use_container_width=True
-    )
+        st.subheader("Structural Comparison")
 
-    # Switch back to song level df to make boxplots
-    comparison_songs = song_df[
-        song_df["album"].isin([album_1, album_2])
-    ].copy()
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        fig = create_album_boxplot(
-            comparison_songs,
-            "word_count",
-            "Song Word Count Distribution",
-            "Words per Song"
+        st.dataframe(
+            structural_comparison,
+            use_container_width=True
         )
-        st.plotly_chart(fig, use_container_width=True)
 
-    with col2:
-        fig = create_album_boxplot(
-            comparison_songs,
-            "line_count",
-            "Song Line Count Distribution",
-            "lines per Song"
-        )
-        st.plotly_chart(fig, use_container_width=True)
+        col1, col2 = st.columns(2)
+
+        with col1:
+            fig = create_album_boxplot(
+                comparison_songs,
+                "word_count",
+                "Song Word Count Distribution",
+                "Words per Song"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+
+        with col2:
+            fig = create_album_boxplot(
+                comparison_songs,
+                "line_count",
+                "Song Line Count Distribution",
+                "lines per Song"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+
+    if selected_group == "Vocabulary":
+        pass
+
+    if selected_group == "Readability":
+        pass
+
+    if selected_group == "Sentiment and Emotion":
+        pass
+
+
 
 
 elif page == "Song Explorer":
