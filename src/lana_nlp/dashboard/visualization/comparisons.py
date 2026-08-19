@@ -91,6 +91,7 @@ def create_wordcloud(text):
         width=800,
         height=400,
         background_color="white",
+        colormap="twilight"
     ).generate(text)
 
     return wordcloud

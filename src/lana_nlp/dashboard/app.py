@@ -3,17 +3,17 @@ import streamlit as st
 import pandas as pd
 import ast
 
-from lana_nlp.visualization.comparisons import (
+from lana_nlp.dashboard.visualization.comparisons import (
     create_album_boxplot, create_wordcloud
 )
 
-from lana_nlp.visualization.trends import (
+from lana_nlp.dashboard.visualization.trends import (
     average_words_over_time_scatterplot,
     create_metrics_scatter,
     create_sentiment_scatter
 )
 
-from lana_nlp.visualization.preparation import (
+from lana_nlp.dashboard.visualization.preparation import (
     metric_groups,
     prepare_structural_comparison,
     prepare_vocabulary_comparison,
@@ -21,7 +21,7 @@ from lana_nlp.visualization.preparation import (
     prepare_sentiment_comparison
 )
 
-from lana_nlp.visualization.emotions import (
+from lana_nlp.dashboard.visualization.emotions import (
     album_emotion_heatmap,
     create_emotion_heatmap,
     create_emotion_bar_chart
