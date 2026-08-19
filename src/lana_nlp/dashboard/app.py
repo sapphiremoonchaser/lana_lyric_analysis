@@ -124,21 +124,23 @@ elif page == "Lyrical Style":
             st.plotly_chart(fig, use_container_width=True)
 
         with col2:
-            st.write(
-                "In the future this will show average line count."
+            fig = create_metrics_scatter(
+                album_df,
+                "avg_lines_per_song",
+                "Average Lines per Song",
+                "Lines",
+                "#99ff99"
             )
+            st.plotly_chart(fig, use_container_width=True)
 
-        col3, col4 = st.columns(2)
-
-        with col3:
-            st.write(
-                "In the future this will show average words per line"
-            )
-
-        with col4:
-            st.write(
-                "In the future this will show reading time."
-            )
+        fig = create_metrics_scatter(
+            album_df,
+            "avg_reading_time",
+            "Average Reading Time per Song",
+            "Minutes",
+            "#cc99ff"
+        )
+        st.plotly_chart(fig, use_container_width=True)
 
     if selected_group == "Vocabulary":
         col1, col2 = st.columns(2)

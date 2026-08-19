@@ -92,6 +92,9 @@ def pipeline(
         .agg(
             total_words=("word_count", "sum"),
             avg_words_per_song=("word_count", "mean"),
+            total_lines=("line_count", "sum"),
+            avg_lines_per_song=("line_count", "mean"),
+            avg_reading_time=("reading_minutes", "mean"),
             vocabulary_size=("vocabulary_size", "mean"),
             lexical_diversity=("lexical_diversity", "mean"),
             average_word_length=("average_word_length", "mean"),
@@ -105,6 +108,9 @@ def pipeline(
         )
         .reset_index()
     )
+
+    album_stats["avg_words_per_line"] = album_stats["total_words"] / album_stats[
+        "total_lines"]
 
     # Add emotion statistics
     album_stats = album_stats.merge(
