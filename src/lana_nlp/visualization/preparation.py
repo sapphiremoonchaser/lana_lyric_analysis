@@ -162,6 +162,29 @@ def prepare_readability_comparison(comparison_df) -> pd.DataFrame:
     return readability_comparison.round(2)
 
 
+def prepare_sentiment_comparison(comparison_df) -> pd.DataFrame:
+    """
+    Prepare a dataframe for the positive and negative word ratio for Album Comparison.
+    """
+    sentiment_comparison = comparison_df[
+        [
+            "album",
+            "positive_word_ratio",
+            "negative_word_ratio",
+            "sentiment_polarity",
+            "subjectivity"
+        ]
+    ].set_index("album").T
+
+    sentiment_comparison.index = [
+        "Positive Language",
+        "Negative Language",
+        "Sentiment Polarity",
+        "Sentiment Subjectivity"
+    ]
+
+    return sentiment_comparison.round(2)
+
 
 
 
