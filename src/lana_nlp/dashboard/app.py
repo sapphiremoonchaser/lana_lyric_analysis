@@ -21,7 +21,9 @@ from lana_nlp.visualization.preparation import (
 )
 
 from lana_nlp.visualization.emotions import (
-    album_emotion_heatmap
+    album_emotion_heatmap,
+    create_emotion_heatmap,
+    create_emotion_bar_chart
 )
 
 st.set_page_config(
@@ -423,7 +425,11 @@ elif page == "Album Comparison":
             )
             st.plotly_chart(fig, use_container_width=True)
 
+        st.subheader("Emotional Profile")
 
+        fig = create_emotion_heatmap(comparison_df)
+
+        st.plotly_chart(fig, use_container_width=True)
 
 
 elif page == "Song Explorer":
@@ -469,7 +475,7 @@ elif page == "Song Explorer":
     )
 
     # KPI columns
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3 = st.columns(3)
 
     with col1:
         st.metric(
@@ -479,72 +485,14 @@ elif page == "Song Explorer":
 
     with col2:
         st.metric(
-            "Unique Words",
-            int(selected_row["unique_words"])
-        )
-
-    with col3:
-        st.metric(
             "Lexical Diversity",
             f"{selected_row['lexical_diversity']:.2f}"
         )
 
-    with col4:
-        st.metric(
-            "Reading Time",
-            f"{selected_row['reading_minutes']:.1f}"
-        )
-
-    # Sentiment Profile
-    st.subheader("Sentiment Profile")
-
-    col1, col2, col3, col4 = st.columns(4)
-
-    with col1:
-        st.metric(
-            "Sentiment Polarity",
-            f"{selected_row['sentiment_polarity']:.2f}"
-        )
-
-    with col2:
+    with col3:
         st.metric(
             "Subjectivity",
             f"{selected_row['subjectivity']:.2f}"
-        )
-
-    with col3:
-        st.metric(
-            "Positive Language",
-            f"{selected_row['positive_word_ratio']:.2%}"
-        )
-
-    with col4:
-        st.metric(
-            "Negative Language",
-            f"{selected_row['negative_word_ratio']:.2%}"
-        )
-
-    # Readability
-    st.subheader("Readability")
-
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-        st.metric(
-            "Flesch Reading Ease",
-            f"{selected_row['flesch_reading_ease']:.1f}"
-        )
-
-    with col2:
-        st.metric(
-            "Flesch-Kincaid",
-            f"{selected_row['flesch_kincaid']:.1f}"
-        )
-
-    with col3:
-        st.metric(
-            "Gunning Fog",
-            f"{selected_row['gunning_fog']:.1f}"
         )
 
     # Emotion profile
@@ -570,14 +518,14 @@ elif page == "Song Explorer":
 
     emotion_data = (
         selected_row[emotion_columns]
-        .rename(
-            lambda x: x.replace("emotion_", "")
-        )
+        .rename(lambda x: x.replace("emotion_", ""))
+        .to_frame(name="score")
+        .reset_index()
+        .rename(columns={"index": "emotion"})
     )
 
-    st.bar_chart(
-        emotion_data
-    )
+    fig = create_emotion_bar_chart(emotion_data)
+    st.plotly_chart(fig, use_container_width=True)
 
     # Add the lyrics
     st.subheader("Lyrics")

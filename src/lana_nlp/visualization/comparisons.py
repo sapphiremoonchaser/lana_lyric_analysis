@@ -70,3 +70,5 @@ def create_album_boxplot(
     )
 
     return fig
+
+

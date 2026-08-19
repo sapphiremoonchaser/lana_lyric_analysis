@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 metric_groups = {
         "Song Structure": [
             "avg_words_per_song",
@@ -19,7 +20,9 @@ metric_groups = {
         ],
         "Sentiment and Emotion": [
             "positive_word_ratio",
-            "negative_word_ratio"
+            "negative_word_ratio",
+            "sentiment_polarity",
+            "subjectivity"
         ]
     }
 
@@ -184,7 +187,6 @@ def prepare_sentiment_comparison(comparison_df) -> pd.DataFrame:
     ]
 
     return sentiment_comparison.round(2)
-
 
 
 
