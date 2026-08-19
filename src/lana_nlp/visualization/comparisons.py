@@ -56,6 +56,10 @@ def create_album_boxplot(
         color="album",
         points="all",
         hover_name="song",
+        hover_data={
+            "album": False,
+            metric: ":.1f"
+        },
         title=title
     )
 
