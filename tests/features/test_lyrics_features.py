@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-from lana_nlp.features.lyrics_features import LyricsFeatures
+from lana_nlp.features.basic_features import BasicFeatures
 
 
 def test_use_tokenized_text_returns_false_for_strings():
@@ -9,7 +9,7 @@ def test_use_tokenized_text_returns_false_for_strings():
         "lyrics": ["love forever", "dream ocean"]
     })
 
-    analyzer = LyricsFeatures(df, text_column="lyrics")
+    analyzer = BasicFeatures(df, text_column="lyrics")
 
     assert analyzer._use_tokenized_text() is False
 
@@ -22,7 +22,7 @@ def test_use_tokenized_text_returns_true_for_token_lists():
         ]
     })
 
-    analyzer = LyricsFeatures(df, text_column="lyrics")
+    analyzer = BasicFeatures(df, text_column="lyrics")
 
     assert analyzer._use_tokenized_text() is True
 
@@ -32,7 +32,7 @@ def test_use_tokenized_text_returns_false_for_empty_dataframe():
         "lyrics": []
     })
 
-    analyzer = LyricsFeatures(df, text_column="lyrics")
+    analyzer = BasicFeatures(df, text_column="lyrics")
 
     assert analyzer._use_tokenized_text() is False
 
@@ -42,13 +42,13 @@ def test_use_tokenized_text_returns_false_when_all_lyrics_are_null():
         "lyrics": [None, np.nan]
     })
 
-    analyzer = LyricsFeatures(df, text_column="lyrics")
+    analyzer = BasicFeatures(df, text_column="lyrics")
 
     assert analyzer._use_tokenized_text() is False
 
 
 def test_calculate_word_count_for_string_lyrics(sample_df):
-    features = LyricsFeatures(sample_df, text_column="lyrics")
+    features = BasicFeatures(sample_df, text_column="lyrics")
 
     features.calculate_word_count()
 
@@ -56,7 +56,7 @@ def test_calculate_word_count_for_string_lyrics(sample_df):
 
 
 def test_calculate_word_count_for_tokenized_lyrics(tokenized_sample_df):
-    features = LyricsFeatures(tokenized_sample_df, text_column="lyrics")
+    features = BasicFeatures(tokenized_sample_df, text_column="lyrics")
 
     features.calculate_word_count()
 
@@ -72,7 +72,7 @@ def test_calculate_word_count_missing_lyrics_returns_zero():
         ]
     })
 
-    features = LyricsFeatures(df, text_column="lyrics")
+    features = BasicFeatures(df, text_column="lyrics")
 
     features.calculate_word_count()
 
@@ -82,7 +82,7 @@ def test_calculate_word_count_missing_lyrics_returns_zero():
 def test_calculate_word_count_empty_dataframe():
     df = pd.DataFrame(columns=["lyrics"])
 
-    features = LyricsFeatures(df, text_column="lyrics")
+    features = BasicFeatures(df, text_column="lyrics")
 
     features.calculate_word_count()
 
@@ -91,7 +91,7 @@ def test_calculate_word_count_empty_dataframe():
 
 
 def test_calculate_unique_words_for_string_lyrics(sample_df):
-    features = LyricsFeatures(sample_df, text_column="lyrics")
+    features = BasicFeatures(sample_df, text_column="lyrics")
 
     features.calculate_unique_words()
 
@@ -99,7 +99,7 @@ def test_calculate_unique_words_for_string_lyrics(sample_df):
 
 
 def test_calculate_unique_words_for_tokenized_lyrics(tokenized_sample_df):
-    features = LyricsFeatures(tokenized_sample_df, text_column="lyrics")
+    features = BasicFeatures(tokenized_sample_df, text_column="lyrics")
 
     features.calculate_unique_words()
 
@@ -115,7 +115,7 @@ def test_calculate_unique_words_missing_lyrics_returns_zero():
         ]
     })
 
-    features = LyricsFeatures(df, text_column="lyrics")
+    features = BasicFeatures(df, text_column="lyrics")
 
     features.calculate_unique_words()
 
@@ -125,7 +125,7 @@ def test_calculate_unique_words_missing_lyrics_returns_zero():
 def test_calculate_unique_words_empty_dataframe():
     df = pd.DataFrame(columns=["lyrics"])
 
-    features = LyricsFeatures(df, text_column="lyrics")
+    features = BasicFeatures(df, text_column="lyrics")
 
     features.calculate_unique_words()
 
@@ -134,7 +134,7 @@ def test_calculate_unique_words_empty_dataframe():
 
 
 def test_calculate_syllable_count_for_string_lyrics(sample_df):
-    features = LyricsFeatures(sample_df, text_column="lyrics")
+    features = BasicFeatures(sample_df, text_column="lyrics")
 
     features.calculate_syllable_count()
 
@@ -142,7 +142,7 @@ def test_calculate_syllable_count_for_string_lyrics(sample_df):
 
 
 def test_calculate_syllable_count_for_tokenized_lyrics(tokenized_sample_df):
-    features = LyricsFeatures(tokenized_sample_df, text_column="lyrics")
+    features = BasicFeatures(tokenized_sample_df, text_column="lyrics")
 
     features.calculate_syllable_count()
 
@@ -158,7 +158,7 @@ def test_calculate_syllable_count_missing_lyrics_returns_zero():
         ]
     })
 
-    features = LyricsFeatures(df, text_column="lyrics")
+    features = BasicFeatures(df, text_column="lyrics")
 
     features.calculate_syllable_count()
 
@@ -168,7 +168,7 @@ def test_calculate_syllable_count_missing_lyrics_returns_zero():
 def test_calculate_syllable_count_empty_dataframe():
     df = pd.DataFrame(columns=["lyrics"])
 
-    features = LyricsFeatures(df, text_column="lyrics")
+    features = BasicFeatures(df, text_column="lyrics")
 
     features.calculate_syllable_count()
 
@@ -181,7 +181,7 @@ def test_calculate_reading_time_returns_correct_values():
         "word_count": [200, 400, 100]
     })
 
-    features = LyricsFeatures(df, text_column="lyrics")
+    features = BasicFeatures(df, text_column="lyrics")
 
     features.calculate_reading_time()
 
@@ -196,7 +196,7 @@ def test_calculate_line_count_for_string_lyrics():
         ]
     })
 
-    features = LyricsFeatures(df, text_column="lyrics")
+    features = BasicFeatures(df, text_column="lyrics")
 
     features.calculate_line_count()
 
@@ -211,7 +211,7 @@ def test_calculate_line_count_for_tokenized_lyrics():
         ]
     })
 
-    features = LyricsFeatures(df, text_column="lyrics")
+    features = BasicFeatures(df, text_column="lyrics")
 
     features.calculate_line_count()
 
@@ -227,7 +227,7 @@ def test_calculate_line_count_missing_lyrics_returns_zero():
         ]
     })
 
-    features = LyricsFeatures(df, text_column="lyrics")
+    features = BasicFeatures(df, text_column="lyrics")
 
     features.calculate_line_count()
 
@@ -237,7 +237,7 @@ def test_calculate_line_count_missing_lyrics_returns_zero():
 def test_calculate_line_count_empty_dataframe():
     df = pd.DataFrame(columns=["lyrics"])
 
-    features = LyricsFeatures(df, text_column="lyrics")
+    features = BasicFeatures(df, text_column="lyrics")
 
     features.calculate_line_count()
 
@@ -246,7 +246,7 @@ def test_calculate_line_count_empty_dataframe():
 
 
 def test_calculate_all_structure_and_values(sample_df) -> None:
-    analyzer = LyricsFeatures(sample_df, text_column="lyrics")
+    analyzer = BasicFeatures(sample_df, text_column="lyrics")
 
     result = analyzer.analyze()
 

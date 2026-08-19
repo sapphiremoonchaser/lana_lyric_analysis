@@ -14,7 +14,7 @@ from lana_nlp.utils.text_utils import (
 )
 
 
-class SentimentAnalyzer:
+class SentimentFeatures:
     """
     Perform sentiment analysis on song lyrics.
 
@@ -117,18 +117,6 @@ class SentimentAnalyzer:
         """
         Calculate scores for the emotion lexicon.
         """
-        EMOTIONS = [
-            "Positive",
-            "Negative",
-            "Anger",
-            "Anticipation",
-            "Disgust",
-            "Fear",
-            "Joy",
-            "Sadness",
-            "Surprise",
-            "Trust"
-        ]
 
         if isinstance(words, str):
             words = words.split()
@@ -147,7 +135,7 @@ class SentimentAnalyzer:
 
         return {
             emotion: emotions[emotion] / total
-            for emotion in EMOTIONS
+            for emotion in self.EMOTIONS
         }
 
 
@@ -286,25 +274,4 @@ class SentimentAnalyzer:
         self.negative_word_ratio()
 
         return self.df
-
-
-    def average_album_sentiment(self) -> pd.Series:
-        """
-        Calculate average sentiment polarity by album.
-
-        Returns:
-            Mean sentiment score per album.
-        """
-
-        if "sentiment_polarity" not in self.df.columns:
-            self.sentiment_polarity()
-
-        sentiment = (
-            self.df
-            .dropna(subset=["album"])
-            .groupby("album")["sentiment_polarity"]
-            .mean()
-        )
-
-        return sentiment.fillna(0.0)
 

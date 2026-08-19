@@ -1,11 +1,20 @@
-from enum import unique
-from os import write
 
 import streamlit as st
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
-from pyarrow.interchange import column
+
+from lana_nlp.visualization.trends import (
+    average_words_over_time_scatterplot,
+    create_metrics_scatter,
+    create_sentiment_scatter
+)
+
+from lana_nlp.visualization.preparation import (
+    metric_groups
+)
+
+from lana_nlp.visualization.emotions import (
+    album_emotion_heatmap
+)
 
 st.set_page_config(
     page_title="Lana Del Rey Lyric Analysis",
@@ -67,29 +76,20 @@ if page == "Overview":
     with col4:
         st.metric("Latest Album", last_year)
 
-    # Visualize average words per song
-    st.subheader("Average Words per Song")
-
-    words_by_album = (
-        album_df[
-            ["album", "year", "avg_words_per_song"]
-        ]
-        .drop_duplicates()
-        .sort_values("year")
-    )
-
-    words_by_album["album"] = pd.Categorical(
-        words_by_album["album"],
-        categories=words_by_album["album"],
-        ordered=True
-    )
-
-    st.bar_chart(
-        words_by_album.set_index("album")["avg_words_per_song"]
-    )
+    # Scatter Plot
+    fig = average_words_over_time_scatterplot(album_df)
+    st.plotly_chart(fig, use_container_width=True)
 
     st.caption(
         "Average number of words per song across Lana Del Rey's albums."
+    )
+
+    # Emotional Profile Heatmap
+    fig = album_emotion_heatmap(album_df)
+    st.plotly_chart(fig, use_container_width=True)
+
+    st.caption(
+        "Higher values indicate a higher association to a particular emotion."
     )
 
 
@@ -107,76 +107,130 @@ elif page == "Lyrical Style":
     # Line chart showing average words per song
     st.subheader("Average Words per Song")
 
-    style_df = (
-        album_df[
-            ["album", "year", "avg_words_per_song"]
-        ]
-        .drop_duplicates()
+    selected_group = st.selectbox(
+        "Metric Group",
+        metric_groups.keys()
     )
 
-    style_df["year"] = pd.to_numeric(
-        style_df["year"]
-    )
+    if selected_group == "Song Structure":
 
-    style_df = style_df.sort_values("year")
+        col1, col2 = st.columns(2)
 
-    st.line_chart(
-        style_df.set_index("year")["avg_words_per_song"]
-    )
+        with col1:
+            fig = create_metrics_scatter(
+                album_df,
+                "avg_words_per_song",
+                "Average Words per Song",
+                "Words",
+                 "#00ffff"
+            )
+            st.plotly_chart(fig, use_container_width=True)
 
-    st.caption(
-        "Average number of words per song for each album."
-    )
+        with col2:
+            st.write(
+                "In the future this will show average line count."
+            )
 
-    # Lexical Diversity
-    st.subheader("Lexical Diversity")
+        col3, col4 = st.columns(2)
 
-    diversity_df = (
-        album_df[
-            ["album", "year", "lexical_diversity"]
-        ]
-        .drop_duplicates()
-    )
+        with col3:
+            st.write(
+                "In the future this will show average words per line"
+            )
 
-    diversity_df["year"] = pd.to_numeric(
-        diversity_df["year"]
-    )
+        with col4:
+            st.write(
+                "In the future this will show reading time."
+            )
 
-    st.line_chart(
-        diversity_df.set_index("year")["lexical_diversity"]
-    )
+    if selected_group == "Vocabulary":
+        col1, col2 = st.columns(2)
 
-    st.caption(
-        "Average lexical diversity for each album. "
-        "Higher values indicate a greater variety of unique words."
-    )
+        with col1:
+            fig = create_metrics_scatter(
+                album_df,
+                "vocabulary_size",
+                "Vocabulary Size",
+                "words",
+                "#00ffff"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            st.caption(
+                "Based on unique word count"
+            )
 
-    # Readability
-    st.subheader("Readability")
+        with col2:
+            fig = create_metrics_scatter(
+                album_df,
+                "lexical_diversity",
+                "Lexical Diversity",
+                "score",
+                "#99ff99"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            st.caption(
+                "Higher values may indicate less repetition"
+            )
 
-    readability_df = (
-        album_df[
-            ["album", "year", "flesch_reading_ease"]
-        ]
-        .drop_duplicates()
-    )
+        fig = create_metrics_scatter(
+            album_df,
+            "average_word_length",
+            "Word Length",
+            "characters",
+            "#cc99ff"
+        )
+        st.plotly_chart(fig, use_container_width=True)
 
-    readability_df["year"] = pd.to_numeric(
-        readability_df["year"]
-    )
+    if selected_group == "Readability":
+        col1, col2 = st.columns(2)
 
-    readability_df = readability_df.sort_values("year")
+        with col1:
+            fig = create_metrics_scatter(
+                album_df,
+                "flesch_reading_ease",
+                "Flesch Reading Ease",
+                "score",
+                "#00ffff"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            st.caption(
+                "Smaller negative values indicate a more difficult reading level."
+            )
 
-    st.line_chart(
-        readability_df.set_index("year")[
-            "flesch_reading_ease"
-        ]
-    )
 
-    st.caption(
-        "Flesch Reading Ease score for each album. "
-        "Higher scores generally indicate easier-to-read lyrics."
-    )
+        with col2:
+            fig = create_metrics_scatter(
+                album_df,
+                "flesch_kincaid",
+                "Flesch-Kincaid",
+                "score",
+                "#99ff99"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            st.caption(
+                "Lower values indicate a more difficult reading level."
+            )
+
+        fig = create_metrics_scatter(
+            album_df,
+            "gunning_fog",
+            "Gunning Fog",
+            "score",
+            "#cc99ff"
+        )
+        st.plotly_chart(fig, use_container_width=True)
+        st.caption(
+            "Higher values indicate a more difficult reading level."
+        )
+
+    if selected_group == "Sentiment and Emotion":
+
+        fig = create_sentiment_scatter(album_df)
+        st.plotly_chart(fig, use_container_width=True)
+        st.caption(
+            "Larger values indicates positive language, with 0 being 0 positive "
+            "words."
+        )
 
 
 elif page == "Album Comparison":
@@ -265,6 +319,7 @@ elif page == "Album Comparison":
         f"Comparing {selected_metric.lower()} "
         "across Lana Del Rey's albums."
     )
+
 
 elif page == "Song Explorer":
 

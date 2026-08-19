@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 
-from lana_nlp.preprocessing.text_cleaner import TextCleaner
+from lana_nlp.pipeline.text_cleaner import TextCleaner
 
 
 def test_remove_annotations_removes_verse_label():
