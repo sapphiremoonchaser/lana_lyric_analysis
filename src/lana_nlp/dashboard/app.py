@@ -590,11 +590,46 @@ elif page == "Song Explorer":
     fig = create_emotion_bar_chart(emotion_data)
     st.plotly_chart(fig, use_container_width=True)
 
-    # Add the lyrics
-    st.subheader("Lyrics")
+    col1, col2 = st.columns(2)
 
-    st.text_area(
-        "Song lyrics",
-        selected_row["lyrics"],
-        height=400
-    )
+    with col1:
+        # Add the lyrics
+        st.subheader("Lyrics")
+
+        st.text_area(
+            "Song lyrics",
+            selected_row["lyrics"],
+            height=400
+        )
+
+    with col2:
+        st.subheader("Wordcloud")
+
+        st.markdown(
+            '<div style="padding-top: 100px;"></div>',
+            unsafe_allow_html=True
+        )
+
+        # Filter song level dataframe
+        song_lyrics = song_df[
+            song_df["song"] == selected_song
+            ]["nlp_cleaned_lyrics"]
+
+        song_text = " ".join(
+            " ".join(ast.literal_eval(lyrics))
+            if isinstance(lyrics, str)
+            else " ".join(lyrics)
+            for lyrics in song_lyrics
+        )
+
+        song_palette = "twilight"
+
+        song_wordcloud = create_wordcloud(
+            song_text,
+            song_palette,
+        )
+
+        st.image(
+            song_wordcloud.to_array(),
+            use_container_width=True
+        )
