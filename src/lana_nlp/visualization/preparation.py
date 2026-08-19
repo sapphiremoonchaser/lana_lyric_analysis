@@ -138,3 +138,39 @@ def prepare_vocabulary_comparison(comparison_df) -> pd.DataFrame:
     ]
 
     return vocabulary_comparison.round(2)
+
+
+def prepare_readability_comparison(comparison_df) -> pd.DataFrame:
+    """
+    Prepare a dataframe for the readability comparison for Album Comparison.
+    """
+    readability_comparison = comparison_df[
+        [
+            "album",
+            "flesch_reading_ease",
+            "flesch_kincaid",
+            "gunning_fog"
+        ]
+    ].set_index("album").T
+
+    readability_comparison.index = [
+        "Average Flesch Reading Ease Score",
+        "Average Flesch Kinematic Score",
+        "Average Gunning Fog Score"
+    ]
+
+    return readability_comparison.round(2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+

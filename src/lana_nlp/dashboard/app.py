@@ -15,7 +15,8 @@ from lana_nlp.visualization.trends import (
 from lana_nlp.visualization.preparation import (
     metric_groups,
     prepare_structural_comparison,
-    prepare_vocabulary_comparison
+    prepare_vocabulary_comparison,
+    prepare_readability_comparison
 )
 
 from lana_nlp.visualization.emotions import (
@@ -353,11 +354,42 @@ elif page == "Album Comparison":
         )
         st.plotly_chart(fig, use_container_width=True)
 
-
-
-
     if selected_group == "Readability":
-        pass
+        # Table for readability comparison
+        readability_comparison = prepare_readability_comparison(comparison_df)
+
+        st.subheader("Readability Comparison")
+
+        st.dataframe(
+            readability_comparison,
+            use_container_width=True
+        )
+
+        with col1:
+            fig = create_album_boxplot(
+                comparison_songs,
+                "flesch_reading_ease",
+                "Flesch Reading Ease Score Distribution",
+                "Score"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+
+        with col2:
+            fig = create_album_boxplot(
+                comparison_songs,
+                "flesch_kincaid",
+                "Flesch Kincaid Score Distribution",
+                "Score"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+
+        fig = create_album_boxplot(
+            comparison_songs,
+            "gunning_fog",
+            "Gunning Fog Score Distribution",
+            "Score"
+        )
+        st.plotly_chart(fig, use_container_width=True)
 
     if selected_group == "Sentiment and Emotion":
         pass
