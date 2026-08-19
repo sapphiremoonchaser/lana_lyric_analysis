@@ -435,29 +435,64 @@ elif page == "Album Comparison":
 
         st.plotly_chart(fig, use_container_width=True)
 
-    # Filter song level dataframe
-    album_1_lyrics = song_df[
-        song_df["album"] == album_1
-    ]["nlp_cleaned_lyrics"]
+    # Wordclouds
+    st.subheader("Wordclouds")
 
-    album_1_text = " ".join(
-        " ".join(ast.literal_eval(lyrics))
-        if isinstance(lyrics, str)
-        else " ".join(lyrics)
-        for lyrics in album_1_lyrics
-    )
+    col1, col2 = st.columns(2)
 
-    album_1_palette = album_palettes[album_1]
+    with col1:
+        # Filter song level dataframe
+        album_1_lyrics = song_df[
+            song_df["album"] == album_1
+        ]["nlp_cleaned_lyrics"]
 
-    album_1_wordcloud = create_wordcloud(
-        album_1_text,
-        album_1_palette,
-    )
+        album_1_text = " ".join(
+            " ".join(ast.literal_eval(lyrics))
+            if isinstance(lyrics, str)
+            else " ".join(lyrics)
+            for lyrics in album_1_lyrics
+        )
 
-    st.image(
-        album_1_wordcloud.to_array(),
-        use_container_width=True
-    )
+        album_1_palette = album_palettes[album_1]
+
+        album_1_wordcloud = create_wordcloud(
+            album_1_text,
+            album_1_palette,
+        )
+
+        st.image(
+            album_1_wordcloud.to_array(),
+            use_container_width=True
+        )
+
+        st.caption(album_1)
+
+    with col2:
+        # Filter song level dataframe
+        album_2_lyrics = song_df[
+            song_df["album"] == album_2
+            ]["nlp_cleaned_lyrics"]
+
+        album_2_text = " ".join(
+            " ".join(ast.literal_eval(lyrics))
+            if isinstance(lyrics, str)
+            else " ".join(lyrics)
+            for lyrics in album_2_lyrics
+        )
+
+        album_2_palette = album_palettes[album_2]
+
+        album_2_wordcloud = create_wordcloud(
+            album_2_text,
+            album_2_palette,
+        )
+
+        st.image(
+            album_2_wordcloud.to_array(),
+            use_container_width=True
+        )
+
+        st.caption(album_2)
 
 
 elif page == "Song Explorer":
