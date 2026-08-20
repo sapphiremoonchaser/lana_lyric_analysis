@@ -140,4 +140,3 @@ NLP-cleaned version used for vocabulary, sentiment, emotion, and readability ana
 Heather Hill  
 [LinkedIn](www.linkedin.com/in/heather-gwyn)
 [GitHub](https://github.com/sapphiremoonchaser)
-
