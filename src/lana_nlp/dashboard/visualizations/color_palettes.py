@@ -1,3 +1,5 @@
+"""Color palettes for Lana albums"""
+
 album_palettes = {
     "Sirens": [
         "#87CEEB",

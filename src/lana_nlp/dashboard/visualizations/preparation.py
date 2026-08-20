@@ -1,3 +1,6 @@
+"""
+The purpose of this file is to prepare data for visualizations.
+"""
 import pandas as pd
 import ast
 
@@ -212,7 +215,7 @@ def prepare_wordcloud_text(
     Prepare a string for creating a word cloud
     Args:
         df (pd.DataFrame): Dataframe containing lyrics.
-        comparison_df: album column
+        column: album column
         value: album name
     """
     lyrics = df[

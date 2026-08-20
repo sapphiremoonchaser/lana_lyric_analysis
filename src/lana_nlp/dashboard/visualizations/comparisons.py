@@ -1,12 +1,10 @@
-from random import random
-
+"""
+These are functions to create comparison visualizations.
+"""
 import pandas as pd
 import plotly.express as px
 from plotly.graph_objects import Figure
 from wordcloud import WordCloud
-import ast
-
-
 
 
 def average_words_by_album(df: pd.DataFrame) -> Figure:
@@ -34,6 +32,9 @@ def create_album_comparison_bar(
     title: str,
     y_label: str
 ) -> Figure:
+    """
+    Create a bar chart showing a specified metric by album
+    """
     fig = px.bar(
         df,
         x="album",
@@ -55,6 +56,9 @@ def create_album_boxplot(
     title: str,
     y_label: str
 ) -> Figure:
+    """
+    Create a box plot for a specified metric for one album.
+    """
     fig = px.box(
         df,
         x="album",
@@ -78,7 +82,10 @@ def create_album_boxplot(
     return fig
 
 
-def create_wordcloud(text, palette):
+def create_wordcloud(
+    text,
+    palette
+):
     """
     Create a word cloud based on a string of text.
 
@@ -109,5 +116,3 @@ def create_wordcloud(text, palette):
         color_func=color_func,
         random_state=42
     ).generate(text)
-
-    return wordcloud
