@@ -80,13 +80,35 @@ NLP-cleaned version used for vocabulary, sentiment, emotion, and readability ana
 #### Emotional Profile
 * NRC emotion categories: anger, anticipation, digust, fear, joy, sadness, surprise, and trust
 
+## Dashboard
+
+### Overview
+
+![Overview](images/01_overview.png)
+
+### Lyrical Style
+
+![Lyrical Structure Over Time](images/02_song_structure_over_time.png)
+
+![Sentiment Over Time](images/03_sentiment_over_time.png)
+
+### Album Comparison
+
+![Album Comparison](images/04_vocab_album_comparison.png)
+
+### Song Explorer
+
+![Song Explorer](images/05_song_explorer.png)
+
+![Song Explorer Word Cloud](images/06_song_explorer_2.png)
+
+## Visualizations
+
+
 ### Sentiment Analysis
 
 
 ### Emotion Analysis
-
-
-## Visualizations
 
 
 ## Streamlit Dashboard
