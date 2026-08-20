@@ -2,7 +2,7 @@ import pandas as pd
 import plotly.express as px
 from plotly.graph_objs import Figure
 
-from lana_nlp.visualization.preparation import (
+from lana_nlp.dashboard.visualizations.preparation import (
     prepare_words_by_album
 )
 
