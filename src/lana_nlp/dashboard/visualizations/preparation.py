@@ -27,6 +27,19 @@ metric_groups = {
         ]
     }
 
+EMOTION_ORDER = [
+        "Positive",
+        "Negative",
+        "Anger",
+        "Anticipation",
+        "Disgust",
+        "Fear",
+        "Joy",
+        "Sadness",
+        "Surprise",
+        "Trust",
+    ]
+
 song_structure_metrics = {
     "avg_words_per_song": {
         "title": "Average Words per Song",

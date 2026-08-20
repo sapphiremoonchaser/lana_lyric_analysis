@@ -6,6 +6,7 @@ from lana_nlp.dashboard.visualizations.color_palettes import album_palettes
 
 from lana_nlp.dashboard.visualizations.preparation import (
     metric_groups,
+    EMOTION_ORDER,
     prepare_structural_comparison,
     prepare_vocabulary_comparison,
     prepare_readability_comparison,
@@ -543,18 +544,7 @@ elif page == "Song Explorer":
     # Emotion profile
     st.subheader("Emotion Profile")
 
-    emotion_order = [
-        "Positive",
-        "Negative",
-        "Anger",
-        "Anticipation",
-        "Disgust",
-        "Fear",
-        "Joy",
-        "Sadness",
-        "Surprise",
-        "Trust",
-    ]
+    emotion_order = EMOTION_ORDER
 
     emotion_columns = [
         f"emotion_{emotion}"
