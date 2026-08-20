@@ -138,6 +138,5 @@ NLP-cleaned version used for vocabulary, sentiment, emotion, and readability ana
 
 ## Author
 Heather Hill  
-[LinkedIn]
-[GitHub]
+
 
