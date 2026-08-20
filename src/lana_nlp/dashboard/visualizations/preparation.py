@@ -1,4 +1,5 @@
 import pandas as pd
+import ast
 
 
 metric_groups = {
@@ -187,6 +188,32 @@ def prepare_sentiment_comparison(comparison_df) -> pd.DataFrame:
     ]
 
     return sentiment_comparison.round(2)
+
+
+def prepare_wordcloud_text(
+    df: pd.DataFrame,
+    column: str,
+    value: str
+) -> str:
+    """
+    Prepare a string for creating a word cloud
+    Args:
+        df (pd.DataFrame): Dataframe containing lyrics.
+        comparison_df: album column
+        value: album name
+    """
+    lyrics = df[
+        df[column] == value
+    ]["nlp_cleaned_lyrics"]
+
+    return " ".join(
+        " ".join(ast.literal_eval(lyrics))
+        if isinstance(lyrics, str)
+        else " ".join(lyrics)
+        for lyrics in lyrics
+    )
+
+
 
 
 

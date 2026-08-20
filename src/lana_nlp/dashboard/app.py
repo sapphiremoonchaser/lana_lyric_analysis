@@ -1,8 +1,6 @@
 
 import streamlit as st
 import pandas as pd
-import ast
-
 
 from lana_nlp.dashboard.visualizations.color_palettes import album_palettes
 
@@ -11,7 +9,8 @@ from lana_nlp.dashboard.visualizations.preparation import (
     prepare_structural_comparison,
     prepare_vocabulary_comparison,
     prepare_readability_comparison,
-    prepare_sentiment_comparison
+    prepare_sentiment_comparison,
+    prepare_wordcloud_text
 )
 
 from lana_nlp.dashboard.visualizations.comparisons import (
@@ -359,15 +358,10 @@ elif page == "Album Comparison":
 
         with col3:
             # Filter song level dataframe
-            album_1_lyrics = song_df[
-                song_df["album"] == album_1
-                ]["nlp_cleaned_lyrics"]
-
-            album_1_text = " ".join(
-                " ".join(ast.literal_eval(lyrics))
-                if isinstance(lyrics, str)
-                else " ".join(lyrics)
-                for lyrics in album_1_lyrics
+            album_1_text = prepare_wordcloud_text(
+                song_df,
+                "album",
+                album_1
             )
 
             album_1_palette = album_palettes[album_1]
@@ -386,15 +380,10 @@ elif page == "Album Comparison":
 
         with col4:
             # Filter song level dataframe
-            album_2_lyrics = song_df[
-                song_df["album"] == album_2
-                ]["nlp_cleaned_lyrics"]
-
-            album_2_text = " ".join(
-                " ".join(ast.literal_eval(lyrics))
-                if isinstance(lyrics, str)
-                else " ".join(lyrics)
-                for lyrics in album_2_lyrics
+            album_2_text = prepare_wordcloud_text(
+                song_df,
+                "album",
+                album_2
             )
 
             album_2_palette = album_palettes[album_2]
@@ -604,15 +593,10 @@ elif page == "Song Explorer":
         )
 
         # Filter song level dataframe
-        song_lyrics = song_df[
-            song_df["song"] == selected_song
-            ]["nlp_cleaned_lyrics"]
-
-        song_text = " ".join(
-            " ".join(ast.literal_eval(lyrics))
-            if isinstance(lyrics, str)
-            else " ".join(lyrics)
-            for lyrics in song_lyrics
+        song_text = prepare_wordcloud_text(
+            song_df,
+            "song",
+            selected_song
         )
 
         # Look up album song belongs to for word cloud color palette
