@@ -1,6 +1,7 @@
 
 import streamlit as st
 import pandas as pd
+from pathlib import Path
 
 from lana_nlp.dashboard.visualizations.color_palettes import album_palettes
 
@@ -40,8 +41,10 @@ st.set_page_config(
 # --------------------
 # Load data
 # --------------------
-song_df = pd.read_csv("./data/processed/song_level_stats.csv")
-album_df = pd.read_csv("./data/processed/album_level_stats.csv")
+DATA_DIR = Path("data/processed")
+
+song_df = pd.read_csv(DATA_DIR / "song_level_stats.csv")
+album_df = pd.read_csv(DATA_DIR / "album_level_stats.csv")
 
 # --------------------
 # Sidebar
