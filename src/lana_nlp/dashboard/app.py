@@ -1,4 +1,6 @@
-
+"""
+This is the main script that runs the dashboard.
+"""
 import streamlit as st
 import pandas as pd
 from pathlib import Path
@@ -43,8 +45,13 @@ st.set_page_config(
 # --------------------
 DATA_DIR = Path("data/processed")
 
-song_df = pd.read_csv(DATA_DIR / "song_level_stats.csv")
-album_df = pd.read_csv(DATA_DIR / "album_level_stats.csv")
+song_df: pd.DataFrame = pd.read_csv(
+    DATA_DIR / "song_level_stats.csv"
+)
+
+album_df: pd.DataFrame = pd.read_csv(
+    DATA_DIR / "album_level_stats.csv"
+)
 
 # --------------------
 # Sidebar
@@ -258,7 +265,12 @@ elif page == "Album Comparison":
 
     st.subheader("Select Albums to Compare")
 
-    album_names = album_df["album"].tolist()
+    album_names = (
+        album_df["album"]
+        .dropna()
+        .astype(str)
+        .tolist()
+    )
 
     # Album Selectors
     col1, col2 = st.columns(2)
@@ -356,7 +368,7 @@ elif page == "Album Comparison":
             st.caption("Lexical Diversity is the percent of words that are unique.")
 
         # Wordclouds
-        st.subheader("Wordclouds")
+        st.subheader("Word Clouds")
 
         col3, col4 = st.columns(2)
 
@@ -578,7 +590,7 @@ elif page == "Song Explorer":
         )
 
     with col2:
-        st.subheader("Wordcloud")
+        st.subheader("Word Cloud")
 
         st.markdown(
             '<div style="padding-top: 100px;"></div>',
