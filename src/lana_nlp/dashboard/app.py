@@ -1,17 +1,20 @@
-
+"""
+This is the main script that runs the dashboard.
+"""
 import streamlit as st
 import pandas as pd
-import ast
-
+from pathlib import Path
 
 from lana_nlp.dashboard.visualizations.color_palettes import album_palettes
 
 from lana_nlp.dashboard.visualizations.preparation import (
     metric_groups,
+    EMOTION_ORDER,
     prepare_structural_comparison,
     prepare_vocabulary_comparison,
     prepare_readability_comparison,
-    prepare_sentiment_comparison
+    prepare_sentiment_comparison,
+    prepare_wordcloud_text
 )
 
 from lana_nlp.dashboard.visualizations.comparisons import (
@@ -40,8 +43,15 @@ st.set_page_config(
 # --------------------
 # Load data
 # --------------------
-song_df = pd.read_csv("./data/processed/song_level_stats.csv")
-album_df = pd.read_csv("./data/processed/album_level_stats.csv")
+DATA_DIR = Path("data/processed")
+
+song_df: pd.DataFrame = pd.read_csv(
+    DATA_DIR / "song_level_stats.csv"
+)
+
+album_df: pd.DataFrame = pd.read_csv(
+    DATA_DIR / "album_level_stats.csv"
+)
 
 # --------------------
 # Sidebar
@@ -255,7 +265,12 @@ elif page == "Album Comparison":
 
     st.subheader("Select Albums to Compare")
 
-    album_names = album_df["album"].tolist()
+    album_names = (
+        album_df["album"]
+        .dropna()
+        .astype(str)
+        .tolist()
+    )
 
     # Album Selectors
     col1, col2 = st.columns(2)
@@ -353,21 +368,16 @@ elif page == "Album Comparison":
             st.caption("Lexical Diversity is the percent of words that are unique.")
 
         # Wordclouds
-        st.subheader("Wordclouds")
+        st.subheader("Word Clouds")
 
         col3, col4 = st.columns(2)
 
         with col3:
             # Filter song level dataframe
-            album_1_lyrics = song_df[
-                song_df["album"] == album_1
-                ]["nlp_cleaned_lyrics"]
-
-            album_1_text = " ".join(
-                " ".join(ast.literal_eval(lyrics))
-                if isinstance(lyrics, str)
-                else " ".join(lyrics)
-                for lyrics in album_1_lyrics
+            album_1_text = prepare_wordcloud_text(
+                song_df,
+                "album",
+                album_1
             )
 
             album_1_palette = album_palettes[album_1]
@@ -386,15 +396,10 @@ elif page == "Album Comparison":
 
         with col4:
             # Filter song level dataframe
-            album_2_lyrics = song_df[
-                song_df["album"] == album_2
-                ]["nlp_cleaned_lyrics"]
-
-            album_2_text = " ".join(
-                " ".join(ast.literal_eval(lyrics))
-                if isinstance(lyrics, str)
-                else " ".join(lyrics)
-                for lyrics in album_2_lyrics
+            album_2_text = prepare_wordcloud_text(
+                song_df,
+                "album",
+                album_2
             )
 
             album_2_palette = album_palettes[album_2]
@@ -554,18 +559,7 @@ elif page == "Song Explorer":
     # Emotion profile
     st.subheader("Emotion Profile")
 
-    emotion_order = [
-        "Positive",
-        "Negative",
-        "Anger",
-        "Anticipation",
-        "Disgust",
-        "Fear",
-        "Joy",
-        "Sadness",
-        "Surprise",
-        "Trust",
-    ]
+    emotion_order = EMOTION_ORDER
 
     emotion_columns = [
         f"emotion_{emotion}"
@@ -596,7 +590,7 @@ elif page == "Song Explorer":
         )
 
     with col2:
-        st.subheader("Wordcloud")
+        st.subheader("Word Cloud")
 
         st.markdown(
             '<div style="padding-top: 100px;"></div>',
@@ -604,15 +598,10 @@ elif page == "Song Explorer":
         )
 
         # Filter song level dataframe
-        song_lyrics = song_df[
-            song_df["song"] == selected_song
-            ]["nlp_cleaned_lyrics"]
-
-        song_text = " ".join(
-            " ".join(ast.literal_eval(lyrics))
-            if isinstance(lyrics, str)
-            else " ".join(lyrics)
-            for lyrics in song_lyrics
+        song_text = prepare_wordcloud_text(
+            song_df,
+            "song",
+            selected_song
         )
 
         # Look up album song belongs to for word cloud color palette

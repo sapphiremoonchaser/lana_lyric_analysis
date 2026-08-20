@@ -1,3 +1,8 @@
+"""
+This file cleans the data and creates columns for basic text analysis and nlp text
+analysis.
+"""
+
 import re
 
 from nltk.tokenize import word_tokenize
@@ -103,7 +108,7 @@ class TextCleaner:
         """
 
         return re.sub(
-            r"\[.*?\]",
+            r"\[.*?]",
             "",
             text
         )

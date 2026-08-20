@@ -1,4 +1,8 @@
+"""
+The purpose of this file is to prepare data for visualizations.
+"""
 import pandas as pd
+import ast
 
 
 metric_groups = {
@@ -25,6 +29,19 @@ metric_groups = {
             "subjectivity"
         ]
     }
+
+EMOTION_ORDER = [
+        "Positive",
+        "Negative",
+        "Anger",
+        "Anticipation",
+        "Disgust",
+        "Fear",
+        "Joy",
+        "Sadness",
+        "Surprise",
+        "Trust",
+    ]
 
 song_structure_metrics = {
     "avg_words_per_song": {
@@ -187,6 +204,32 @@ def prepare_sentiment_comparison(comparison_df) -> pd.DataFrame:
     ]
 
     return sentiment_comparison.round(2)
+
+
+def prepare_wordcloud_text(
+    df: pd.DataFrame,
+    column: str,
+    value: str
+) -> str:
+    """
+    Prepare a string for creating a word cloud
+    Args:
+        df (pd.DataFrame): Dataframe containing lyrics.
+        column: album column
+        value: album name
+    """
+    lyrics = df[
+        df[column] == value
+    ]["nlp_cleaned_lyrics"]
+
+    return " ".join(
+        " ".join(ast.literal_eval(lyrics))
+        if isinstance(lyrics, str)
+        else " ".join(lyrics)
+        for lyrics in lyrics
+    )
+
+
 
 
 

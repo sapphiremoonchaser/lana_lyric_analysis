@@ -9,8 +9,6 @@ The VocabularyAnalyzer operates on a pandas DataFrame containing song metadata
 and lyrics, and creates derived metrics such as word count and
 estimated reading time for each song.
 """
-from collections import Counter
-
 import pandas as pd
 
 

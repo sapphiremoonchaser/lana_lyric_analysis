@@ -1,3 +1,6 @@
+"""
+This is for emotional profile related visualizations.
+"""
 import pandas as pd
 import plotly.express as px
 from plotly.graph_objects import Figure
@@ -82,7 +85,7 @@ def create_emotion_heatmap(comparison_df) -> Figure:
             text=heatmap_data.values,
             texttemplate="%{text:.2f}",
             colorscale="Viridis",
-            colorbar_title="Score"
+            colorbar={"title": "Score"},
         )
     )
 
