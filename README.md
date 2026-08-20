@@ -41,6 +41,25 @@ The lyrics were then cleaned and preprocessed for analysis and natural language 
 
 ## NLP & Analysis
 
+### Text Processing
+Basic text processing is done first to normalize lyrics. This includes converting text to lowercase, removing 
+annotations and excess whitespace, expanding contractions, and removing punctuation.
+
+Additional processing prepares the lyrics for NLP analysis. This includes tokenizing the lyrics into individual words, 
+removing stopwords (such as "the" and "and"), and lemmatizing words so that related forms such as "love" and "loved" 
+are treated as the same word.
+
+Two versions of the cleaned lyrics are maintained: a basic cleaned version use for general feature calculations and an 
+NLP-cleaned version used for vocabulary, sentiment, emotion, and readability analysis.
+
+### Metrics
+
+
+### Sentiment Analysis
+
+
+### Emotion Analysis
+
 
 ## Visualizations
 
