@@ -102,23 +102,26 @@ NLP-cleaned version used for vocabulary, sentiment, emotion, and readability ana
 
 ![Song Explorer Word Cloud](images/06_song_explorer_2.png)
 
-## Visualizations
-
-
-### Sentiment Analysis
-
-
-### Emotion Analysis
-
-
-## Streamlit Dashboard
-
-
-## Key Findings
-
-
 ## Technologies
 
+### Programming & Data Analysis
+
+* **Python** — Primary programming language
+* **pandas** — Data manipulation and analysis
+* **NumPy** — Numerical operations
+
+### Natural Language Processing
+
+* **NLTK** — Tokenization, stopword removal, and lemmatization
+* **TextBlob** — Sentiment analysis
+* **VADER** — Sentiment analysis
+* **textstat** — Readability metrics
+
+### Visualization & Dashboard
+
+* **Plotly** — Interactive data visualizations
+* **Streamlit** — Interactive web dashboard
+* **Matplotlib** — Data visualization
 
 ## Project Structure
 
@@ -134,3 +137,7 @@ NLP-cleaned version used for vocabulary, sentiment, emotion, and readability ana
 
 
 ## Author
+Heather Hill  
+[LinkedIn]
+[GitHub]
+
