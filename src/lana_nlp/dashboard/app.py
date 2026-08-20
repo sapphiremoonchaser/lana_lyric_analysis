@@ -3,18 +3,8 @@ import streamlit as st
 import pandas as pd
 import ast
 
-from lana_nlp.dashboard.visualizations.comparisons import (
-    create_album_boxplot,
-    create_wordcloud
-)
 
 from lana_nlp.dashboard.visualizations.color_palettes import album_palettes
-
-from lana_nlp.dashboard.visualizations.trends import (
-    average_words_over_time_scatterplot,
-    create_metrics_scatter,
-    create_sentiment_scatter
-)
 
 from lana_nlp.dashboard.visualizations.preparation import (
     metric_groups,
@@ -22,6 +12,17 @@ from lana_nlp.dashboard.visualizations.preparation import (
     prepare_vocabulary_comparison,
     prepare_readability_comparison,
     prepare_sentiment_comparison
+)
+
+from lana_nlp.dashboard.visualizations.comparisons import (
+    create_album_boxplot,
+    create_wordcloud
+)
+
+from lana_nlp.dashboard.visualizations.trends import (
+    average_words_over_time_scatterplot,
+    create_metrics_scatter,
+    create_sentiment_scatter
 )
 
 from lana_nlp.dashboard.visualizations.emotions import (
@@ -110,8 +111,6 @@ if page == "Overview":
 elif page == "Lyrical Style":
 
     st.title("Lyrical Style Over Time")
-
-    # st.write(album_df.columns.tolist())
 
     st.write(
         "How does Lana Del Rey's lyrical style change "
@@ -351,13 +350,66 @@ elif page == "Album Comparison":
             )
             st.plotly_chart(fig, use_container_width=True)
 
-        fig = create_album_boxplot(
-            comparison_songs,
-            "average_word_length",
-            "Word Length Distribution",
-            "Characters"
-        )
-        st.plotly_chart(fig, use_container_width=True)
+            st.caption("Lexical Diversity is the percent of words that are unique.")
+
+        # Wordclouds
+        st.subheader("Wordclouds")
+
+        col3, col4 = st.columns(2)
+
+        with col3:
+            # Filter song level dataframe
+            album_1_lyrics = song_df[
+                song_df["album"] == album_1
+                ]["nlp_cleaned_lyrics"]
+
+            album_1_text = " ".join(
+                " ".join(ast.literal_eval(lyrics))
+                if isinstance(lyrics, str)
+                else " ".join(lyrics)
+                for lyrics in album_1_lyrics
+            )
+
+            album_1_palette = album_palettes[album_1]
+
+            album_1_wordcloud = create_wordcloud(
+                album_1_text,
+                album_1_palette,
+            )
+
+            st.image(
+                album_1_wordcloud.to_array(),
+                use_container_width=True
+            )
+
+            st.caption(album_1)
+
+        with col4:
+            # Filter song level dataframe
+            album_2_lyrics = song_df[
+                song_df["album"] == album_2
+                ]["nlp_cleaned_lyrics"]
+
+            album_2_text = " ".join(
+                " ".join(ast.literal_eval(lyrics))
+                if isinstance(lyrics, str)
+                else " ".join(lyrics)
+                for lyrics in album_2_lyrics
+            )
+
+            album_2_palette = album_palettes[album_2]
+
+            album_2_wordcloud = create_wordcloud(
+                album_2_text,
+                album_2_palette,
+            )
+
+            st.image(
+                album_2_wordcloud.to_array(),
+                use_container_width=True
+            )
+
+            st.caption(album_2)
 
     if selected_group == "Readability":
         # Table for readability comparison
@@ -434,65 +486,6 @@ elif page == "Album Comparison":
         fig = create_emotion_heatmap(comparison_df)
 
         st.plotly_chart(fig, use_container_width=True)
-
-    # Wordclouds
-    st.subheader("Wordclouds")
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        # Filter song level dataframe
-        album_1_lyrics = song_df[
-            song_df["album"] == album_1
-        ]["nlp_cleaned_lyrics"]
-
-        album_1_text = " ".join(
-            " ".join(ast.literal_eval(lyrics))
-            if isinstance(lyrics, str)
-            else " ".join(lyrics)
-            for lyrics in album_1_lyrics
-        )
-
-        album_1_palette = album_palettes[album_1]
-
-        album_1_wordcloud = create_wordcloud(
-            album_1_text,
-            album_1_palette,
-        )
-
-        st.image(
-            album_1_wordcloud.to_array(),
-            use_container_width=True
-        )
-
-        st.caption(album_1)
-
-    with col2:
-        # Filter song level dataframe
-        album_2_lyrics = song_df[
-            song_df["album"] == album_2
-            ]["nlp_cleaned_lyrics"]
-
-        album_2_text = " ".join(
-            " ".join(ast.literal_eval(lyrics))
-            if isinstance(lyrics, str)
-            else " ".join(lyrics)
-            for lyrics in album_2_lyrics
-        )
-
-        album_2_palette = album_palettes[album_2]
-
-        album_2_wordcloud = create_wordcloud(
-            album_2_text,
-            album_2_palette,
-        )
-
-        st.image(
-            album_2_wordcloud.to_array(),
-            use_container_width=True
-        )
-
-        st.caption(album_2)
 
 
 elif page == "Song Explorer":
@@ -622,7 +615,13 @@ elif page == "Song Explorer":
             for lyrics in song_lyrics
         )
 
-        song_palette = "twilight"
+        # Look up album song belongs to for word cloud color palette
+        song_album = song_df.loc[
+            song_df["song"] == selected_song,
+            "album"
+        ].iloc[0]
+
+        song_palette = album_palettes[song_album]
 
         song_wordcloud = create_wordcloud(
             song_text,
