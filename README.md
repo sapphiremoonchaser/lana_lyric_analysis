@@ -54,6 +54,31 @@ NLP-cleaned version used for vocabulary, sentiment, emotion, and readability ana
 
 ### Metrics
 
+#### Basic Lyrics Metrics
+
+* Word Count
+* Unique Words
+* Line Count
+* Reading Time
+
+#### Vocabulary
+* Vocabulary Size
+* Lexical Diversity
+* Word Length
+
+#### Readability
+* Flesch Reading Ease
+* Flesch-Kincaid Grade Level
+* Gunning Fog Index
+
+#### Sentiment
+* Sentiment Polarity
+* Subjectivity
+* Positive Word Ratio
+* Negative Word Ratio
+
+#### Emotional Profile
+* NRC emotion categories: anger, anticipation, digust, fear, joy, sadness, surprise, and trust
 
 ### Sentiment Analysis
 
