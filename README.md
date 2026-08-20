@@ -19,7 +19,10 @@ How to albums compare?
 
 
 ## Data
-
+Lyrics were collectedfrom the [Lana Del Rey Wiki](https://lanadelrey.fandom.com/wiki/Lana_Del_Rey_wiki) and compiled 
+into a CSV dataset. The dataset contains album, year, song, and lyrics.  
+  
+The lyrics were then cleaned and preprocessed for analysis and natural language processeing.
 
 ## NLP & Analysis
 
