@@ -2,8 +2,8 @@
 
 
 ## Overview
-The Lana Del Rey Lyric Analyzer explores Lana's lyrics across her albums using natural language processing (NLP). 
-and data analysis. Lyrics are preprocessed and cleaned and preprocessed before a variety of statistical and linguistic 
+The Lana Del Rey Lyric Analyzer explores Lana's lyrics across her albums using natural language processing (NLP) 
+and data analysis. Lyrics are preprocessed and cleaned before a variety of statistical and linguistic 
 metrics are calculated. 
 
 The project examines metrics such as word count, unique words, lexical diversity, reading time, readability, sentiment, 
@@ -12,7 +12,7 @@ an album comparison page and a song explorer.
 
 ## Research Questions
 How has Lana Del Rey's lyrical structure changed over time?   
-how has the diversity and complexity of her vocabulary changed over time?   
+How has the diversity and complexity of her vocabulary changed over time?   
 How to albums compare?
 
 ## Features
@@ -78,7 +78,7 @@ NLP-cleaned version used for vocabulary, sentiment, emotion, and readability ana
 * Negative Word Ratio
 
 #### Emotional Profile
-* NRC emotion categories: anger, anticipation, digust, fear, joy, sadness, surprise, and trust
+* NRC emotion categories: anger, anticipation, disgust, fear, joy, sadness, surprise, and trust
 
 ## Dashboard
 
@@ -131,7 +131,7 @@ NLP-cleaned version used for vocabulary, sentiment, emotion, and readability ana
 
 ## Future Improvements
 * Expand sentiment analysis and visualization
-* TF-IDF to find words that descrive each album
+* TF-IDF to find words that describe each album
 * Implement topic modeling using Latent Dirichlet Allocation (LDA)
 * Add artist-to-artist comparisons
 
