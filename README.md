@@ -128,6 +128,29 @@ NLP-cleaned version used for vocabulary, sentiment, emotion, and readability ana
 
 ## Installation & Usage
 
+1. Clone the repository  
+
+`git clone https://github.com/sapphiremoonchaser/lana_lyric_analysis.git cd lana_lyric_analysis`  
+
+
+2. Create a virtual environment and activate
+
+3. Install dependencies from pyproject.toml  
+
+`pip install -e .`
+
+4. Save lyrics  
+
+Create a csv with album, song, year, and lyrics and save in data/raw/lyrics.csv
+
+5. Save the NRC emotion lexicon in data/raw/NRC.csv
+
+source: https://www.kaggle.com/datasets/wjburns/nrc-emotion-lexicon
+
+6. Run the Streamlit Dashboard  
+
+`streamlit run src/lana_nlp/dashboard/app.py`
+
 
 ## Future Improvements
 * Expand sentiment analysis and visualization
@@ -138,5 +161,5 @@ NLP-cleaned version used for vocabulary, sentiment, emotion, and readability ana
 
 ## Author
 Heather Hill  
-[LinkedIn](www.linkedin.com/in/heather-gwyn)
+[LinkedIn](www.linkedin.com/in/heather-gwyn)  
 [GitHub](https://github.com/sapphiremoonchaser)
