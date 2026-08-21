@@ -125,6 +125,45 @@ NLP-cleaned version used for vocabulary, sentiment, emotion, and readability ana
 
 ## Project Structure
 
+```aiignore
+lana_lyric_analysis/ 
+│ 
+├── data/ 
+│ ├── raw/ # Original lyric dataset 
+│ └── processed/ # Cleaned and processed data 
+│ 
+├── examples/ # Example notebooks/scripts 
+│ 
+├── images/ # Dashboard and visualization images 
+│ 
+├── src/ 
+│ └── lana_nlp/ 
+│   ├── dashboard/ 
+│   │ ├── visualizations/ 
+│   │ │ ├── color_palettes.py # Album color palettes 
+│   │ │ ├── comparisons.py # Album comparison visualizations 
+│   │ │ ├── emotions.py # Emotion visualizations 
+│   │ │ ├── preparation.py # Visualization data preparation 
+│   │ │ └── trends.py # Trends over time 
+│   └── app.py # Streamlit dashboard 
+│ 
+│   ├── features/ 
+│   │ ├── basic_features.py # Basic lyric statistics 
+│   │ ├── readability.py # Readability metrics 
+│   │ ├── sentiment.py # Sentiment analysis 
+│   │ └── vocabulary.py # Vocabulary analysis 
+│   ├── pipeline/ 
+│   │ ├── build_pipeline.py # Pipeline construction 
+│   │ ├── data_loader.py # Data loading 
+│   │ ├── pipeline.py # Data processing pipeline 
+│   │ └── text_cleaner.py # Text cleaning and preprocessing 
+│ │ └── utils/ 
+│       └── text_utils.py # Text utility functions 
+├── tests/ # Unit tests 
+├── .gitignore # Files excluded from Git 
+├── pyproject.toml # Project configuration and metadata 
+└── README.md # Project documentation
+```
 
 ## Installation & Usage
 
