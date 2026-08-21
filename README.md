@@ -2,8 +2,8 @@
 
 
 ## Overview
-The Lana Del Rey Lyric Analyzer explores Lana's lyrics across her albums using natural language processing (NLP). 
-and data analysis. Lyrics are preprocessed and cleaned and preprocessed before a variety of statistical and linguistic 
+The Lana Del Rey Lyric Analyzer explores Lana's lyrics across her albums using natural language processing (NLP) 
+and data analysis. Lyrics are preprocessed and cleaned before a variety of statistical and linguistic 
 metrics are calculated. 
 
 The project examines metrics such as word count, unique words, lexical diversity, reading time, readability, sentiment, 
@@ -12,7 +12,7 @@ an album comparison page and a song explorer.
 
 ## Research Questions
 How has Lana Del Rey's lyrical structure changed over time?   
-how has the diversity and complexity of her vocabulary changed over time?   
+How has the diversity and complexity of her vocabulary changed over time?   
 How to albums compare?
 
 ## Features
@@ -78,7 +78,7 @@ NLP-cleaned version used for vocabulary, sentiment, emotion, and readability ana
 * Negative Word Ratio
 
 #### Emotional Profile
-* NRC emotion categories: anger, anticipation, digust, fear, joy, sadness, surprise, and trust
+* NRC emotion categories: anger, anticipation, disgust, fear, joy, sadness, surprise, and trust
 
 ## Dashboard
 
@@ -125,18 +125,80 @@ NLP-cleaned version used for vocabulary, sentiment, emotion, and readability ana
 
 ## Project Structure
 
+```aiignore
+lana_lyric_analysis/ 
+│ 
+├── data/ 
+│ ├── raw/ # Original lyric dataset 
+│ └── processed/ # Cleaned and processed data 
+│ 
+├── examples/ # Example notebooks/scripts 
+│ 
+├── images/ # Dashboard and visualization images 
+│ 
+├── src/ 
+│ └── lana_nlp/ 
+│   ├── dashboard/ 
+│   │ ├── visualizations/ 
+│   │ │ ├── color_palettes.py # Album color palettes 
+│   │ │ ├── comparisons.py # Album comparison visualizations 
+│   │ │ ├── emotions.py # Emotion visualizations 
+│   │ │ ├── preparation.py # Visualization data preparation 
+│   │ │ └── trends.py # Trends over time 
+│   └── app.py # Streamlit dashboard 
+│ 
+│   ├── features/ 
+│   │ ├── basic_features.py # Basic lyric statistics 
+│   │ ├── readability.py # Readability metrics 
+│   │ ├── sentiment.py # Sentiment analysis 
+│   │ └── vocabulary.py # Vocabulary analysis 
+│   ├── pipeline/ 
+│   │ ├── build_pipeline.py # Pipeline construction 
+│   │ ├── data_loader.py # Data loading 
+│   │ ├── pipeline.py # Data processing pipeline 
+│   │ └── text_cleaner.py # Text cleaning and preprocessing 
+│ │ └── utils/ 
+│       └── text_utils.py # Text utility functions 
+├── tests/ # Unit tests 
+├── .gitignore # Files excluded from Git 
+├── pyproject.toml # Project configuration and metadata 
+└── README.md # Project documentation
+```
 
 ## Installation & Usage
+
+1. Clone the repository  
+
+`git clone https://github.com/sapphiremoonchaser/lana_lyric_analysis.git cd lana_lyric_analysis`  
+
+
+2. Create a virtual environment and activate
+
+3. Install dependencies from pyproject.toml  
+
+`pip install -e .`
+
+4. Save lyrics  
+
+Create a csv with album, song, year, and lyrics and save in data/raw/lyrics.csv
+
+5. Save the NRC emotion lexicon in data/raw/NRC.csv
+
+source: https://www.kaggle.com/datasets/wjburns/nrc-emotion-lexicon
+
+6. Run the Streamlit Dashboard  
+
+`streamlit run src/lana_nlp/dashboard/app.py`
 
 
 ## Future Improvements
 * Expand sentiment analysis and visualization
-* TF-IDF to find words that descrive each album
+* TF-IDF to find words that describe each album
 * Implement topic modeling using Latent Dirichlet Allocation (LDA)
 * Add artist-to-artist comparisons
 
 
 ## Author
 Heather Hill  
-[LinkedIn](www.linkedin.com/in/heather-gwyn)
+[LinkedIn](www.linkedin.com/in/heather-gwyn)  
 [GitHub](https://github.com/sapphiremoonchaser)
